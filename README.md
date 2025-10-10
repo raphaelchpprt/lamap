@@ -11,7 +11,7 @@
 ## 🎯 Objectifs du projet
 
 LaMap permet aux utilisateurs de :
-- 📍 Découvrir des initiatives ESS locales sur une carte interactive
+- 📍 Découvrir des initiatives ESS et associatives locales sur une carte interactive
 - ➕ Ajouter de nouvelles initiatives
 - 🔍 Filtrer par type (ressourceries, AMAP, repair cafés, etc.)
 - 🌍 Rechercher dans un rayon géographique
@@ -262,10 +262,6 @@ Les contributions sont les bienvenues ! Pour contribuer :
 - Ajouter des tests pour les nouvelles fonctionnalités
 - Mettre à jour la documentation
 - Suivre le [Conventional Commits](https://www.conventionalcommits.org/)
-
-## 📄 Licence
-
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
 ## 👤 Auteur
 
