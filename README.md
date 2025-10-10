@@ -1,6 +1,6 @@
-# 🗺️ LaMap - Cartographie des initiatives ESS
+# 🗺️ LaMap - Cartographie des initiatives ESS et associative
 
-> Plateforme web collaborative de cartographie des initiatives d'économie circulaire, sociale et solidaire (ESS) en France.
+> Plateforme web collaborative de cartographie des initiatives d'économie circulaire, sociale et solidaire (ESS) et associatives en France.
 
 [![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-blue)](https://react.dev/)
