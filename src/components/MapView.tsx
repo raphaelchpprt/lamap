@@ -1,5 +1,5 @@
 'use client';
-
+import { MapPlus } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 
 import AddInitiativeForm from '@/components/AddInitiativeForm';
@@ -112,7 +112,7 @@ export default function MapView() {
 
         {/* Add Initiative Button */}
         <Button onClick={() => setIsAddFormOpen(true)} className="w-full">
-          ➕ Ajouter une initiative
+          <MapPlus /> Ajouter une initiative
         </Button>
 
         {/* Stats */}
