@@ -17,8 +17,8 @@ import {
 import { createClient } from '@/lib/supabase/server';
 
 // Mock dependencies
-jest.mock('@/lib/supabase/server');
 jest.mock('next/cache');
+jest.mock('@/lib/supabase/server');
 
 const mockCreateClient = createClient as jest.MockedFunction<
   typeof createClient
@@ -35,17 +35,22 @@ describe('Server Actions', () => {
     // Reset mocks
     jest.clearAllMocks();
 
-    // Setup mock Supabase client
+    // Setup mock Supabase client with chainable methods
+    const mockEq = jest.fn().mockReturnThis();
     mockSupabase = {
       auth: {
         getUser: jest.fn(),
       },
       from: jest.fn().mockReturnThis(),
       insert: jest.fn().mockReturnThis(),
-      update: jest.fn().mockReturnThis(),
-      delete: jest.fn().mockReturnThis(),
+      update: jest.fn(() => ({
+        eq: jest.fn().mockResolvedValue({ error: null }),
+      })),
+      delete: jest.fn(() => ({
+        eq: jest.fn().mockResolvedValue({ error: null }),
+      })),
       select: jest.fn().mockReturnThis(),
-      eq: jest.fn().mockReturnThis(),
+      eq: mockEq,
       single: jest.fn(),
     };
 
@@ -165,11 +170,6 @@ describe('Server Actions', () => {
         error: null,
       });
 
-      // Mock successful update
-      mockSupabase.eq.mockResolvedValue({
-        error: null,
-      });
-
       const result = await updateInitiative('initiative123', updateData);
 
       expect(result.success).toBe(true);
@@ -236,11 +236,6 @@ describe('Server Actions', () => {
       // Mock ownership check
       mockSupabase.single.mockResolvedValue({
         data: { user_id: 'user123' },
-        error: null,
-      });
-
-      // Mock successful delete
-      mockSupabase.eq.mockResolvedValue({
         error: null,
       });
 

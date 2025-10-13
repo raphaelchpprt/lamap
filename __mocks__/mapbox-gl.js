@@ -196,3 +196,4 @@ const mockMapboxGl = {
 };
 
 module.exports = mockMapboxGl;
+module.exports.default = mockMapboxGl;

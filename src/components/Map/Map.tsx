@@ -484,12 +484,12 @@ export default function Map({
   // ================================
 
   return (
-    <div className={`relative ${className}`}>
+    <div className="relative">
       {/* Conteneur de la carte */}
       <div
         ref={mapContainer}
-        className="h-full w-full"
-        data-testid="mapbox-container"
+        className={className}
+        data-testid="map-container"
       />
 
       {/* Indicateur de chargement */}

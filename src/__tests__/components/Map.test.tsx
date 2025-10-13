@@ -10,23 +10,19 @@ import Map from '@/components/Map/Map';
 
 import type { InitiativeType } from '@/types/initiative';
 
-// Mock mapbox-gl
-jest.mock('mapbox-gl', () => ({
-  Map: jest.fn(() => ({
-    on: jest.fn(),
-    remove: jest.fn(),
-    addControl: jest.fn(),
-    getSource: jest.fn(),
-    addSource: jest.fn(),
-    addLayer: jest.fn(),
-    loadImage: jest.fn(),
-    addImage: jest.fn(),
-  })),
-  NavigationControl: jest.fn(),
-  Marker: jest.fn(() => ({
-    setLngLat: jest.fn().mockReturnThis(),
-    addTo: jest.fn().mockReturnThis(),
-    remove: jest.fn(),
+// Mock mapbox-gl (uses __mocks__/mapbox-gl.js)
+jest.mock('mapbox-gl');
+
+// Mock Supabase client
+jest.mock('@/lib/supabase/client', () => ({
+  createClient: jest.fn(() => ({
+    from: jest.fn().mockReturnThis(),
+    select: jest.fn().mockReturnThis(),
+    eq: jest.fn().mockReturnThis(),
+    single: jest.fn().mockResolvedValue({
+      data: [],
+      error: null,
+    }),
   })),
 }));
 

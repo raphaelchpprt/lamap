@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { createInitiative } from '@/app/actions';
 import { Button } from '@/components/ui/button';
@@ -25,6 +25,7 @@ export default function AddInitiativeForm({
   onSuccess,
   onCancel,
 }: AddInitiativeFormProps) {
+  const formRef = useRef<HTMLFormElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -85,7 +86,7 @@ export default function AddInitiativeForm({
       }
 
       // Reset form and notify success
-      e.currentTarget.reset();
+      formRef.current?.reset();
       onSuccess?.();
     } catch (err) {
       console.error("Erreur lors de l'ajout:", err);
@@ -104,7 +105,12 @@ export default function AddInitiativeForm({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form
+          ref={formRef}
+          onSubmit={handleSubmit}
+          className="space-y-6"
+          noValidate
+        >
           {error && (
             <div
               className="bg-destructive/10 border border-destructive/30 text-destructive px-4 py-3 rounded-lg"

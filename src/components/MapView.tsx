@@ -112,7 +112,7 @@ export default function MapView() {
 
         {/* Add Initiative Button */}
         <Button onClick={() => setIsAddFormOpen(true)} className="w-full">
-          <MapPlus /> Ajouter une initiative
+          <MapPlus strokeWidth={2.5} /> Ajouter une initiative
         </Button>
 
         {/* Stats */}

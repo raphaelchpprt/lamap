@@ -1,0 +1,66 @@
+002f0cbc2124dcd1799a45359253eae1
+"use strict";
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+Object.defineProperty(exports, "Label", {
+    enumerable: true,
+    get: function() {
+        return Label;
+    }
+});
+const _jsxruntime = require("react/jsx-runtime");
+const _reactlabel = /*#__PURE__*/ _interop_require_wildcard(require("@radix-ui/react-label"));
+const _classvarianceauthority = require("class-variance-authority");
+const _react = /*#__PURE__*/ _interop_require_wildcard(require("react"));
+const _utils = require("../../lib/utils");
+function _getRequireWildcardCache(nodeInterop) {
+    if (typeof WeakMap !== "function") return null;
+    var cacheBabelInterop = new WeakMap();
+    var cacheNodeInterop = new WeakMap();
+    return (_getRequireWildcardCache = function(nodeInterop) {
+        return nodeInterop ? cacheNodeInterop : cacheBabelInterop;
+    })(nodeInterop);
+}
+function _interop_require_wildcard(obj, nodeInterop) {
+    if (!nodeInterop && obj && obj.__esModule) {
+        return obj;
+    }
+    if (obj === null || typeof obj !== "object" && typeof obj !== "function") {
+        return {
+            default: obj
+        };
+    }
+    var cache = _getRequireWildcardCache(nodeInterop);
+    if (cache && cache.has(obj)) {
+        return cache.get(obj);
+    }
+    var newObj = {
+        __proto__: null
+    };
+    var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
+    for(var key in obj){
+        if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
+            var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
+            if (desc && (desc.get || desc.set)) {
+                Object.defineProperty(newObj, key, desc);
+            } else {
+                newObj[key] = obj[key];
+            }
+        }
+    }
+    newObj.default = obj;
+    if (cache) {
+        cache.set(obj, newObj);
+    }
+    return newObj;
+}
+const labelVariants = (0, _classvarianceauthority.cva)('text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70');
+const Label = /*#__PURE__*/ _react.forwardRef(({ className, ...props }, ref)=>/*#__PURE__*/ (0, _jsxruntime.jsx)(_reactlabel.Root, {
+        ref: ref,
+        className: (0, _utils.cn)(labelVariants(), className),
+        ...props
+    }));
+Label.displayName = _reactlabel.Root.displayName;
+
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9SYXBoYWVsL0RvY3VtZW50cy9ERVYubm9zeW5jL2xhbWFwL3NyYy9jb21wb25lbnRzL3VpL2xhYmVsLnRzeCJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgKiBhcyBMYWJlbFByaW1pdGl2ZSBmcm9tICdAcmFkaXgtdWkvcmVhY3QtbGFiZWwnXG5pbXBvcnQgeyBjdmEsIHR5cGUgVmFyaWFudFByb3BzIH0gZnJvbSAnY2xhc3MtdmFyaWFuY2UtYXV0aG9yaXR5J1xuaW1wb3J0ICogYXMgUmVhY3QgZnJvbSAncmVhY3QnXG5cbmltcG9ydCB7IGNuIH0gZnJvbSAnQC9saWIvdXRpbHMnXG5cbmNvbnN0IGxhYmVsVmFyaWFudHMgPSBjdmEoXG4gICd0ZXh0LXNtIGZvbnQtbWVkaXVtIGxlYWRpbmctbm9uZSBwZWVyLWRpc2FibGVkOmN1cnNvci1ub3QtYWxsb3dlZCBwZWVyLWRpc2FibGVkOm9wYWNpdHktNzAnXG4pXG5cbmNvbnN0IExhYmVsID0gUmVhY3QuZm9yd2FyZFJlZjxcbiAgUmVhY3QuRWxlbWVudFJlZjx0eXBlb2YgTGFiZWxQcmltaXRpdmUuUm9vdD4sXG4gIFJlYWN0LkNvbXBvbmVudFByb3BzV2l0aG91dFJlZjx0eXBlb2YgTGFiZWxQcmltaXRpdmUuUm9vdD4gJlxuICAgIFZhcmlhbnRQcm9wczx0eXBlb2YgbGFiZWxWYXJpYW50cz5cbj4oKHsgY2xhc3NOYW1lLCAuLi5wcm9wcyB9LCByZWYpID0+IChcbiAgPExhYmVsUHJpbWl0aXZlLlJvb3RcbiAgICByZWY9e3JlZn1cbiAgICBjbGFzc05hbWU9e2NuKGxhYmVsVmFyaWFudHMoKSwgY2xhc3NOYW1lKX1cbiAgICB7Li4ucHJvcHN9XG4gIC8+XG4pKVxuTGFiZWwuZGlzcGxheU5hbWUgPSBMYWJlbFByaW1pdGl2ZS5Sb290LmRpc3BsYXlOYW1lXG5cbmV4cG9ydCB7IExhYmVsIH1cbiJdLCJuYW1lcyI6WyJMYWJlbCIsImxhYmVsVmFyaWFudHMiLCJjdmEiLCJSZWFjdCIsImZvcndhcmRSZWYiLCJjbGFzc05hbWUiLCJwcm9wcyIsInJlZiIsIkxhYmVsUHJpbWl0aXZlIiwiUm9vdCIsImNuIiwiZGlzcGxheU5hbWUiXSwibWFwcGluZ3MiOiI7Ozs7K0JBdUJTQTs7O2VBQUFBOzs7O29FQXZCdUI7d0NBQ087K0RBQ2hCO3VCQUVKOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFFbkIsTUFBTUMsZ0JBQWdCQyxJQUFBQSwyQkFBRyxFQUN2QjtBQUdGLE1BQU1GLHNCQUFRRyxPQUFNQyxVQUFVLENBSTVCLENBQUMsRUFBRUMsU0FBUyxFQUFFLEdBQUdDLE9BQU8sRUFBRUMsb0JBQzFCLHFCQUFDQyxZQUFlQyxJQUFJO1FBQ2xCRixLQUFLQTtRQUNMRixXQUFXSyxJQUFBQSxTQUFFLEVBQUNULGlCQUFpQkk7UUFDOUIsR0FBR0MsS0FBSzs7QUFHYk4sTUFBTVcsV0FBVyxHQUFHSCxZQUFlQyxJQUFJLENBQUNFLFdBQVcifQ==

@@ -14,12 +14,18 @@ const customJestConfig = {
   testEnvironment: 'jest-environment-jsdom',
 
   // Module mapping to resolve imports
-  moduleNameMapping: {
+  moduleNameMapper: {
     // Alias for relative imports
     '^@/(.*)$': '<rootDir>/src/$1',
 
     // Mock for Mapbox GL which doesn't work in Jest
     '^mapbox-gl$': '<rootDir>/__mocks__/mapbox-gl.js',
+
+    // Mock for Supabase
+    '^@supabase/ssr$': '<rootDir>/__mocks__/@supabase/ssr.js',
+
+    // Mock for Next.js cache
+    '^next/cache$': '<rootDir>/__mocks__/next/cache.js',
 
     // Mock for CSS/SCSS files
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
@@ -86,6 +92,9 @@ const customJestConfig = {
 
   // Test timeout (in ms)
   testTimeout: 10000,
+
+  // Exclude non-test files
+  testPathIgnorePatterns: ['/node_modules/', '/__tests__/setup/', '.d.ts$'],
 
   // Globals handling
   globals: {

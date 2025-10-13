@@ -199,9 +199,7 @@ describe('AddInitiativeForm', () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(
-        screen.getByText(/Vous devez être connecté/i)
-      ).toBeInTheDocument();
+      expect(screen.getByText(/Vous devez être connecté/i)).toBeInTheDocument();
     });
   });
 

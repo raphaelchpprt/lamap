@@ -72,15 +72,17 @@ export async function createInitiative(
       };
     }
 
-    if (
-      data.latitude < -90 ||
-      data.latitude > 90 ||
-      data.longitude < -180 ||
-      data.longitude > 180
-    ) {
+    if (data.latitude < -90 || data.latitude > 90) {
       return {
         success: false,
-        error: 'Les coordonnées GPS sont hors limites',
+        error: 'Latitude doit être entre -90 et 90',
+      };
+    }
+
+    if (data.longitude < -180 || data.longitude > 180) {
+      return {
+        success: false,
+        error: 'Longitude doit être entre -180 et 180',
       };
     }
 
@@ -440,10 +442,10 @@ export async function getInitiativeById(id: string): Promise<
   }>
 > {
   try {
-    if (!id) {
+    if (!id || typeof id !== 'string' || id.trim().length === 0) {
       return {
         success: false,
-        error: "L'ID de l'initiative est requis",
+        error: "L'ID doit être une chaîne valide",
       };
     }
 

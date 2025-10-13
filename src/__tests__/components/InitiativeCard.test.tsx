@@ -62,14 +62,15 @@ describe('InitiativeCard', () => {
   it('displays "Verified" badge for verified initiatives', () => {
     render(<InitiativeCard initiative={mockInitiative} />);
 
-    expect(screen.getByText('Vérifié')).toBeInTheDocument();
+    // The badge shows "Vérifiée" (feminine form for "initiative")
+    expect(screen.getByText('Vérifiée')).toBeInTheDocument();
   });
 
   it('does not display "Verified" badge for unverified initiatives', () => {
     const unverifiedInitiative = { ...mockInitiative, verified: false };
     render(<InitiativeCard initiative={unverifiedInitiative} />);
 
-    expect(screen.queryByText('Vérifié')).not.toBeInTheDocument();
+    expect(screen.queryByText('Vérifiée')).not.toBeInTheDocument();
   });
 
   it('displays contact links when present', () => {
@@ -84,13 +85,15 @@ describe('InitiativeCard', () => {
     expect(websiteLink).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
-  it('displays phone and email', () => {
+  it('displays phone and email as accessible links', () => {
     render(<InitiativeCard initiative={mockInitiative} />);
 
-    expect(screen.getByText('01 23 45 67 89')).toBeInTheDocument();
-    expect(
-      screen.getByText('contact@ressourcerie-belleville.fr')
-    ).toBeInTheDocument();
+    // Phone and email are displayed as icon links with title attributes
+    const phoneLink = screen.getByTitle('Appeler');
+    expect(phoneLink).toHaveAttribute('href', 'tel:01 23 45 67 89');
+    
+    const emailLink = screen.getByTitle('Envoyer un email');
+    expect(emailLink).toHaveAttribute('href', 'mailto:contact@ressourcerie-belleville.fr');
   });
 
   it('handles card click to display more details', () => {
@@ -99,10 +102,12 @@ describe('InitiativeCard', () => {
       <InitiativeCard initiative={mockInitiative} onClick={onClickMock} />
     );
 
-    const card = screen.getByRole('article');
+    // Card with onClick becomes a button role for accessibility
+    const card = screen.getByRole('button');
     fireEvent.click(card);
 
     expect(onClickMock).toHaveBeenCalledTimes(1);
+    expect(onClickMock).toHaveBeenCalledWith(mockInitiative);
   });
 
   it('displays image when present', () => {
@@ -143,18 +148,27 @@ describe('InitiativeCard', () => {
     expect(card).toBeInTheDocument();
   });
 
-  it('displays opening hours in readable format', () => {
-    render(<InitiativeCard initiative={mockInitiative} showOpeningHours />);
+  it('displays opening hours when detailed variant is used', () => {
+    // Opening hours are shown in detailed variant (e.g., in popup/modal)
+    render(<InitiativeCard initiative={mockInitiative} variant="detailed" />);
 
+    // Detailed variant shows opening hours section
     expect(screen.getByText(/Horaires/i)).toBeInTheDocument();
-    expect(screen.getByText(/Lundi/i)).toBeInTheDocument();
-    expect(screen.getByText(/09:00 - 18:00/)).toBeInTheDocument();
+    // Opening hours are formatted in abbreviated form
+    expect(screen.getByText(/Lun:/i)).toBeInTheDocument();
+    expect(screen.getByText(/09:00-18:00/)).toBeInTheDocument();
   });
 
-  it('is accessible with appropriate ARIA attributes', () => {
+  it('is accessible with appropriate semantic structure', () => {
     render(<InitiativeCard initiative={mockInitiative} />);
 
-    const card = screen.getByRole('article');
-    expect(card).toHaveAttribute('aria-label');
+    // Without onClick, card is a simple div container
+    // With onClick, it becomes a button with proper accessibility
+    const heading = screen.getByRole('heading', { name: 'Ressourcerie de Belleville' });
+    expect(heading).toBeInTheDocument();
+    
+    // Image has proper alt text
+    const image = screen.getByAltText('Ressourcerie de Belleville');
+    expect(image).toBeInTheDocument();
   });
 });

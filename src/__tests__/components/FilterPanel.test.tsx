@@ -209,7 +209,8 @@ describe('FilterPanel', () => {
       label.textContent?.includes('Ressourcerie')
     );
 
-    expect(ressourcerieLabel).toHaveClass('bg-primary-50');
+    expect(ressourcerieLabel).toHaveClass('bg-primary/5');
+    expect(ressourcerieLabel).toHaveClass('border-primary');
   });
 
   it('displays colored visual indicator for each type', () => {
