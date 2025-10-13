@@ -267,12 +267,6 @@ Les contributions sont les bienvenues ! Pour contribuer :
 
 **Raphael** - Projet de formation Next.js + TypeScript + Cartographie
 
-## 🙏 Remerciements
-
-- [Mapbox](https://www.mapbox.com) pour l'API de cartographie
-- [Supabase](https://supabase.com) pour le backend
-- La communauté open-source Next.js et React
-
 ---
 
 **Status du projet :** 🚧 En développement actif
