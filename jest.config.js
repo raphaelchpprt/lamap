@@ -1,57 +1,57 @@
 const nextJest = require('next/jest');
 
 const createJestConfig = nextJest({
-  // Fournit le chemin vers votre app Next.js pour charger next.config.js et .env files
+  // Provides path to your Next.js app to load next.config.js and .env files
   dir: './',
 });
 
-// Configuration Jest personnalisée
+// Custom Jest configuration
 const customJestConfig = {
-  // Fichier de setup qui s'exécute avant chaque test
+  // Setup file that runs before each test
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 
-  // Environment de test (jsdom pour simuler un navigateur)
+  // Test environment (jsdom to simulate browser)
   testEnvironment: 'jest-environment-jsdom',
 
-  // Mapping de modules pour résoudre les imports
+  // Module mapping to resolve imports
   moduleNameMapping: {
-    // Alias pour les imports relatifs
+    // Alias for relative imports
     '^@/(.*)$': '<rootDir>/src/$1',
 
-    // Mock pour Mapbox GL qui ne fonctionne pas dans Jest
+    // Mock for Mapbox GL which doesn't work in Jest
     '^mapbox-gl$': '<rootDir>/__mocks__/mapbox-gl.js',
 
-    // Mock pour les fichiers CSS/SCSS
+    // Mock for CSS/SCSS files
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
 
-    // Mock pour les images et autres assets
+    // Mock for images and other assets
     '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
       '<rootDir>/__mocks__/fileMock.js',
   },
 
-  // Répertoires à ignorer lors des tests
+  // Directories to ignore during tests
   testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
 
-  // Patterns de fichiers de test
+  // Test file patterns
   testMatch: [
     '<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}',
     '<rootDir>/src/**/*.{test,spec}.{js,jsx,ts,tsx}',
   ],
 
-  // Extensions de fichiers que Jest doit traiter
+  // File extensions Jest should process
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
 
-  // Transformation des fichiers
+  // File transformation
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
   },
 
-  // Variables d'environnement pour les tests
+  // Environment variables for tests
   testEnvironmentOptions: {
     url: 'http://localhost:3000',
   },
 
-  // Collecte de couverture de code
+  // Code coverage collection
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
     '!src/**/*.d.ts',
@@ -61,7 +61,7 @@ const customJestConfig = {
     '!src/**/*.spec.{ts,tsx}',
   ],
 
-  // Seuils de couverture
+  // Coverage thresholds
   coverageThreshold: {
     global: {
       branches: 70,
@@ -71,23 +71,23 @@ const customJestConfig = {
     },
   },
 
-  // Répertoire de sortie des rapports de couverture
+  // Coverage reports output directory
   coverageDirectory: 'coverage',
 
-  // Reporter pour les rapports de couverture
+  // Reporters for coverage reports
   coverageReporters: ['text', 'lcov', 'html'],
 
-  // Configuration pour les tests en parallèle
+  // Configuration for parallel tests
   maxWorkers: '50%',
 
-  // Cache pour améliorer les performances
+  // Cache to improve performance
   cache: true,
   cacheDirectory: '<rootDir>/.jest-cache',
 
-  // Délai d'expiration des tests (en ms)
+  // Test timeout (in ms)
   testTimeout: 10000,
 
-  // Gestion des globals
+  // Globals handling
   globals: {
     'ts-jest': {
       tsconfig: 'tsconfig.json',
@@ -95,5 +95,5 @@ const customJestConfig = {
   },
 };
 
-// Crée la configuration finale
+// Create final configuration
 module.exports = createJestConfig(customJestConfig);

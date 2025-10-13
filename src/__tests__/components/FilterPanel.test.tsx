@@ -12,7 +12,7 @@ describe('FilterPanel', () => {
     jest.clearAllMocks();
   });
 
-  it("affiche tous les types d'initiatives", () => {
+  it('displays all initiative types', () => {
     render(
       <FilterPanel
         selectedTypes={defaultSelectedTypes}
@@ -27,7 +27,7 @@ describe('FilterPanel', () => {
     expect(screen.getByText('Fab Lab')).toBeInTheDocument();
   });
 
-  it('affiche les types sélectionnés comme cochés', () => {
+  it('displays selected types as checked', () => {
     render(
       <FilterPanel
         selectedTypes={defaultSelectedTypes}
@@ -48,7 +48,7 @@ describe('FilterPanel', () => {
     expect(repairCafeCheckbox).not.toBeChecked();
   });
 
-  it("appelle onFilterChange lors de la sélection d'un type", () => {
+  it('calls onFilterChange when selecting a type', () => {
     render(
       <FilterPanel
         selectedTypes={defaultSelectedTypes}
@@ -67,7 +67,7 @@ describe('FilterPanel', () => {
     ]);
   });
 
-  it("appelle onFilterChange lors de la désélection d'un type", () => {
+  it('calls onFilterChange when deselecting a type', () => {
     render(
       <FilterPanel
         selectedTypes={defaultSelectedTypes}
@@ -83,7 +83,7 @@ describe('FilterPanel', () => {
     expect(mockOnFilterChange).toHaveBeenCalledWith(['AMAP']);
   });
 
-  it('sélectionne tous les types lors du clic sur "Tout sélectionner"', () => {
+  it('selects all types when clicking "Select all"', () => {
     render(
       <FilterPanel selectedTypes={[]} onFilterChange={mockOnFilterChange} />
     );
@@ -110,7 +110,7 @@ describe('FilterPanel', () => {
     );
   });
 
-  it('désélectionne tous les types lors du clic sur "Tout désélectionner"', () => {
+  it('deselects all types when clicking "Deselect all"', () => {
     render(
       <FilterPanel
         selectedTypes={defaultSelectedTypes}
@@ -124,7 +124,7 @@ describe('FilterPanel', () => {
     expect(mockOnFilterChange).toHaveBeenCalledWith([]);
   });
 
-  it("affiche les compteurs d'initiatives si fournis", () => {
+  it('displays initiative counters when provided', () => {
     const initiativeCounts = {
       Ressourcerie: 5,
       AMAP: 3,
@@ -144,7 +144,7 @@ describe('FilterPanel', () => {
     expect(screen.getByText('2')).toBeInTheDocument();
   });
 
-  it('affiche le total des initiatives filtrées', () => {
+  it('displays total filtered initiatives', () => {
     const initiativeCounts = {
       Ressourcerie: 5,
       AMAP: 3,
@@ -159,11 +159,11 @@ describe('FilterPanel', () => {
       />
     );
 
-    // 5 (Ressourcerie) + 3 (AMAP) = 8 sélectionnés sur 10 total
+    // 5 (Ressourcerie) + 3 (AMAP) = 8 selected out of 10 total
     expect(screen.getByText(/8 \/ 10/)).toBeInTheDocument();
   });
 
-  it('peut être réduit et développé', () => {
+  it('can be collapsed and expanded', () => {
     render(
       <FilterPanel
         selectedTypes={defaultSelectedTypes}
@@ -171,31 +171,31 @@ describe('FilterPanel', () => {
       />
     );
 
-    // Initialement développé
+    // Initially expanded
     expect(
       screen.getByRole('checkbox', { name: /Ressourcerie/ })
     ).toBeVisible();
 
-    // Cliquer sur le bouton de réduction
+    // Click collapse button
     const toggleButton = screen.getByLabelText('Réduire');
     fireEvent.click(toggleButton);
 
-    // Les checkboxes sont masquées
+    // Checkboxes are hidden
     expect(
       screen.queryByRole('checkbox', { name: /Ressourcerie/ })
     ).not.toBeInTheDocument();
 
-    // Cliquer à nouveau pour développer
+    // Click again to expand
     const expandButton = screen.getByLabelText('Développer');
     fireEvent.click(expandButton);
 
-    // Les checkboxes sont à nouveau visibles
+    // Checkboxes are visible again
     expect(
       screen.getByRole('checkbox', { name: /Ressourcerie/ })
     ).toBeVisible();
   });
 
-  it('applique des styles visuels différents aux types sélectionnés', () => {
+  it('applies different visual styles to selected types', () => {
     const { container } = render(
       <FilterPanel
         selectedTypes={['Ressourcerie']}
@@ -203,7 +203,7 @@ describe('FilterPanel', () => {
       />
     );
 
-    // Trouver le label de Ressourcerie et vérifier qu'il a une classe de sélection
+    // Find Ressourcerie label and verify it has selection class
     const labels = container.querySelectorAll('label');
     const ressourcerieLabel = Array.from(labels).find((label) =>
       label.textContent?.includes('Ressourcerie')
@@ -212,7 +212,7 @@ describe('FilterPanel', () => {
     expect(ressourcerieLabel).toHaveClass('bg-primary-50');
   });
 
-  it('affiche un indicateur visuel coloré pour chaque type', () => {
+  it('displays colored visual indicator for each type', () => {
     render(
       <FilterPanel
         selectedTypes={defaultSelectedTypes}
@@ -220,7 +220,7 @@ describe('FilterPanel', () => {
       />
     );
 
-    // Vérifier que chaque type a son indicateur de couleur
+    // Verify each type has its color indicator
     const colorIndicators = screen
       .getAllByRole('checkbox')
       .map((checkbox) =>
@@ -233,7 +233,7 @@ describe('FilterPanel', () => {
     });
   });
 
-  it('est accessible avec les attributs ARIA appropriés', () => {
+  it('is accessible with appropriate ARIA attributes', () => {
     render(
       <FilterPanel
         selectedTypes={defaultSelectedTypes}
@@ -241,13 +241,13 @@ describe('FilterPanel', () => {
       />
     );
 
-    // Les checkboxes doivent être accessibles
+    // Checkboxes should be accessible
     const checkboxes = screen.getAllByRole('checkbox');
     checkboxes.forEach((checkbox) => {
       expect(checkbox).toBeEnabled();
     });
 
-    // Les boutons doivent avoir des labels appropriés
+    // Buttons should have appropriate labels
     expect(screen.getByLabelText(/Réduire|Développer/)).toBeInTheDocument();
   });
 });

@@ -24,7 +24,7 @@ const eslintConfig = [
   },
   {
     rules: {
-      // TypeScript règles strictes
+      // TypeScript strict rules
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -36,8 +36,8 @@ const eslintConfig = [
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-non-null-assertion': 'warn',
 
-      // React/Next.js règles
-      'react/prop-types': 'off', // TypeScript gère cela
+      // React/Next.js rules
+      'react/prop-types': 'off', // TypeScript handles this
       'react/react-in-jsx-scope': 'off', // Next.js auto-import
       'react/display-name': 'error',
       'react/no-unescaped-entities': 'error',
@@ -46,7 +46,7 @@ const eslintConfig = [
       'react/jsx-no-undef': 'error',
       'react/jsx-uses-vars': 'error',
 
-      // Bonnes pratiques générales
+      // General best practices
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'no-debugger': 'error',
       'prefer-const': 'error',
@@ -71,10 +71,10 @@ const eslintConfig = [
           alphabetize: { order: 'asc', caseInsensitive: true },
         },
       ],
-      'import/no-default-export': 'off', // Next.js nécessite des exports par défaut
+      'import/no-default-export': 'off', // Next.js requires default exports
       'import/prefer-default-export': 'off',
 
-      // Accessibilité
+      // Accessibility
       'jsx-a11y/alt-text': 'error',
       'jsx-a11y/aria-role': 'error',
       'jsx-a11y/img-redundant-alt': 'error',
@@ -89,7 +89,7 @@ const eslintConfig = [
   {
     files: ['**/*.test.{js,jsx,ts,tsx}', '**/__tests__/**/*'],
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off', // Plus flexible dans les tests
+      '@typescript-eslint/no-explicit-any': 'off', // More flexible in tests
       'no-console': 'off',
     },
   },

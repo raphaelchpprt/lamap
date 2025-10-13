@@ -1,5 +1,5 @@
-// Mock pour Mapbox GL JS
-// Nécessaire car Mapbox GL ne fonctionne pas dans l'environnement Jest (pas de WebGL)
+// Mock for Mapbox GL JS
+// Required because Mapbox GL doesn't work in Jest environment (no WebGL)
 
 const mockMapboxGl = {
   Map: jest.fn().mockImplementation(() => ({
@@ -33,7 +33,7 @@ const mockMapboxGl = {
     resize: jest.fn(),
     loaded: jest.fn(() => true),
     fire: jest.fn(),
-    // Méthodes pour la navigation
+    // Navigation methods
     scrollZoom: {
       enable: jest.fn(),
       disable: jest.fn(),
@@ -132,20 +132,20 @@ const mockMapboxGl = {
     onRemove: jest.fn(),
   })),
 
-  // Propriétés globales
+  // Global properties
   accessToken: 'pk.test_token',
   version: '3.0.0',
   supported: jest.fn(() => true),
   setRTLTextPlugin: jest.fn(),
   getRTLTextPluginStatus: jest.fn(() => 'loaded'),
 
-  // Classes d'événements
+  // Event classes
   MapboxEvent: class MockMapboxEvent {},
   MapMouseEvent: class MockMapMouseEvent {},
   MapTouchEvent: class MockMapTouchEvent {},
   MapWheelEvent: class MockMapWheelEvent {},
 
-  // Utilitaires
+  // Utilities
   LngLatBounds: jest.fn().mockImplementation(() => ({
     extend: jest.fn().mockReturnThis(),
     getCenter: jest.fn(() => ({ lng: 2.3522, lat: 48.8566 })),

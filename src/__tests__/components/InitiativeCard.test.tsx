@@ -45,7 +45,7 @@ const mockInitiative: Initiative = {
 };
 
 describe('InitiativeCard', () => {
-  it("affiche les informations de base de l'initiative", () => {
+  it('displays basic initiative information', () => {
     render(<InitiativeCard initiative={mockInitiative} />);
 
     expect(screen.getByText('Ressourcerie de Belleville')).toBeInTheDocument();
@@ -53,26 +53,26 @@ describe('InitiativeCard', () => {
     expect(screen.getByText(/Une ressourcerie engagée/)).toBeInTheDocument();
   });
 
-  it("affiche l'adresse si présente", () => {
+  it('displays address when present', () => {
     render(<InitiativeCard initiative={mockInitiative} />);
 
     expect(screen.getByText(/12 rue de Belleville/)).toBeInTheDocument();
   });
 
-  it('affiche le badge "Vérifié" pour les initiatives vérifiées', () => {
+  it('displays "Verified" badge for verified initiatives', () => {
     render(<InitiativeCard initiative={mockInitiative} />);
 
     expect(screen.getByText('Vérifié')).toBeInTheDocument();
   });
 
-  it('n\'affiche pas le badge "Vérifié" pour les initiatives non vérifiées', () => {
+  it('does not display "Verified" badge for unverified initiatives', () => {
     const unverifiedInitiative = { ...mockInitiative, verified: false };
     render(<InitiativeCard initiative={unverifiedInitiative} />);
 
     expect(screen.queryByText('Vérifié')).not.toBeInTheDocument();
   });
 
-  it('affiche les liens de contact quand ils sont présents', () => {
+  it('displays contact links when present', () => {
     render(<InitiativeCard initiative={mockInitiative} />);
 
     const websiteLink = screen.getByRole('link', { name: /site web/i });
@@ -84,7 +84,7 @@ describe('InitiativeCard', () => {
     expect(websiteLink).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
-  it("affiche le téléphone et l'email", () => {
+  it('displays phone and email', () => {
     render(<InitiativeCard initiative={mockInitiative} />);
 
     expect(screen.getByText('01 23 45 67 89')).toBeInTheDocument();
@@ -93,7 +93,7 @@ describe('InitiativeCard', () => {
     ).toBeInTheDocument();
   });
 
-  it('gère le clic sur la carte pour afficher plus de détails', () => {
+  it('handles card click to display more details', () => {
     const onClickMock = jest.fn();
     render(
       <InitiativeCard initiative={mockInitiative} onClick={onClickMock} />
@@ -105,7 +105,7 @@ describe('InitiativeCard', () => {
     expect(onClickMock).toHaveBeenCalledTimes(1);
   });
 
-  it("affiche l'image si présente", () => {
+  it('displays image when present', () => {
     render(<InitiativeCard initiative={mockInitiative} />);
 
     const image = screen.getByAltText('Ressourcerie de Belleville');
@@ -113,7 +113,7 @@ describe('InitiativeCard', () => {
     expect(image).toHaveAttribute('src');
   });
 
-  it("gère l'absence d'informations optionnelles", () => {
+  it('handles missing optional information', () => {
     const minimalInitiative: Initiative = {
       id: '123',
       name: 'Initiative minimale',
@@ -134,7 +134,7 @@ describe('InitiativeCard', () => {
     expect(screen.queryByText(/http/)).not.toBeInTheDocument();
   });
 
-  it('applique les classes CSS personnalisées', () => {
+  it('applies custom CSS classes', () => {
     const { container } = render(
       <InitiativeCard initiative={mockInitiative} className="custom-class" />
     );
@@ -143,7 +143,7 @@ describe('InitiativeCard', () => {
     expect(card).toBeInTheDocument();
   });
 
-  it("affiche les horaires d'ouverture de manière lisible", () => {
+  it('displays opening hours in readable format', () => {
     render(<InitiativeCard initiative={mockInitiative} showOpeningHours />);
 
     expect(screen.getByText(/Horaires/i)).toBeInTheDocument();
@@ -151,7 +151,7 @@ describe('InitiativeCard', () => {
     expect(screen.getByText(/09:00 - 18:00/)).toBeInTheDocument();
   });
 
-  it('est accessible avec les attributs ARIA appropriés', () => {
+  it('is accessible with appropriate ARIA attributes', () => {
     render(<InitiativeCard initiative={mockInitiative} />);
 
     const card = screen.getByRole('article');
