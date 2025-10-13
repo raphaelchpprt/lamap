@@ -1,97 +1,97 @@
-# 🚀 Guide de démarrage rapide - LaMap
+# 🚀 Quick Start Guide - LaMap
 
-Guide pas à pas pour lancer LaMap en 10 minutes.
+Step-by-step guide to launch LaMap in 10 minutes.
 
-## ⚡ Setup Express (développeur expérimenté)
+## ⚡ Express Setup (experienced developer)
 
 ```bash
-# 1. Installer les dépendances essentielles
+# 1. Install essential dependencies
 npm install clsx tailwind-merge lucide-react
 
-# 2. Configurer les variables d'environnement
+# 2. Configure environment variables
 cp .env.example .env.local
-# Éditer .env.local avec vos clés Mapbox et Supabase
+# Edit .env.local with your Mapbox and Supabase keys
 
-# 3. Configurer la base de données Supabase
-# Exécuter le SQL dans supabase.com/dashboard
+# 3. Configure Supabase database
+# Execute SQL in supabase.com/dashboard
 
-# 4. Lancer le serveur de développement
+# 4. Launch development server
 npm run dev
 ```
 
-Ouvrir [http://localhost:3000](http://localhost:3000)
+Open [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## 📝 Setup Détaillé (débutant)
+## 📝 Detailed Setup (beginner)
 
-### Étape 1 : Vérifier les prérequis
+### Step 1: Check prerequisites
 
 ```bash
-# Vérifier Node.js (minimum 18, recommandé 20+)
+# Check Node.js (minimum 18, recommended 20+)
 node --version
 
-# Vérifier npm
+# Check npm
 npm --version
 ```
 
-Si Node.js n'est pas installé : [nodejs.org](https://nodejs.org)
+If Node.js is not installed: [nodejs.org](https://nodejs.org)
 
 ---
 
-### Étape 2 : Cloner et installer
+### Step 2: Clone and install
 
 ```bash
-# Cloner le projet
-git clone https://github.com/votre-username/lamap.git
+# Clone the project
+git clone https://github.com/your-username/lamap.git
 cd lamap
 
-# Installer toutes les dépendances
+# Install all dependencies
 npm install
 
-# Installer les dépendances essentielles manquantes
+# Install missing essential dependencies
 npm install clsx tailwind-merge lucide-react
 ```
 
 ---
 
-### Étape 3 : Obtenir les clés API
+### Step 3: Get API keys
 
-#### A) Mapbox (gratuit jusqu'à 50k requêtes/mois)
+#### A) Mapbox (free up to 50k requests/month)
 
-1. Créer un compte sur [mapbox.com](https://www.mapbox.com)
-2. Aller dans [Account > Tokens](https://account.mapbox.com/access-tokens/)
-3. Copier votre **Default Public Token** (commence par `pk.`)
+1. Create an account on [mapbox.com](https://www.mapbox.com)
+2. Go to [Account > Tokens](https://account.mapbox.com/access-tokens/)
+3. Copy your **Default Public Token** (starts with `pk.`)
 
-#### B) Supabase (gratuit)
+#### B) Supabase (free)
 
-1. Créer un compte sur [supabase.com](https://supabase.com)
-2. Cliquer sur "New Project"
-3. Remplir :
-   - **Name** : `lamap`
-   - **Database Password** : Générer un mot de passe fort
-   - **Region** : Choisir la plus proche (ex: `eu-west-1` pour Europe)
-4. Attendre 2-3 minutes que le projet se crée
-5. Une fois créé, aller dans **Settings > API**
-6. Noter :
-   - **Project URL** : `https://xxx.supabase.co`
-   - **anon public** key : `eyJhbGciOi...`
+1. Create an account on [supabase.com](https://supabase.com)
+2. Click on "New Project"
+3. Fill in:
+   - **Name**: `lamap`
+   - **Database Password**: Generate a strong password
+   - **Region**: Choose the closest (e.g., `eu-west-1` for Europe)
+4. Wait 2-3 minutes for the project to be created
+5. Once created, go to **Settings > API**
+6. Note:
+   - **Project URL**: `https://xxx.supabase.co`
+   - **anon public** key: `eyJhbGciOi...`
 
 ---
 
-### Étape 4 : Configurer les variables d'environnement
+### Step 4: Configure environment variables
 
-Créer un fichier `.env.local` à la racine du projet :
+Create a `.env.local` file at the project root:
 
 ```bash
-# Copier le template
+# Copy the template
 cp .env.example .env.local
 
-# Ou créer manuellement :
+# Or create manually:
 touch .env.local
 ```
 
-Éditer `.env.local` et remplacer par vos vraies clés :
+Edit `.env.local` and replace with your real keys:
 
 ```bash
 # Mapbox
@@ -102,47 +102,47 @@ NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxxxxxxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xxxxxx
 ```
 
-⚠️ **Important** : Ne jamais committer `.env.local` sur Git !
+⚠️ **Important**: Never commit `.env.local` to Git!
 
 ---
 
-### Étape 5 : Configurer la base de données Supabase
+### Step 5: Configure Supabase database
 
-#### A) Créer le projet Supabase (si pas déjà fait)
+#### a) Create a Supabase project (if not already done)
 
-1. Aller sur [supabase.com](https://supabase.com)
-2. Se connecter ou créer un compte (gratuit)
-3. Cliquer sur **"New Project"** (bouton vert en haut à droite)
-4. Remplir le formulaire :
-   - **Name** : `lamap`
-   - **Database Password** : Générer un mot de passe fort (cliquer sur "Generate a password")
-   - **Region** : Choisir `Europe West (Ireland)` ou la plus proche de vous
-   - **Pricing Plan** : Laisser "Free" sélectionné
-5. Cliquer sur **"Create new project"**
-6. ⏳ Attendre 2-3 minutes que le projet soit créé (une barre de progression s'affiche)
+1. Go to [supabase.com](https://supabase.com)
+2. Log in or create an account (free)
+3. Click on **"New Project"** (green button at top right)
+4. Fill in the form:
+   - **Name**: `lamap`
+   - **Database Password**: Generate a strong password (click "Generate a password")
+   - **Region**: Choose `Europe West (Ireland)` or the closest to you
+   - **Pricing Plan**: Leave "Free" selected
+5. Click on **"Create new project"**
+6. ⏳ Wait 2-3 minutes for the project to be created (a progress bar will display)
 
-#### B) Récupérer les clés API
+#### b) Retrieve API keys
 
-Une fois le projet créé :
+Once the project is created:
 
-1. Vous êtes automatiquement sur le dashboard du projet
-2. Dans le menu de gauche, cliquer sur l'icône ⚙️ **Settings** (tout en bas)
-3. Cliquer sur **API** dans le sous-menu
-4. Noter ces deux valeurs (vous en aurez besoin pour `.env.local`) :
-   - **Project URL** : `https://xxxxxxxxx.supabase.co`
-   - **anon public** (dans la section "Project API keys") : `eyJhbGc...` (très longue clé)
+1. You're automatically on the project dashboard
+2. In the left menu, click on the ⚙️ **Settings** icon (at the bottom)
+3. Click on **API** in the submenu
+4. Note these two values (you'll need them for `.env.local`):
+   - **Project URL**: `https://xxxxxxxxx.supabase.co`
+   - **anon public** (in the "Project API keys" section): `eyJhbGc...` (very long key)
 
-#### C) Créer la table `initiatives`
+#### c) Create the `initiatives` table
 
-1. Dans le menu de gauche, cliquer sur **SQL Editor** (icône `</>`)
-2. Cliquer sur **"+ New Query"** en haut à gauche
-3. Copier-coller ce SQL :
+1. In the left menu, click on **SQL Editor** (icon `</>`)
+2. Click on **"+ New Query"** at the top left
+3. Copy-paste this SQL:
 
 ```sql
--- Activer l'extension PostGIS pour la géolocalisation
+-- Enable PostGIS extension for geolocation
 CREATE EXTENSION IF NOT EXISTS postgis;
 
--- Table des initiatives
+-- Initiatives table
 CREATE TABLE initiatives (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT NOT NULL,
@@ -161,63 +161,63 @@ CREATE TABLE initiatives (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Index spatial pour améliorer les performances des requêtes géographiques
+-- Spatial index to improve geographic query performance
 CREATE INDEX initiatives_location_idx ON initiatives USING GIST(location);
 
--- Index sur le type pour les filtres
+-- Index on type for filters
 CREATE INDEX initiatives_type_idx ON initiatives(type);
 
--- Activer Row Level Security
+-- Enable Row Level Security
 ALTER TABLE initiatives ENABLE ROW LEVEL SECURITY;
 
--- Politique : Tout le monde peut lire les initiatives
-CREATE POLICY "Lecture publique des initiatives" ON initiatives
+-- Policy: Everyone can read initiatives
+CREATE POLICY "Public read access to initiatives" ON initiatives
   FOR SELECT USING (true);
 
--- Politique : Seuls les utilisateurs authentifiés peuvent créer
-CREATE POLICY "Création pour utilisateurs authentifiés" ON initiatives
+-- Policy: Only authenticated users can create
+CREATE POLICY "Creation for authenticated users" ON initiatives
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
--- Politique : Seul le créateur peut modifier son initiative
-CREATE POLICY "Modification par le propriétaire uniquement" ON initiatives
+-- Policy: Only the creator can modify their initiative
+CREATE POLICY "Modification by owner only" ON initiatives
   FOR UPDATE USING (auth.uid() = user_id);
 
--- Politique : Seul le créateur peut supprimer son initiative
-CREATE POLICY "Suppression par le propriétaire uniquement" ON initiatives
+-- Policy: Only the creator can delete their initiative
+CREATE POLICY "Deletion by owner only" ON initiatives
   FOR DELETE USING (auth.uid() = user_id);
 ```
 
-4. Cliquer sur le bouton **"Run"** (en bas à droite) ou appuyer sur `Cmd/Ctrl + Enter`
-5. ✅ Vérifier que le message **"Success. No rows returned"** apparaît en bas
-6. 🎉 Votre base de données est prête !
+4. Click on the **"Run"** button (bottom right) or press `Cmd/Ctrl + Enter`
+5. ✅ Verify that the message **"Success. No rows returned"** appears at the bottom
+6. 🎉 Your database is ready!
 
 ---
 
-### Étape 6 : Ajouter des données de test (optionnel)
+### Step 6: Add test data (optional)
 
-Dans le même **SQL Editor**, exécuter :
+In the same **SQL Editor**, execute:
 
 ```sql
--- Insérer quelques initiatives de test
+-- Insert some test initiatives
 INSERT INTO initiatives (name, type, description, address, location) VALUES
 (
   'Ressourcerie de Belleville',
   'Ressourcerie',
-  'Collecte, tri et vente d''objets de seconde main',
+  'Collection, sorting and sale of second-hand items',
   '12 rue de Belleville, 75020 Paris',
   ST_SetSRID(ST_MakePoint(2.3894, 48.8724), 4326)
 ),
 (
   'AMAP des Batignolles',
   'AMAP',
-  'Panier de légumes bio hebdomadaire',
+  'Weekly organic vegetable basket',
   '8 rue Cardinet, 75017 Paris',
   ST_SetSRID(ST_MakePoint(2.3122, 48.8842), 4326)
 ),
 (
   'Repair Café Lyon',
   'Repair Café',
-  'Ateliers de réparation collaboratifs tous les samedis',
+  'Collaborative repair workshops every Saturday',
   '15 rue de la République, 69002 Lyon',
   ST_SetSRID(ST_MakePoint(4.8357, 45.7640), 4326)
 );
@@ -225,14 +225,14 @@ INSERT INTO initiatives (name, type, description, address, location) VALUES
 
 ---
 
-### Étape 7 : Lancer le projet
+### Step 7: Launch the project
 
 ```bash
-# Démarrer le serveur de développement
+# Start the development server
 npm run dev
 ```
 
-Vous devriez voir :
+You should see:
 
 ```
   ▲ Next.js 15.x
@@ -242,129 +242,129 @@ Vous devriez voir :
  ✓ Ready in 2.5s
 ```
 
-Ouvrir [http://localhost:3000](http://localhost:3000) dans votre navigateur.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-### Étape 8 : Vérifier que tout fonctionne
+### Step 8: Verify everything works
 
-✅ **Checklist** :
-- [ ] La page d'accueil se charge sans erreur
-- [ ] La carte Mapbox s'affiche correctement
-- [ ] Les initiatives de test apparaissent sur la carte (si vous les avez ajoutées)
-- [ ] Les filtres fonctionnent
-- [ ] Pas d'erreur dans la console du navigateur (F12)
+✅ **Checklist**:
+- [ ] The home page loads without errors
+- [ ] The Mapbox map displays correctly
+- [ ] Test initiatives appear on the map (if you added them)
+- [ ] Filters work
+- [ ] No errors in the browser console (F12)
 
 ---
 
-## 🐛 Dépannage
+## 🐛 Troubleshooting
 
-### Erreur : "Module not found: Can't resolve 'clsx'"
+### Error: "Module not found: Can't resolve 'clsx'"
 
 ```bash
 npm install clsx tailwind-merge
 ```
 
-### Erreur : "Invalid Mapbox token"
+### Error: "Invalid Mapbox token"
 
-1. Vérifier que votre token commence bien par `pk.`
-2. Vérifier qu'il n'y a pas d'espace avant/après dans `.env.local`
-3. Redémarrer le serveur après modification de `.env.local`
+1. Verify that your token starts with `pk.`
+2. Check that there are no spaces before/after in `.env.local`
+3. Restart the server after modifying `.env.local`
 
 ```bash
-# Arrêter le serveur : Ctrl + C
+# Stop the server: Ctrl + C
 npm run dev
 ```
 
-### Erreur : "fetch failed" ou erreur Supabase
+### Error: "fetch failed" or Supabase error
 
-1. Vérifier que l'URL Supabase est correcte (doit se terminer par `.supabase.co`)
-2. Vérifier que la clé `anon` est bien copiée entièrement
-3. Vérifier que le SQL a bien été exécuté (table `initiatives` existe)
+1. Verify that the Supabase URL is correct (must end with `.supabase.co`)
+2. Verify that the `anon` key is fully copied
+3. Verify that the SQL has been executed (`initiatives` table exists)
 
-Pour vérifier la table dans Supabase :
-- Aller dans **Table Editor** > chercher `initiatives`
+To check the table in Supabase:
+- Go to **Table Editor** > search for `initiatives`
 
-### La carte ne s'affiche pas
+### Map doesn't display
 
-1. Ouvrir la console du navigateur (F12)
-2. Vérifier s'il y a des erreurs Mapbox
-3. Vérifier que le token Mapbox est bien configuré
-4. Essayer de recharger la page (Cmd/Ctrl + R)
+1. Open the browser console (F12)
+2. Check if there are Mapbox errors
+3. Verify that the Mapbox token is properly configured
+4. Try reloading the page (Cmd/Ctrl + R)
 
-### Port 3000 déjà utilisé
+### Port 3000 already in use
 
 ```bash
-# Lancer sur un autre port
+# Launch on another port
 npm run dev -- -p 3001
 ```
 
 ---
 
-## 🧪 Lancer les tests
+## 🧪 Run tests
 
 ```bash
-# Tests unitaires
+# Unit tests
 npm test
 
-# Tests en mode watch (pour le développement)
+# Tests in watch mode (for development)
 npm test -- --watch
 
-# Tests avec couverture
+# Tests with coverage
 npm test -- --coverage
 ```
 
 ---
 
-## 📦 Build de production
+## 📦 Production build
 
 ```bash
-# Créer un build optimisé
+# Create an optimized build
 npm run build
 
-# Lancer le build en production localement
+# Run the production build locally
 npm start
 ```
 
 ---
 
-## 🔄 Prochaines étapes
+## 🔄 Next steps
 
-1. **Lire la documentation complète** : `README.md`
-2. **Consulter les best practices** : `BEST_PRACTICES.md`
-3. **Comprendre l'architecture** : `CONTEXT_ENGINEERING.md`
-4. **Installer les dépendances optionnelles** : `DEPENDENCIES.md`
-
----
-
-## 🆘 Besoin d'aide ?
-
-- **Documentation Next.js** : [nextjs.org/docs](https://nextjs.org/docs)
-- **Documentation Supabase** : [supabase.com/docs](https://supabase.com/docs)
-- **Documentation Mapbox** : [docs.mapbox.com](https://docs.mapbox.com/mapbox-gl-js/api/)
-- **GitHub Issues** : [github.com/votre-username/lamap/issues](https://github.com)
+1. **Read the complete documentation**: `README.md`
+2. **Consult best practices**: `BEST_PRACTICES.md`
+3. **Understand the architecture**: `CONTEXT_ENGINEERING.md`
+4. **Install optional dependencies**: `DEPENDENCIES.md`
 
 ---
 
-## ✅ Checklist complète
+## 🆘 Need help?
 
-- [ ] Node.js 18+ installé
-- [ ] Projet cloné
-- [ ] Dépendances installées (`npm install`)
-- [ ] Dépendances essentielles ajoutées (`clsx`, `tailwind-merge`, `lucide-react`)
-- [ ] Compte Mapbox créé
-- [ ] Token Mapbox obtenu
-- [ ] Compte Supabase créé
-- [ ] Projet Supabase configuré
-- [ ] SQL exécuté dans Supabase
-- [ ] Fichier `.env.local` créé et rempli
-- [ ] Serveur lancé (`npm run dev`)
-- [ ] Page accessible sur http://localhost:3000
-- [ ] Carte Mapbox visible
-- [ ] Aucune erreur dans la console
-
-**Temps estimé** : 10-15 minutes
+- **Next.js Documentation**: [nextjs.org/docs](https://nextjs.org/docs)
+- **Supabase Documentation**: [supabase.com/docs](https://supabase.com/docs)
+- **Mapbox Documentation**: [docs.mapbox.com](https://docs.mapbox.com/mapbox-gl-js/api/)
+- **GitHub Issues**: [github.com/your-username/lamap/issues](https://github.com)
 
 ---
 
-**Dernière mise à jour :** 10 octobre 2025
+## ✅ Complete checklist
+
+- [ ] Node.js 18+ installed
+- [ ] Project cloned
+- [ ] Dependencies installed (`npm install`)
+- [ ] Essential dependencies added (`clsx`, `tailwind-merge`, `lucide-react`)
+- [ ] Mapbox account created
+- [ ] Mapbox token obtained
+- [ ] Supabase account created
+- [ ] Supabase project configured
+- [ ] SQL executed in Supabase
+- [ ] `.env.local` file created and filled
+- [ ] Server launched (`npm run dev`)
+- [ ] Page accessible at http://localhost:3000
+- [ ] Mapbox map visible
+- [ ] No errors in the console
+
+**Estimated time**: 10-15 minutes
+
+---
+
+**Last updated:** October 10, 2025

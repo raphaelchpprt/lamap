@@ -1,47 +1,47 @@
 # 📚 Context Engineering - LaMap
 
-Ce document centralise toutes les décisions techniques, architecturales et fonctionnelles prises pendant le développement de LaMap. Il sert de référence pour maintenir la cohérence du projet et faciliter l'onboarding.
+This document centralizes all technical, architectural, and functional decisions made during LaMap development. It serves as a reference to maintain project consistency and facilitate onboarding.
 
-## 📅 Historique des sessions
+## 📅 Session History
 
-### Session 1 - 10 octobre 2025 : Configuration initiale
+### Session 1 - October 10, 2025: Initial Setup
 
-**Objectifs de la session :**
-- ✅ Configurer ESLint avec les meilleures pratiques
-- ✅ Configurer Tailwind CSS avec palette personnalisée
-- ✅ Configurer Jest avec mocks Mapbox
-- ✅ Créer les types TypeScript complets
-- ✅ Créer les composants React de base
-- ✅ Créer les tests unitaires Jest
+**Session objectives:**
+- ✅ Configure ESLint with best practices
+- ✅ Configure Tailwind CSS with custom palette
+- ✅ Configure Jest with Mapbox mocks
+- ✅ Create complete TypeScript types
+- ✅ Create base React components
+- ✅ Create Jest unit tests
 
-**Décisions techniques prises :**
+**Technical decisions made:**
 
-1. **Stack technique confirmée :**
+1. **Confirmed tech stack:**
    - Next.js 15 (App Router)
    - React 19
    - TypeScript (strict mode)
-   - Tailwind CSS avec plugins `@tailwindcss/forms` et `@tailwindcss/typography`
+   - Tailwind CSS with `@tailwindcss/forms` and `@tailwindcss/typography` plugins
    - Jest + React Testing Library
    - Supabase (PostgreSQL + PostGIS + Auth)
    - Mapbox GL JS
 
-2. **Architecture des dossiers :**
+2. **Folder architecture:**
    ```
    src/
-   ├── app/               # App Router Next.js
-   ├── components/        # Composants React réutilisables
-   ├── lib/              # Utilitaires et clients (Supabase, etc.)
-   ├── types/            # Définitions TypeScript
-   └── __tests__/        # Tests Jest
+   ├── app/               # Next.js App Router
+   ├── components/        # Reusable React components
+   ├── lib/              # Utilities and clients (Supabase, etc.)
+   ├── types/            # TypeScript definitions
+   └── __tests__/        # Jest tests
    ```
 
-3. **Conventions de nommage :**
-   - Composants : PascalCase (ex: `InitiativeCard.tsx`)
-   - Fonctions : camelCase (ex: `fetchInitiatives()`)
-   - Types/Interfaces : PascalCase (ex: `Initiative`, `InitiativeType`)
-   - Fichiers utilitaires : kebab-case (ex: `format-date.ts`)
+3. **Naming conventions:**
+   - Components: PascalCase (e.g., `InitiativeCard.tsx`)
+   - Functions: camelCase (e.g., `fetchInitiatives()`)
+   - Types/Interfaces: PascalCase (e.g., `Initiative`, `InitiativeType`)
+   - Utility files: kebab-case (e.g., `format-date.ts`)
 
-4. **Types d'initiatives définis :**
+4. **Defined initiative types:**
    - Ressourcerie
    - Repair Café
    - AMAP
@@ -56,7 +56,7 @@ Ce document centralise toutes les décisions techniques, architecturales et fonc
    - Tiers-lieu
    - Autre
 
-5. **Palette de couleurs Tailwind :**
+5. **Tailwind color palette:**
    ```typescript
    primary: {
      50: '#f0fdf4',
@@ -64,7 +64,7 @@ Ce document centralise toutes les décisions techniques, architecturales et fonc
      200: '#bbf7d0',
      300: '#86efac',
      400: '#4ade80',
-     500: '#10b981', // Vert principal ESS
+     500: '#10b981', // Main SSE green
      600: '#059669',
      700: '#047857',
      800: '#065f46',
@@ -72,82 +72,82 @@ Ce document centralise toutes les décisions techniques, architecturales et fonc
    }
    ```
 
-6. **Configuration ESLint :**
-   - Support TypeScript strict
-   - Règles React Hooks
-   - Règles d'accessibilité (jsx-a11y)
-   - Import sorting automatique
-   - Formatting avec Prettier intégré
+6. **ESLint configuration:**
+   - Strict TypeScript support
+   - React Hooks rules
+   - Accessibility rules (jsx-a11y)
+   - Automatic import sorting
+   - Integrated Prettier formatting
 
-7. **Configuration Jest :**
-   - Environment : jsdom (pour tests React)
-   - Mocks : Mapbox GL, Supabase, window.matchMedia
-   - Setup global : `@testing-library/jest-dom`
-   - Timeout : 10s pour tests async
+7. **Jest configuration:**
+   - Environment: jsdom (for React tests)
+   - Mocks: Mapbox GL, Supabase, window.matchMedia
+   - Global setup: `@testing-library/jest-dom`
+   - Timeout: 10s for async tests
 
-**Composants créés :**
+**Components created:**
 
 1. **`InitiativeCard.tsx`** (Client Component)
-   - Affiche une carte d'initiative avec toutes les infos
-   - Props : `initiative`, `onClick?`, `className?`
-   - Gère l'affichage conditionnel des infos optionnelles
-   - Badge "Vérifié" pour les initiatives vérifiées
+   - Displays an initiative card with all info
+   - Props: `initiative`, `onClick?`, `className?`
+   - Handles conditional display of optional info
+   - "Verified" badge for verified initiatives
 
 2. **`AddInitiativeForm.tsx`** (Client Component)
-   - Formulaire d'ajout d'initiative
-   - Validation côté client
-   - Intégration Supabase pour l'insertion
-   - Gestion des erreurs utilisateur
-   - Props : `onSuccess?`, `onCancel?`
+   - Initiative addition form
+   - Client-side validation
+   - Supabase integration for insertion
+   - User error handling
+   - Props: `onSuccess?`, `onCancel?`
 
 3. **`FilterPanel.tsx`** (Client Component)
-   - Panneau de filtrage par type d'initiative
-   - Sélection/désélection multiple
-   - Compteurs d'initiatives par type
-   - Réductible/développable
-   - Props : `selectedTypes`, `onFilterChange`, `initiativeCounts?`
+   - Filtering panel by initiative type
+   - Multiple selection/deselection
+   - Initiative counters by type
+   - Collapsible/expandable
+   - Props: `selectedTypes`, `onFilterChange`, `initiativeCounts?`
 
 4. **`Map.tsx`** (Client Component)
-   - Carte Mapbox interactive
-   - Affichage des markers pour chaque initiative
-   - Clustering pour les performances
-   - Props : `initiatives`, `onMarkerClick?`, `center?`, `zoom?`
+   - Interactive Mapbox map
+   - Marker display for each initiative
+   - Clustering for performance
+   - Props: `initiatives`, `onMarkerClick?`, `center?`, `zoom?`
 
-**Tests créés :**
+**Tests created:**
 
 1. **`InitiativeCard.test.tsx`**
-   - Test d'affichage des informations
-   - Test des badges et statuts
-   - Test des liens externes
-   - Test de l'accessibilité
-   - Test des props optionnelles
+   - Information display tests
+   - Badge and status tests
+   - External link tests
+   - Accessibility tests
+   - Optional props tests
 
 2. **`FilterPanel.test.tsx`**
-   - Test de sélection/désélection
-   - Test "Tout sélectionner/désélectionner"
-   - Test des compteurs
-   - Test du réductible
-   - Test de l'accessibilité
+   - Selection/deselection tests
+   - "Select all/Deselect all" tests
+   - Counter tests
+   - Collapsible tests
+   - Accessibility tests
 
-**Configuration Supabase :**
+**Supabase configuration:**
 
-1. **Client navigateur** (`lib/supabase/client.ts`)
-   - Utilise `@supabase/ssr` avec `createBrowserClient`
-   - Pour les Client Components
+1. **Browser client** (`lib/supabase/client.ts`)
+   - Uses `@supabase/ssr` with `createBrowserClient`
+   - For Client Components
 
-2. **Client serveur** (`lib/supabase/server.ts`)
-   - Utilise `@supabase/ssr` avec `createServerClient`
-   - Gestion des cookies Next.js
-   - Pour les Server Components et Server Actions
+2. **Server client** (`lib/supabase/server.ts`)
+   - Uses `@supabase/ssr` with `createServerClient`
+   - Next.js cookie management
+   - For Server Components and Server Actions
 
-3. **Types Supabase** (`lib/supabase/types.ts`)
-   - Types générés automatiquement depuis la DB
-   - Commande : `npx supabase gen types typescript --project-id <ID>`
+3. **Supabase types** (`lib/supabase/types.ts`)
+   - Types automatically generated from DB
+   - Command: `npx supabase gen types typescript --project-id <ID>`
 
-**Schéma de base de données :**
+**Database schema:**
 
 ```sql
--- Table initiatives avec PostGIS
+-- Initiatives table with PostGIS
 CREATE TABLE initiatives (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT NOT NULL,
@@ -166,24 +166,24 @@ CREATE TABLE initiatives (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Indexes pour performance
+-- Indexes for performance
 CREATE INDEX initiatives_location_idx ON initiatives USING GIST(location);
 CREATE INDEX initiatives_type_idx ON initiatives(type);
 
 -- Row Level Security
 ALTER TABLE initiatives ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Lecture publique" ON initiatives
+CREATE POLICY "Public read access" ON initiatives
   FOR SELECT USING (true);
 
-CREATE POLICY "Création authentifiée" ON initiatives
+CREATE POLICY "Authenticated creation" ON initiatives
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
-CREATE POLICY "Modification propriétaire" ON initiatives
+CREATE POLICY "Owner modification" ON initiatives
   FOR UPDATE USING (auth.uid() = user_id);
 ```
 
-**Variables d'environnement nécessaires :**
+**Required environment variables:**
 
 ```bash
 # .env.local
@@ -192,7 +192,7 @@ NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
 ```
 
-**Dépendances installées :**
+**Installed dependencies:**
 
 ```json
 {
@@ -217,30 +217,30 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
 }
 ```
 
-**À faire (TODO) :**
+**TODO:**
 
-- [ ] Créer le composant `Map.tsx` avec Mapbox
-- [ ] Implémenter le clustering des markers
-- [ ] Créer les Server Actions pour l'API
-- [ ] Implémenter l'authentification Supabase
-- [ ] Ajouter le géocodage d'adresses (API Adresse BAN)
-- [ ] Implémenter l'upload d'images (Supabase Storage)
-- [ ] Créer le système de validation/modération
-- [ ] Ajouter les tests d'intégration E2E
-- [ ] Optimiser les performances (lazy loading, memoization)
-- [ ] Ajouter l'internationalisation (i18n)
+- [ ] Create `Map.tsx` component with Mapbox
+- [ ] Implement marker clustering
+- [ ] Create Server Actions for the API
+- [ ] Implement Supabase authentication
+- [ ] Add address geocoding (BAN Address API)
+- [ ] Implement image upload (Supabase Storage)
+- [ ] Create validation/moderation system
+- [ ] Add E2E integration tests
+- [ ] Optimize performance (lazy loading, memoization)
+- [ ] Add internationalization (i18n)
 
-**Problèmes rencontrés et solutions :**
+**Problems encountered and solutions:**
 
-1. **Erreur TypeScript avec `toBeInTheDocument`**
-   - Problème : Matchers Jest DOM non reconnus par TypeScript
-   - Solution : Création du fichier `src/__tests__/jest.d.ts` avec les types
+1. **TypeScript error with `toBeInTheDocument`**
+   - Problem: Jest DOM matchers not recognized by TypeScript
+   - Solution: Created `src/__tests__/jest.d.ts` file with types
 
-2. **Erreur avec `Record<InitiativeType, number>`**
-   - Problème : Type trop strict pour les compteurs optionnels
-   - Solution : Utilisation de `Partial<Record<InitiativeType, number>>`
+2. **Error with `Record<InitiativeType, number>`**
+   - Problem: Type too strict for optional counters
+   - Solution: Using `Partial<Record<InitiativeType, number>>`
 
-**Références utiles :**
+**Useful references:**
 
 - [Next.js 15 Docs](https://nextjs.org/docs)
 - [Mapbox GL JS API](https://docs.mapbox.com/mapbox-gl-js/api/)
@@ -252,30 +252,30 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
 
 ---
 
-## 🎯 Prochaines étapes recommandées
+## 🎯 Recommended next steps
 
-1. **Implémenter le composant Map.tsx avec Mapbox**
-   - Initialisation de la carte
-   - Affichage des markers
+1. **Implement Map.tsx component with Mapbox**
+   - Map initialization
+   - Marker display
    - Clustering
-   - Gestion des popups
+   - Popup management
 
-2. **Créer les Server Actions Supabase**
+2. **Create Supabase Server Actions**
    - `fetchInitiatives(filters: InitiativeFilters)`
    - `createInitiative(data: InitiativeFormData)`
    - `updateInitiative(id: string, data: InitiativeUpdateData)`
    - `deleteInitiative(id: string)`
 
-3. **Implémenter la page principale**
-   - Layout avec carte et panneau latéral
-   - Intégration des filtres
-   - Gestion de l'état global
+3. **Implement main page**
+   - Layout with map and side panel
+   - Filter integration
+   - Global state management
 
-4. **Ajouter l'authentification**
-   - Page de login/signup
-   - Middleware de protection
-   - Gestion des sessions
+4. **Add authentication**
+   - Login/signup page
+   - Protection middleware
+   - Session management
 
 ---
 
-**Dernière mise à jour :** 10 octobre 2025
+**Last updated:** October 10, 2025
