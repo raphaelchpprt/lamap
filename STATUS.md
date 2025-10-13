@@ -65,8 +65,19 @@
 ### shadcn/ui Migration
 - ✅ `AddInitiativeForm.tsx` migrated to use shadcn/ui components (Button, Input, Label, Card)
 - ✅ `FilterPanel.tsx` migrated to use shadcn/ui components (Button, Badge, Card)
+- ✅ `Dialog` component added for forms and modals
 - ✅ Improved accessibility and visual consistency
 - ✅ Build verified and passing
+
+### Homepage Implementation
+- ✅ Complete page layout with Map and Filters
+- ✅ `MapView.tsx` component created with full state management
+- ✅ Sidebar with statistics and filter panel (280px width)
+- ✅ Full-screen Mapbox map with clustering
+- ✅ Real-time filtering by initiative type
+- ✅ Dialogs for adding and viewing initiatives
+- ✅ Loading and error states implemented
+- ✅ Suspense for better UX
 
 ---
 
@@ -109,37 +120,18 @@ interface MapProps {
 
 ### 3. Update the Homepage
 
-**File:** `src/app/page.tsx`
+✅ **Complete!**
 
-**To implement:**
-- Layout with map + filter panel
-- Fetch initiatives from Supabase
-- Filtering state
-- Loading management
-
-**Suggested structure:**
-```tsx
-export default async function HomePage() {
-  const supabase = await createClient()
-  const { data: initiatives } = await supabase
-    .from('initiatives')
-    .select('*')
-
-  return (
-    <div className="flex h-screen">
-      {/* Sidebar with filters */}
-      <aside className="w-80 overflow-y-auto">
-        <FilterPanel {...} />
-      </aside>
-      
-      {/* Main map */}
-      <main className="flex-1">
-        <Map initiatives={initiatives} />
-      </main>
-    </div>
-  )
-}
-```
+**Implemented:**
+- ✅ Full-screen layout with sidebar (280px) and map
+- ✅ MapView component with state management
+- ✅ Real-time filtering by initiative type
+- ✅ Initiative loading from Supabase
+- ✅ Loading and error states
+- ✅ Dialog for adding initiatives
+- ✅ Dialog for viewing initiative details
+- ✅ Statistics display (total count)
+- ✅ Suspense for better UX
 
 ### 4. Create Server Actions
 
@@ -204,14 +196,15 @@ Project configuration:    ██████████████████
 Documentation:            ████████████████████ 100%
 TypeScript types:         ████████████████████ 100%
 Base components:          ████████████████████ 100% ← shadcn/ui migration done
+UI/UX Layout:             ████████████████████ 100% ← Homepage with Map + Filters
 Unit tests:               ███████████░░░░░░░░░  55%
 Supabase integration:     ████████████████████ 100% ← Configured
-Mapbox map:               ████████████████████ 100% ← Map.tsx exists
+Mapbox map:               ████████████████████ 100% ← Map.tsx + MapView.tsx
 Authentication:           ░░░░░░░░░░░░░░░░░░░░   0%
 Translation:              ████████████████████ 100% ← All docs in English
 ```
 
-**Overall progress: 78%**
+**Overall progress: 82%**
 
 ---
 
@@ -221,7 +214,7 @@ Translation:              ██████████████████
 2. ~~**[PRIORITY 1]** Configure Supabase (.env.local + SQL)~~ ✅ Done
 3. ~~**[PRIORITY 1]** Create Map.tsx component~~ ✅ Done
 4. ~~**[PRIORITY 1]** Migrate to shadcn/ui~~ ✅ Done
-5. **[PRIORITY 2]** Update page.tsx with complete layout
+5. ~~**[PRIORITY 2]** Update page.tsx with complete layout~~ ✅ Done
 6. **[PRIORITY 2]** Create Server Actions
 7. **[PRIORITY 3]** Implement authentication
 8. **[PRIORITY 3]** Add missing tests
