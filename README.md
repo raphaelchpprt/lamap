@@ -163,34 +163,54 @@ lamap/
 ├── src/
 │   ├── app/                    # App Router Next.js
 │   │   ├── layout.tsx         # Layout racine
-│   │   ├── page.tsx           # Page d'accueil
-│   │   └── globals.css        # Styles globaux
+│   │   ├── page.tsx           # Page d'accueil (carte)
+│   │   ├── globals.css        # Styles globaux
+│   │   └── actions.ts         # Server Actions
 │   ├── components/            # Composants React
 │   │   ├── Initiative/
 │   │   │   └── InitiativeCard.tsx
 │   │   ├── Map/
-│   │   │   └── Map.tsx
+│   │   │   └── Map.tsx        # Carte Mapbox
+│   │   ├── ui/                # shadcn/ui components
+│   │   │   ├── button.tsx
+│   │   │   ├── card.tsx
+│   │   │   ├── dialog.tsx
+│   │   │   └── ...
 │   │   ├── AddInitiativeForm.tsx
-│   │   └── FilterPanel.tsx
+│   │   ├── FilterPanel.tsx
+│   │   └── MapView.tsx        # Vue principale
 │   ├── lib/
 │   │   ├── supabase/
 │   │   │   ├── client.ts      # Client Supabase navigateur
 │   │   │   ├── server.ts      # Client Supabase Server Components
 │   │   │   └── types.ts       # Types générés de la DB
-│   │   └── utils.ts
+│   │   └── utils.ts           # Utilitaires (cn, etc.)
 │   ├── types/
-│   │   └── initiative.ts      # Types TypeScript
+│   │   └── initiative.ts      # Types TypeScript métier
 │   └── __tests__/             # Tests Jest
-│       ├── components/
-│       └── jest.d.ts
+│       ├── components/        # Tests unitaires
+│       ├── integration/       # Tests d'intégration
+│       └── lib/               # Tests des utilitaires
+├── docs/                      # 📚 Documentation projet
+│   ├── QUICKSTART.md
+│   ├── CONTEXT_ENGINEERING_GUIDELINES.md
+│   ├── LEARNING_CONTEXT.md
+│   ├── MAP_TROUBLESHOOTING.md
+│   ├── BEST_PRACTICES.md
+│   ├── STATUS.md
+│   └── ...
 ├── public/                    # Assets statiques
-├── __mocks__/                 # Mocks Jest (Mapbox, etc.)
+├── scripts/                   # Scripts utilitaires
+│   └── check-map.sh          # Vérification configuration
+├── __mocks__/                 # Mocks Jest (Mapbox, Supabase)
+├── .github/                   # Configuration GitHub
+│   └── copilot-instructions.md
 ├── .env.local                 # Variables d'environnement (non versionné)
 ├── jest.config.js
 ├── jest.setup.js
 ├── tailwind.config.ts
 ├── tsconfig.json
-├── CONTEXT_ENGINEERING.md     # Documentation technique
+├── components.json            # Configuration shadcn/ui
 └── package.json
 ```
 
@@ -241,11 +261,25 @@ Voir la [documentation Next.js](https://nextjs.org/docs/app/building-your-applic
 
 ## 📚 Documentation
 
-- [CONTEXT_ENGINEERING.md](./CONTEXT_ENGINEERING.md) - Historique des décisions techniques
+### Documentation du projet
+
+- **[📖 Guide de démarrage rapide](./docs/QUICKSTART.md)** - Installation et premiers pas
+- **[🏗️ Architecture & Décisions](./docs/CONTEXT_ENGINEERING_GUIDELINES.md)** - Guidelines de développement
+- **[🎓 Contexte d'apprentissage](./docs/LEARNING_CONTEXT.md)** - Approche pédagogique
+- **[🗺️ Dépannage de la carte](./docs/MAP_TROUBLESHOOTING.md)** - Résolution des problèmes Mapbox
+- **[🧩 Configuration shadcn/ui](./docs/SHADCN_CONFIG.md)** - Composants installés
+- **[📦 Dépendances](./docs/DEPENDENCIES.md)** - Liste des packages utilisés
+- **[✅ Bonnes pratiques](./docs/BEST_PRACTICES.md)** - Conventions de code
+- **[📊 État du projet](./docs/STATUS.md)** - Fonctionnalités et roadmap
+- **[📝 Résumés des sessions](./docs/SESSION_SUMMARY.md)** - Historique du développement
+
+### Ressources externes
+
 - [Next.js Docs](https://nextjs.org/docs)
 - [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/api/)
 - [Supabase Docs](https://supabase.com/docs)
 - [PostGIS](https://postgis.net/documentation/)
+- [shadcn/ui](https://ui.shadcn.com/)
 
 ## 🤝 Contribuer
 

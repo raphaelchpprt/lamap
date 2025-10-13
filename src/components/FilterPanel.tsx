@@ -43,7 +43,7 @@ const INITIATIVE_TYPES: InitiativeType[] = [
 ];
 
 const TYPE_COLORS: Record<InitiativeType, string> = {
-  Ressourcerie: 'bg-primary-500',
+  Ressourcerie: 'bg-gray-500',
   'Repair Café': 'bg-orange-500',
   AMAP: 'bg-green-600',
   "Entreprise d'insertion": 'bg-blue-500',

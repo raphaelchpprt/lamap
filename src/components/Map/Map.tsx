@@ -488,7 +488,7 @@ export default function Map({
       {/* Conteneur de la carte */}
       <div
         ref={mapContainer}
-        className={className || "h-full w-full"}
+        className={className || 'h-full w-full'}
         data-testid="map-container"
       />
 
