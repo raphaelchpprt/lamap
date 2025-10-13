@@ -1,27 +1,27 @@
-# 📖 Guide des meilleures pratiques - LaMap
+# 📖 Best Practices Guide - LaMap
 
-Ce document centralise toutes les meilleures pratiques de développement pour LaMap, basées sur les standards modernes du web en 2025.
+This document centralizes all development best practices for LaMap, based on modern web standards in 2025.
 
-## 📋 Table des matières
+## 📋 Table of Contents
 
 - [Next.js & React](#nextjs--react)
 - [TypeScript](#typescript)
 - [Tailwind CSS](#tailwind-css)
-- [Testing avec Jest](#testing-avec-jest)
-- [Accessibilité (a11y)](#accessibilité-a11y)
+- [Testing with Jest](#testing-with-jest)
+- [Accessibility (a11y)](#accessibility-a11y)
 - [Performance](#performance)
-- [Sécurité](#sécurité)
+- [Security](#security)
 - [Git & Versioning](#git--versioning)
 
 ---
 
 ## Next.js & React
 
-### Server Components par défaut
+### Server Components by default
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
-// Par défaut, tous les composants sont Server Components
+// By default, all components are Server Components
 export default async function InitiativeList() {
   const supabase = await createClient()
   const { data: initiatives } = await supabase.from('initiatives').select()
@@ -30,9 +30,9 @@ export default async function InitiativeList() {
 }
 ```
 
-❌ **À ÉVITER**
+❌ **DON'T**
 ```tsx
-// N'ajoutez 'use client' que si vraiment nécessaire
+// Only add 'use client' if really necessary
 'use client'
 
 export default function InitiativeList() {
@@ -41,17 +41,17 @@ export default function InitiativeList() {
 }
 ```
 
-### 'use client' uniquement si nécessaire
+### 'use client' only when necessary
 
-Utilisez `'use client'` seulement pour :
-- Hooks React (useState, useEffect, useContext, etc.)
-- Événements interactifs (onClick, onChange, etc.)
-- Bibliothèques nécessitant le navigateur (Mapbox, etc.)
+Use `'use client'` only for:
+- React Hooks (useState, useEffect, useContext, etc.)
+- Interactive events (onClick, onChange, etc.)
+- Libraries requiring the browser (Mapbox, etc.)
 - Context Providers
 
-### Composition Server/Client
+### Server/Client Composition
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
 // Server Component
 export default async function Page() {
@@ -68,7 +68,7 @@ export default async function Page() {
 
 ### Data Fetching
 
-✅ **Préférer fetch avec cache**
+✅ **Prefer fetch with cache**
 ```tsx
 async function getData() {
   const res = await fetch('https://api.example.com/data', {
@@ -80,7 +80,7 @@ async function getData() {
 
 ### Server Actions
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
 'use server'
 
@@ -96,16 +96,16 @@ export async function createInitiative(formData: FormData) {
   
   if (error) throw error
   
-  revalidatePath('/') // Revalider le cache
+  revalidatePath('/') // Revalidate cache
   return { success: true }
 }
 ```
 
-### Gestion des erreurs
+### Error Handling
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
-// error.tsx dans app/
+// error.tsx in app/
 'use client'
 
 export default function Error({
@@ -117,8 +117,8 @@ export default function Error({
 }) {
   return (
     <div>
-      <h2>Une erreur est survenue</h2>
-      <button onClick={() => reset()}>Réessayer</button>
+      <h2>An error occurred</h2>
+      <button onClick={() => reset()}>Try again</button>
     </div>
   )
 }
@@ -126,11 +126,11 @@ export default function Error({
 
 ### Loading States
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
-// loading.tsx dans app/
+// loading.tsx in app/
 export default function Loading() {
-  return <div>Chargement...</div>
+  return <div>Loading...</div>
 }
 ```
 
@@ -138,7 +138,7 @@ export default function Loading() {
 
 ## TypeScript
 
-### Configuration stricte
+### Strict configuration
 
 ```json
 // tsconfig.json
@@ -152,9 +152,9 @@ export default function Loading() {
 }
 ```
 
-### Typage des props
+### Props typing
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
 interface InitiativeCardProps {
   initiative: Initiative
@@ -171,7 +171,7 @@ export default function InitiativeCard({
 }
 ```
 
-❌ **À ÉVITER**
+❌ **DON'T**
 ```tsx
 export default function InitiativeCard(props: any) {
   // ...
@@ -180,7 +180,7 @@ export default function InitiativeCard(props: any) {
 
 ### Types vs Interfaces
 
-✅ **Interfaces pour les objets**
+✅ **Interfaces for objects**
 ```tsx
 interface Initiative {
   id: string
@@ -188,22 +188,22 @@ interface Initiative {
 }
 ```
 
-✅ **Types pour les unions et primitives**
+✅ **Types for unions and primitives**
 ```tsx
 type InitiativeType = 'Ressourcerie' | 'AMAP' | 'Autre'
 type Status = 'loading' | 'success' | 'error'
 ```
 
-### Éviter `any`
+### Avoid `any`
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
 function fetchData(): Promise<Initiative[]> {
   // ...
 }
 ```
 
-❌ **À ÉVITER**
+❌ **DON'T**
 ```tsx
 function fetchData(): Promise<any> {
   // ...
@@ -212,24 +212,24 @@ function fetchData(): Promise<any> {
 
 ### Utility Types
 
-✅ **Utiliser les utility types TypeScript**
+✅ **Use TypeScript utility types**
 ```tsx
-// Rendre tous les champs optionnels
+// Make all fields optional
 type PartialInitiative = Partial<Initiative>
 
-// Sélectionner certains champs
+// Select certain fields
 type InitiativePreview = Pick<Initiative, 'id' | 'name' | 'type'>
 
-// Omettre certains champs
+// Omit certain fields
 type InitiativeFormData = Omit<Initiative, 'id' | 'created_at'>
 
-// Rendre certains champs requis
+// Make certain fields required
 type RequiredInitiative = Required<Pick<Initiative, 'name' | 'location'>>
 ```
 
-### Assertions de type
+### Type assertions
 
-✅ **Avec validation**
+✅ **With validation**
 ```tsx
 function parseJson(data: string): Initiative {
   const parsed = JSON.parse(data)
@@ -240,18 +240,18 @@ function parseJson(data: string): Initiative {
 }
 ```
 
-❌ **Sans validation**
+❌ **Without validation**
 ```tsx
-const data = JSON.parse(str) as Initiative // Dangereux !
+const data = JSON.parse(str) as Initiative // Dangerous!
 ```
 
 ---
 
 ## Tailwind CSS
 
-### Classes dans l'ordre logique
+### Classes in logical order
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
 <div className="
   // Layout
@@ -273,9 +273,9 @@ const data = JSON.parse(str) as Initiative // Dangereux !
 ">
 ```
 
-### Utiliser @apply avec parcimonie
+### Use @apply sparingly
 
-✅ **À FAIRE** (pour les patterns répétés)
+✅ **DO** (for repeated patterns)
 ```css
 /* globals.css */
 @layer components {
@@ -285,16 +285,16 @@ const data = JSON.parse(str) as Initiative // Dangereux !
 }
 ```
 
-❌ **À ÉVITER** (utiliser directement les classes)
+❌ **DON'T** (use classes directly)
 ```css
 .card {
-  @apply flex flex-col p-4; /* Préférer les classes inline */
+  @apply flex flex-col p-4; /* Prefer inline classes */
 }
 ```
 
 ### Responsive Design (Mobile First)
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
 <div className="
   text-sm    // Mobile
@@ -303,9 +303,9 @@ const data = JSON.parse(str) as Initiative // Dangereux !
 ">
 ```
 
-### Variables CSS pour les couleurs dynamiques
+### CSS variables for dynamic colors
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
 // tailwind.config.ts
 export default {
@@ -322,9 +322,9 @@ export default {
 }
 ```
 
-### Classes conditionnelles avec clsx/cn
+### Conditional classes with clsx/cn
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
 import { cn } from '@/lib/utils'
 
@@ -337,11 +337,11 @@ import { cn } from '@/lib/utils'
 
 ---
 
-## Testing avec Jest
+## Testing with Jest
 
-### Structure des tests
+### Test structure
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
 describe('InitiativeCard', () => {
   // Setup commun
@@ -351,12 +351,12 @@ describe('InitiativeCard', () => {
     jest.clearAllMocks()
   })
   
-  it('affiche le nom de l\'initiative', () => {
+  it('displays initiative name', () => {
     render(<InitiativeCard initiative={mockInitiative} />)
     expect(screen.getByText(mockInitiative.name)).toBeInTheDocument()
   })
   
-  it('appelle onClick quand cliqué', () => {
+  it('calls onClick when clicked', () => {
     const handleClick = jest.fn()
     render(<InitiativeCard initiative={mockInitiative} onClick={handleClick} />)
     
@@ -366,28 +366,28 @@ describe('InitiativeCard', () => {
 })
 ```
 
-### Queries React Testing Library
+### React Testing Library queries
 
-✅ **Ordre de priorité**
+✅ **Priority order**
 1. `getByRole` - Accessible et sémantique
 2. `getByLabelText` - Pour les formulaires
 3. `getByPlaceholderText` - Pour les inputs
 4. `getByText` - Pour le contenu
-5. `getByTestId` - En dernier recours
+5. `getByTestId` - Last resort
 
 ```tsx
-// ✅ Bon
+// ✅ Good
 screen.getByRole('button', { name: /ajouter/i })
 
-// ❌ À éviter
+// ❌ Avoid
 screen.getByTestId('add-button')
 ```
 
-### Tests async
+### Async tests
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
-it('charge les données depuis l\'API', async () => {
+it('loads data from API', async () => {
   render(<InitiativeList />)
   
   await waitFor(() => {
@@ -409,54 +409,54 @@ export default {
 }
 ```
 
-### Couverture de code
+### Code coverage
 
-Viser minimum 80% de couverture :
+Target minimum 80% coverage:
 ```bash
 npm test -- --coverage --coverageThreshold='{"global":{"lines":80}}'
 ```
 
 ---
 
-## Accessibilité (a11y)
+## Accessibility (a11y)
 
 ### ARIA labels
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
-<button aria-label="Fermer le panneau">
+<button aria-label="Close panel">
   <X className="w-5 h-5" />
 </button>
 ```
 
-### Landmarks sémantiques
+### Semantic landmarks
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
 <header>...</header>
-<nav aria-label="Navigation principale">...</nav>
+<nav aria-label="Main navigation">...</nav>
 <main>...</main>
-<aside aria-label="Filtres">...</aside>
+<aside aria-label="Filters">...</aside>
 <footer>...</footer>
 ```
 
-### Contraste des couleurs
+### Color contrast
 
-Minimum WCAG AA :
-- Texte normal : ratio 4.5:1
-- Texte large : ratio 3:1
+WCAG AA minimum:
+- Normal text: 4.5:1 ratio
+- Large text: 3:1 ratio
 
 ```tsx
-// ✅ Bon contraste
-<p className="text-gray-900 bg-white">Texte</p>
+// ✅ Good contrast
+<p className="text-gray-900 bg-white">Text</p>
 
-// ❌ Mauvais contraste
-<p className="text-gray-300 bg-white">Texte</p>
+// ❌ Bad contrast
+<p className="text-gray-300 bg-white">Text</p>
 ```
 
-### Navigation au clavier
+### Keyboard navigation
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
 <button
   onClick={handleClick}
@@ -472,22 +472,22 @@ Minimum WCAG AA :
 
 ### Images
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
 <Image 
   src="/image.jpg" 
-  alt="Description détaillée de l'image"
+  alt="Detailed description of the image"
   width={500}
   height={300}
 />
 ```
 
-❌ **À ÉVITER**
+❌ **DON'T**
 ```tsx
 <img src="/image.jpg" alt="image" />
 ```
 
-### Focus visible
+### Visible focus
 
 ```css
 /* globals.css */
@@ -500,9 +500,9 @@ Minimum WCAG AA :
 
 ## Performance
 
-### Images optimisées
+### Optimized images
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
 import Image from 'next/image'
 
@@ -519,19 +519,19 @@ import Image from 'next/image'
 
 ### Lazy loading
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
 import dynamic from 'next/dynamic'
 
 const MapComponent = dynamic(() => import('@/components/Map'), {
   ssr: false,
-  loading: () => <p>Chargement de la carte...</p>
+  loading: () => <p>Loading map...</p>
 })
 ```
 
 ### Memoization
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
 'use client'
 
@@ -549,9 +549,9 @@ export default function InitiativeList({ initiatives }: Props) {
 
 ### Code splitting
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
-// Séparer les routes
+// Separate routes
 app/
   initiatives/
     page.tsx
@@ -574,30 +574,30 @@ module.exports = withBundleAnalyzer({...})
 
 ---
 
-## Sécurité
+## Security
 
-### Sanitization des inputs
+### Input sanitization
 
-✅ **À FAIRE**
+✅ **DO**
 ```tsx
 import DOMPurify from 'isomorphic-dompurify'
 
 const cleanHtml = DOMPurify.sanitize(userInput)
 ```
 
-### Variables d'environnement
+### Environment variables
 
-✅ **À FAIRE**
+✅ **DO**
 ```bash
-# .env.local (non versionné)
+# .env.local (not versioned)
 NEXT_PUBLIC_MAPBOX_TOKEN=pk.xxx
-DATABASE_URL=postgresql://... # Côté serveur uniquement
+DATABASE_URL=postgresql://... # Server-side only
 ```
 
-❌ **À ÉVITER**
+❌ **DON'T**
 ```tsx
-// Exposer des secrets côté client
-const secret = process.env.DATABASE_URL // ❌ Danger !
+// Expose secrets on client side
+const secret = process.env.DATABASE_URL // ❌ Danger!
 ```
 
 ### Content Security Policy
@@ -612,10 +612,10 @@ const securityHeaders = [
 ]
 ```
 
-### Rate limiting (avec Supabase)
+### Rate limiting (with Supabase)
 
 ```sql
--- Limiter les insertions par utilisateur
+-- Limit insertions per user
 CREATE POLICY "rate_limit_insertions" ON initiatives
   FOR INSERT
   WITH CHECK (
@@ -631,50 +631,50 @@ CREATE POLICY "rate_limit_insertions" ON initiatives
 
 ### Conventional Commits
 
-✅ **À FAIRE**
+✅ **DO**
 ```bash
-git commit -m "feat: ajouter le composant FilterPanel"
-git commit -m "fix: corriger le calcul de distance PostGIS"
-git commit -m "docs: mettre à jour le README"
-git commit -m "test: ajouter les tests pour InitiativeCard"
-git commit -m "refactor: simplifier la logique de filtrage"
-git commit -m "chore: mettre à jour les dépendances"
+git commit -m "feat: add FilterPanel component"
+git commit -m "fix: correct PostGIS distance calculation"
+git commit -m "docs: update README"
+git commit -m "test: add tests for InitiativeCard"
+git commit -m "refactor: simplify filtering logic"
+git commit -m "chore: update dependencies"
 ```
 
 ### Branches
 
 ```bash
 main          # Production
-develop       # Développement
-feature/xxx   # Nouvelles fonctionnalités
-fix/xxx       # Corrections de bugs
-hotfix/xxx    # Corrections urgentes
+develop       # Development
+feature/xxx   # New features
+fix/xxx       # Bug fixes
+hotfix/xxx    # Urgent fixes
 ```
 
 ### Pull Requests
 
-Template de PR :
+PR template:
 
 ```markdown
 ## 📝 Description
-[Décrire les changements]
+[Describe changes]
 
-## 🎯 Type de changement
+## 🎯 Type of change
 - [ ] Bug fix
-- [ ] Nouvelle fonctionnalité
+- [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation
 
 ## ✅ Checklist
-- [ ] Tests ajoutés/passent
-- [ ] Documentation mise à jour
+- [ ] Tests added/pass
+- [ ] Documentation updated
 - [ ] Code linted
-- [ ] Pas de console.log
+- [ ] No console.log
 ```
 
 ---
 
-## 📚 Ressources
+## 📚 Resources
 
 - [Next.js Best Practices](https://nextjs.org/docs/app/building-your-application/optimizing)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)
@@ -685,4 +685,4 @@ Template de PR :
 
 ---
 
-**Dernière mise à jour :** 10 octobre 2025
+**Last updated:** October 10, 2025
