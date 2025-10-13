@@ -25,34 +25,43 @@ const DEFAULT_CONFIG = {
   style: 'mapbox://styles/mapbox/light-v11',
   center: [2.3522, 46.6034] as [number, number], // Center of France
   zoom: 6,
-  minZoom: 3,
+  minZoom: 5, // Prevent zooming out too far
   maxZoom: 18,
 } as const;
+
+// Geographic bounds for metropolitan France
+// Format: [west, south, east, north] (LngLatBoundsLike)
+const FRANCE_BOUNDS: [number, number, number, number] = [
+  -5.5, // West (Brest)
+  41.0, // South (Corsica)
+  10.0, // East (Strasbourg)
+  51.5, // North (Dunkerque)
+];
 
 // ================================
 // TYPES
 // ================================
 
 interface MapProps {
-  /** Classes CSS personnalisées */
+  /** Custom CSS classes */
   className?: string;
 
-  /** Filtres appliqués aux initiatives */
+  /** Applied filters for initiatives */
   filters?: InitiativeFilters;
 
-  /** Callback lors du clic sur une initiative */
+  /** Callback when clicking on an initiative */
   onInitiativeClick?: (initiative: Initiative) => void;
 
-  /** Callback lors du clic sur la carte */
+  /** Callback when clicking on the map */
   onMapClick?: (coordinates: [number, number]) => void;
 
-  /** Activer/désactiver le clustering */
+  /** Enable/disable clustering */
   enableClustering?: boolean;
 
-  /** Centrer automatiquement sur les initiatives */
+  /** Auto-fit map to initiatives */
   autoFit?: boolean;
 
-  /** Initiatives à afficher (si non fourni, chargées depuis Supabase) */
+  /** Initiatives to display (if not provided, loaded from Supabase) */
   initiatives?: Initiative[];
 }
 
@@ -104,6 +113,7 @@ export default function Map({
         zoom: DEFAULT_CONFIG.zoom,
         minZoom: DEFAULT_CONFIG.minZoom,
         maxZoom: DEFAULT_CONFIG.maxZoom,
+        maxBounds: FRANCE_BOUNDS, // Limite la navigation à la France
         antialias: true,
       });
 
