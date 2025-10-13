@@ -135,32 +135,21 @@ interface MapProps {
 
 ### 4. Create Server Actions
 
+✅ **Complete!**
+
 **File:** `src/app/actions.ts`
 
-```tsx
-'use server'
-
-import { revalidatePath } from 'next/cache'
-import { createClient } from '@/lib/supabase/server'
-
-export async function createInitiative(formData: FormData) {
-  const supabase = await createClient()
-  
-  // Validation and insertion
-  // ...
-  
-  revalidatePath('/')
-  return { success: true }
-}
-
-export async function updateInitiative(id: string, data: Partial<Initiative>) {
-  // ...
-}
-
-export async function deleteInitiative(id: string) {
-  // ...
-}
-```
+**Implemented:**
+- ✅ `createInitiative` - Full validation, authentication, PostGIS insert
+- ✅ `updateInitiative` - Ownership verification, partial updates
+- ✅ `deleteInitiative` - Authorization checks, delete operation
+- ✅ `verifyInitiative` - Admin function for verification
+- ✅ `getInitiativeById` - Fetch single initiative
+- ✅ All functions include proper error handling
+- ✅ revalidatePath() after all mutations
+- ✅ Input validation (name length, coordinates bounds)
+- ✅ Authentication checks using Supabase Auth
+- ⚠️  Note: Supabase types need generation (`npx supabase gen types typescript`)
 
 ### 5. Implement Authentication
 
@@ -197,6 +186,7 @@ Documentation:            ██████████████████
 TypeScript types:         ████████████████████ 100%
 Base components:          ████████████████████ 100% ← shadcn/ui migration done
 UI/UX Layout:             ████████████████████ 100% ← Homepage with Map + Filters
+Server Actions:           ████████████████████ 100% ← CRUD operations ready
 Unit tests:               ███████████░░░░░░░░░  55%
 Supabase integration:     ████████████████████ 100% ← Configured
 Mapbox map:               ████████████████████ 100% ← Map.tsx + MapView.tsx
@@ -204,7 +194,7 @@ Authentication:           ░░░░░░░░░░░░░░░░░░
 Translation:              ████████████████████ 100% ← All docs in English
 ```
 
-**Overall progress: 82%**
+**Overall progress: 85%**
 
 ---
 
@@ -215,10 +205,11 @@ Translation:              ██████████████████
 3. ~~**[PRIORITY 1]** Create Map.tsx component~~ ✅ Done
 4. ~~**[PRIORITY 1]** Migrate to shadcn/ui~~ ✅ Done
 5. ~~**[PRIORITY 2]** Update page.tsx with complete layout~~ ✅ Done
-6. **[PRIORITY 2]** Create Server Actions
-7. **[PRIORITY 3]** Implement authentication
-8. **[PRIORITY 3]** Add missing tests
-9. **[PRIORITY 4]** Optimizations and advanced features
+6. ~~**[PRIORITY 2]** Create Server Actions~~ ✅ Done
+7. **[PRIORITY 2]** Integrate Server Actions with UI (AddInitiativeForm)
+8. **[PRIORITY 3]** Implement authentication
+9. **[PRIORITY 3]** Add missing tests
+10. **[PRIORITY 4]** Optimizations and advanced features
 
 ---
 
