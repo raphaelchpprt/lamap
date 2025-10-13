@@ -1,28 +1,27 @@
-'use client'
+'use client';
 
 /**
- * Composant carte d'initiative ESS
- * 
- * Affiche les informations d'une initiative de manière compacte et attractive.
- * Supporte différents modes d'affichage (card, popup, liste).
+ * Initiative ESS Card Component
+ *
+ * Displays information about an initiative in a compact and attractive way.
+ * Supports different display modes (card, popup, list).
  */
 
-import { useState } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { 
-  MapPin, 
-  Clock, 
-  Globe, 
-  Phone, 
-  Mail, 
+import {
+  MapPin,
+  Clock,
+  Globe,
+  Phone,
+  Mail,
   ExternalLink,
   Check,
-  Star
-} from 'lucide-react'
+} from 'lucide-react';
+import Image from 'next/image';
+import { useState } from 'react';
 
-import type { Initiative, OpeningHours } from '@/types/initiative'
-import { INITIATIVE_COLORS, INITIATIVE_ICONS } from '@/types/initiative'
+import { INITIATIVE_COLORS } from '@/types/initiative';
+
+import type { Initiative, OpeningHours } from '@/types/initiative';
 
 // ================================
 // TYPES
@@ -30,28 +29,28 @@ import { INITIATIVE_COLORS, INITIATIVE_ICONS } from '@/types/initiative'
 
 interface InitiativeCardProps {
   /** Données de l'initiative */
-  initiative: Initiative
-  
+  initiative: Initiative;
+
   /** Variant d'affichage */
-  variant?: 'card' | 'popup' | 'list' | 'detailed'
-  
+  variant?: 'card' | 'popup' | 'list' | 'detailed';
+
   /** Classes CSS personnalisées */
-  className?: string
-  
+  className?: string;
+
   /** Afficher la distance si disponible */
-  distance?: number
-  
+  distance?: number;
+
   /** Callback au clic sur la carte */
-  onClick?: (initiative: Initiative) => void
-  
+  onClick?: (initiative: Initiative) => void;
+
   /** Afficher les actions d'édition */
-  showActions?: boolean
-  
+  showActions?: boolean;
+
   /** Callback pour éditer */
-  onEdit?: (initiative: Initiative) => void
-  
+  onEdit?: (initiative: Initiative) => void;
+
   /** Callback pour supprimer */
-  onDelete?: (initiative: Initiative) => void
+  onDelete?: (initiative: Initiative) => void;
 }
 
 // ================================
@@ -63,56 +62,68 @@ interface InitiativeCardProps {
  */
 function formatDistance(meters: number): string {
   if (meters < 1000) {
-    return `${Math.round(meters)} m`
+    return `${Math.round(meters)} m`;
   }
-  return `${(meters / 1000).toFixed(1)} km`
+  return `${(meters / 1000).toFixed(1)} km`;
 }
 
 /**
  * Détermine si l'initiative est ouverte maintenant
  */
 function isOpenNow(openingHours: OpeningHours | undefined): boolean {
-  if (!openingHours) return false
-  
-  const now = new Date()
-  const day = now.toLocaleDateString('fr-FR', { weekday: 'long' }).toLowerCase()
-  const currentTime = now.toTimeString().slice(0, 5) // HH:MM
-  
+  if (!openingHours) return false;
+
+  const now = new Date();
+  const day = now
+    .toLocaleDateString('fr-FR', { weekday: 'long' })
+    .toLowerCase();
+  const currentTime = now.toTimeString().slice(0, 5); // HH:MM
+
   const dayMapping: Record<string, keyof OpeningHours> = {
-    'lundi': 'monday',
-    'mardi': 'tuesday',
-    'mercredi': 'wednesday',
-    'jeudi': 'thursday',
-    'vendredi': 'friday',
-    'samedi': 'saturday',
-    'dimanche': 'sunday'
-  }
-  
-  const mappedDay = dayMapping[day]
-  if (!mappedDay) return false
-  
-  const todayHours = openingHours[mappedDay]
-  if (!todayHours) return false
-  
-  return currentTime >= todayHours.open && currentTime <= todayHours.close
+    lundi: 'monday',
+    mardi: 'tuesday',
+    mercredi: 'wednesday',
+    jeudi: 'thursday',
+    vendredi: 'friday',
+    samedi: 'saturday',
+    dimanche: 'sunday',
+  };
+
+  const mappedDay = dayMapping[day];
+  if (!mappedDay) return false;
+
+  const todayHours = openingHours[mappedDay];
+  if (!todayHours) return false;
+
+  return currentTime >= todayHours.open && currentTime <= todayHours.close;
 }
 
 /**
  * Formate les horaires pour affichage
  */
 function formatOpeningHours(openingHours: OpeningHours | undefined): string {
-  if (!openingHours) return 'Horaires non renseignés'
-  
-  const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
-  const dayNames = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
-  
-  const hoursText = days.map((day, index) => {
-    const hours = openingHours[day as keyof OpeningHours]
-    if (!hours) return `${dayNames[index]}: Fermé`
-    return `${dayNames[index]}: ${hours.open}-${hours.close}`
-  }).join('\n')
-  
-  return hoursText
+  if (!openingHours) return 'Horaires non renseignés';
+
+  const days = [
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+    'sunday',
+  ];
+  const dayNames = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
+  const hoursText = days
+    .map((day, index) => {
+      const hours = openingHours[day as keyof OpeningHours];
+      if (!hours) return `${dayNames[index]}: Fermé`;
+      return `${dayNames[index]}: ${hours.open}-${hours.close}`;
+    })
+    .join('\n');
+
+  return hoursText;
 }
 
 // ================================
@@ -123,43 +134,43 @@ function formatOpeningHours(openingHours: OpeningHours | undefined): string {
  * Badge de type d'initiative
  */
 function TypeBadge({ type }: { type: Initiative['type'] }) {
-  const color = INITIATIVE_COLORS[type]
-  
+  const color = INITIATIVE_COLORS[type];
+
   return (
-    <span 
+    <span
       className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white"
       style={{ backgroundColor: color }}
     >
       {type}
     </span>
-  )
+  );
 }
 
 /**
  * Badge de vérification
  */
 function VerifiedBadge({ verified }: { verified: boolean }) {
-  if (!verified) return null
-  
+  if (!verified) return null;
+
   return (
-    <div 
+    <div
       className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-md"
       title="Initiative vérifiée par l'équipe LaMap"
     >
       <Check size={12} />
       <span>Vérifiée</span>
     </div>
-  )
+  );
 }
 
 /**
  * Informations de contact rapide
  */
 function QuickContact({ initiative }: { initiative: Initiative }) {
-  const hasContact = initiative.phone || initiative.email || initiative.website
-  
-  if (!hasContact) return null
-  
+  const hasContact = initiative.phone || initiative.email || initiative.website;
+
+  if (!hasContact) return null;
+
   return (
     <div className="flex items-center gap-2 text-sm text-gray-600">
       {initiative.phone && (
@@ -171,7 +182,7 @@ function QuickContact({ initiative }: { initiative: Initiative }) {
           <Phone size={14} />
         </a>
       )}
-      
+
       {initiative.email && (
         <a
           href={`mailto:${initiative.email}`}
@@ -181,7 +192,7 @@ function QuickContact({ initiative }: { initiative: Initiative }) {
           <Mail size={14} />
         </a>
       )}
-      
+
       {initiative.website && (
         <a
           href={initiative.website}
@@ -195,7 +206,7 @@ function QuickContact({ initiative }: { initiative: Initiative }) {
         </a>
       )}
     </div>
-  )
+  );
 }
 
 // ================================
@@ -210,43 +221,44 @@ export default function InitiativeCard({
   onClick,
   showActions = false,
   onEdit,
-  onDelete
+  onDelete,
 }: InitiativeCardProps) {
-  const [imageError, setImageError] = useState(false)
-  const [showFullDescription, setShowFullDescription] = useState(false)
-  
+  const [imageError, setImageError] = useState(false);
+  const [showFullDescription, setShowFullDescription] = useState(false);
+
   // Classes CSS selon le variant
   const variantClasses = {
     card: 'bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden',
     popup: 'bg-white rounded-lg shadow-lg overflow-hidden max-w-sm',
     list: 'bg-white rounded-md border border-gray-200 hover:border-gray-300 transition-colors',
-    detailed: 'bg-white rounded-lg shadow-sm border border-gray-200'
-  }
-  
-  const containerClass = `${variantClasses[variant]} ${className}`
-  
+    detailed: 'bg-white rounded-lg shadow-sm border border-gray-200',
+  };
+
+  const containerClass = `${variantClasses[variant]} ${className}`;
+
   // Gestion du clic
   const handleClick = () => {
     if (onClick) {
-      onClick(initiative)
+      onClick(initiative);
     }
-  }
-  
+  };
+
   // Texte de description tronqué
-  const description = initiative.description || ''
-  const truncatedDescription = description.length > 120 && !showFullDescription
-    ? `${description.slice(0, 120)}...`
-    : description
-  
-  const isOpen = isOpenNow(initiative.opening_hours)
-  
+  const description = initiative.description || '';
+  const truncatedDescription =
+    description.length > 120 && !showFullDescription
+      ? `${description.slice(0, 120)}...`
+      : description;
+
+  const isOpen = isOpenNow(initiative.opening_hours);
+
   // ================================
   // VARIANT LIST
   // ================================
-  
+
   if (variant === 'list') {
     return (
-      <div 
+      <div
         className={containerClass}
         onClick={handleClick}
         role={onClick ? 'button' : undefined}
@@ -259,11 +271,11 @@ export default function InitiativeCard({
                 <TypeBadge type={initiative.type} />
                 <VerifiedBadge verified={initiative.verified} />
               </div>
-              
+
               <h3 className="text-lg font-semibold text-gray-900 truncate">
                 {initiative.name}
               </h3>
-              
+
               {initiative.address && (
                 <div className="flex items-center gap-1 mt-1 text-sm text-gray-600">
                   <MapPin size={14} />
@@ -276,18 +288,18 @@ export default function InitiativeCard({
                 </div>
               )}
             </div>
-            
+
             <QuickContact initiative={initiative} />
           </div>
         </div>
       </div>
-    )
+    );
   }
-  
+
   // ================================
   // VARIANT POPUP
   // ================================
-  
+
   if (variant === 'popup') {
     return (
       <div className={containerClass}>
@@ -303,48 +315,46 @@ export default function InitiativeCard({
             />
           </div>
         )}
-        
+
         <div className="p-4">
           <div className="flex items-start justify-between mb-2">
             <TypeBadge type={initiative.type} />
             <VerifiedBadge verified={initiative.verified} />
           </div>
-          
+
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
             {initiative.name}
           </h3>
-          
+
           {initiative.address && (
             <div className="flex items-center gap-1 mb-2 text-sm text-gray-600">
               <MapPin size={14} />
               <span>{initiative.address}</span>
             </div>
           )}
-          
+
           {distance && (
             <div className="text-sm text-primary-600 font-medium mb-2">
               À {formatDistance(distance)}
             </div>
           )}
-          
+
           {description && (
-            <p className="text-sm text-gray-600 mb-3">
-              {truncatedDescription}
-            </p>
+            <p className="text-sm text-gray-600 mb-3">{truncatedDescription}</p>
           )}
-          
+
           <QuickContact initiative={initiative} />
         </div>
       </div>
-    )
+    );
   }
-  
+
   // ================================
   // VARIANT CARD & DETAILED
   // ================================
-  
+
   return (
-    <div 
+    <div
       className={containerClass}
       onClick={handleClick}
       role={onClick ? 'button' : undefined}
@@ -360,7 +370,7 @@ export default function InitiativeCard({
             className="object-cover"
             onError={() => setImageError(true)}
           />
-          
+
           {/* Overlay avec badges */}
           <div className="absolute top-3 left-3 flex gap-2">
             <TypeBadge type={initiative.type} />
@@ -368,7 +378,7 @@ export default function InitiativeCard({
           </div>
         </div>
       )}
-      
+
       {/* Contenu principal */}
       <div className="p-4">
         {/* En-tête sans image */}
@@ -378,12 +388,12 @@ export default function InitiativeCard({
             <VerifiedBadge verified={initiative.verified} />
           </div>
         )}
-        
+
         {/* Titre */}
         <h3 className="text-xl font-semibold text-gray-900 mb-2">
           {initiative.name}
         </h3>
-        
+
         {/* Adresse et distance */}
         <div className="space-y-2 mb-3">
           {initiative.address && (
@@ -392,14 +402,14 @@ export default function InitiativeCard({
               <span>{initiative.address}</span>
             </div>
           )}
-          
+
           {distance && (
             <div className="text-sm text-primary-600 font-medium">
               À {formatDistance(distance)}
             </div>
           )}
         </div>
-        
+
         {/* Description */}
         {description && (
           <div className="mb-4">
@@ -409,8 +419,8 @@ export default function InitiativeCard({
             {description.length > 120 && (
               <button
                 onClick={(e) => {
-                  e.stopPropagation()
-                  setShowFullDescription(!showFullDescription)
+                  e.stopPropagation();
+                  setShowFullDescription(!showFullDescription);
                 }}
                 className="text-sm text-primary-600 hover:text-primary-700 mt-1"
               >
@@ -419,7 +429,7 @@ export default function InitiativeCard({
             )}
           </div>
         )}
-        
+
         {/* Horaires pour variant detailed */}
         {variant === 'detailed' && initiative.opening_hours && (
           <div className="mb-4">
@@ -439,19 +449,19 @@ export default function InitiativeCard({
             </pre>
           </div>
         )}
-        
+
         {/* Contact */}
         <div className="flex items-center justify-between">
           <QuickContact initiative={initiative} />
-          
+
           {/* Actions d'administration */}
           {showActions && (onEdit || onDelete) && (
             <div className="flex items-center gap-2">
               {onEdit && (
                 <button
                   onClick={(e) => {
-                    e.stopPropagation()
-                    onEdit(initiative)
+                    e.stopPropagation();
+                    onEdit(initiative);
                   }}
                   className="text-sm text-blue-600 hover:text-blue-700 px-2 py-1 rounded"
                 >
@@ -461,8 +471,8 @@ export default function InitiativeCard({
               {onDelete && (
                 <button
                   onClick={(e) => {
-                    e.stopPropagation()
-                    onDelete(initiative)
+                    e.stopPropagation();
+                    onDelete(initiative);
                   }}
                   className="text-sm text-red-600 hover:text-red-700 px-2 py-1 rounded"
                 >
@@ -472,19 +482,25 @@ export default function InitiativeCard({
             </div>
           )}
         </div>
-        
+
         {/* Métadonnées pour variant detailed */}
         {variant === 'detailed' && (
           <div className="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-500">
             <div className="flex justify-between">
-              <span>Ajouté le {new Date(initiative.created_at).toLocaleDateString('fr-FR')}</span>
+              <span>
+                Ajouté le{' '}
+                {new Date(initiative.created_at).toLocaleDateString('fr-FR')}
+              </span>
               {initiative.updated_at !== initiative.created_at && (
-                <span>Modifié le {new Date(initiative.updated_at).toLocaleDateString('fr-FR')}</span>
+                <span>
+                  Modifié le{' '}
+                  {new Date(initiative.updated_at).toLocaleDateString('fr-FR')}
+                </span>
               )}
             </div>
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }

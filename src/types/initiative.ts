@@ -1,6 +1,6 @@
 /**
  * Types TypeScript pour LaMap - Cartographie des initiatives ESS
- * 
+ *
  * Ces types définissent la structure des données pour les initiatives
  * d'économie circulaire, sociale et solidaire (ESS)
  */
@@ -14,69 +14,69 @@
  */
 export interface Initiative {
   /** Identifiant unique UUID généré par Supabase */
-  id: string
-  
+  id: string;
+
   /** Nom de l'initiative */
-  name: string
-  
+  name: string;
+
   /** Type/catégorie de l'initiative */
-  type: InitiativeType
-  
+  type: InitiativeType;
+
   /** Description détaillée (optionnelle) */
-  description?: string
-  
+  description?: string;
+
   /** Adresse textuelle de l'initiative */
-  address?: string
-  
+  address?: string;
+
   /** Coordonnées géospatiales (format GeoJSON Point) */
-  location: GeoJSONPoint
-  
+  location: GeoJSONPoint;
+
   /** Statut de vérification par les modérateurs */
-  verified: boolean
-  
+  verified: boolean;
+
   /** URL de l'image de présentation */
-  image_url?: string
-  
+  image_url?: string;
+
   /** Site web officiel */
-  website?: string
-  
+  website?: string;
+
   /** Numéro de téléphone */
-  phone?: string
-  
+  phone?: string;
+
   /** Adresse email de contact */
-  email?: string
-  
+  email?: string;
+
   /** Horaires d'ouverture par jour de la semaine */
-  opening_hours?: OpeningHours
-  
+  opening_hours?: OpeningHours;
+
   /** ID de l'utilisateur ayant créé l'initiative */
-  user_id?: string
-  
+  user_id?: string;
+
   /** Date de création (ISO string) */
-  created_at: string
-  
+  created_at: string;
+
   /** Date de dernière modification (ISO string) */
-  updated_at: string
+  updated_at: string;
 }
 
 /**
  * Types d'initiatives supportées par LaMap
  * Basé sur l'écosystème ESS français
  */
-export type InitiativeType = 
-  | 'Ressourcerie'           // Collecte, tri, remise en état et vente d'objets
-  | 'Repair Café'           // Ateliers de réparation collaboratifs
-  | 'AMAP'                  // Association pour le Maintien d'une Agriculture Paysanne
-  | 'Entreprise d\'insertion' // Structures d'insertion par l'activité économique
-  | 'Point de collecte'     // Points de collecte de déchets spécialisés
-  | 'Recyclerie'            // Centres de recyclage et valorisation
-  | 'Épicerie sociale'      // Magasins solidaires à prix réduits
-  | 'Jardin partagé'        // Espaces de jardinage collectif
-  | 'Fab Lab'               // Laboratoires de fabrication numérique
-  | 'Coopérative'           // Structures coopératives diverses
-  | 'Monnaie locale'        // Systèmes d'échange locaux
-  | 'Tiers-lieu'            // Espaces de coworking et innovation sociale
-  | 'Autre'                 // Autres initiatives ESS
+export type InitiativeType =
+  | 'Ressourcerie' // Collecte, tri, remise en état et vente d'objets
+  | 'Repair Café' // Ateliers de réparation collaboratifs
+  | 'AMAP' // Association pour le Maintien d'une Agriculture Paysanne
+  | "Entreprise d'insertion" // Structures d'insertion par l'activité économique
+  | 'Point de collecte' // Points de collecte de déchets spécialisés
+  | 'Recyclerie' // Centres de recyclage et valorisation
+  | 'Épicerie sociale' // Magasins solidaires à prix réduits
+  | 'Jardin partagé' // Espaces de jardinage collectif
+  | 'Fab Lab' // Laboratoires de fabrication numérique
+  | 'Coopérative' // Structures coopératives diverses
+  | 'Monnaie locale' // Systèmes d'échange locaux
+  | 'Tiers-lieu' // Espaces de coworking et innovation sociale
+  | 'Autre'; // Autres initiatives ESS
 
 /**
  * Structure des horaires d'ouverture
@@ -84,19 +84,19 @@ export type InitiativeType =
  */
 export interface OpeningHours {
   /** Lundi */
-  monday?: TimeSlot | null
+  monday?: TimeSlot | null;
   /** Mardi */
-  tuesday?: TimeSlot | null
+  tuesday?: TimeSlot | null;
   /** Mercredi */
-  wednesday?: TimeSlot | null
+  wednesday?: TimeSlot | null;
   /** Jeudi */
-  thursday?: TimeSlot | null
+  thursday?: TimeSlot | null;
   /** Vendredi */
-  friday?: TimeSlot | null
+  friday?: TimeSlot | null;
   /** Samedi */
-  saturday?: TimeSlot | null
+  saturday?: TimeSlot | null;
   /** Dimanche */
-  sunday?: TimeSlot | null
+  sunday?: TimeSlot | null;
 }
 
 /**
@@ -104,14 +104,14 @@ export interface OpeningHours {
  */
 export interface TimeSlot {
   /** Heure d'ouverture (format HH:MM) */
-  open: string
+  open: string;
   /** Heure de fermeture (format HH:MM) */
-  close: string
+  close: string;
   /** Pause déjeuner éventuelle */
   break?: {
-    start: string
-    end: string
-  }
+    start: string;
+    end: string;
+  };
 }
 
 // ================================
@@ -123,9 +123,9 @@ export interface TimeSlot {
  * Conforme à la spécification RFC 7946
  */
 export interface GeoJSONPoint {
-  type: 'Point'
+  type: 'Point';
   /** Coordonnées [longitude, latitude] */
-  coordinates: [number, number]
+  coordinates: [number, number];
 }
 
 /**
@@ -134,14 +134,14 @@ export interface GeoJSONPoint {
 export interface GeoBounds {
   /** Coordonnée sud-ouest */
   southwest: {
-    latitude: number
-    longitude: number
-  }
+    latitude: number;
+    longitude: number;
+  };
   /** Coordonnée nord-est */
   northeast: {
-    latitude: number
-    longitude: number
-  }
+    latitude: number;
+    longitude: number;
+  };
 }
 
 /**
@@ -150,13 +150,13 @@ export interface GeoBounds {
 export interface GeoSearchParams {
   /** Centre de recherche */
   center: {
-    latitude: number
-    longitude: number
-  }
+    latitude: number;
+    longitude: number;
+  };
   /** Rayon de recherche en kilomètres */
-  radius?: number
+  radius?: number;
   /** Zone de délimitation */
-  bounds?: GeoBounds
+  bounds?: GeoBounds;
 }
 
 // ================================
@@ -168,25 +168,27 @@ export interface GeoSearchParams {
  * (sans les champs générés automatiquement)
  */
 export interface InitiativeFormData {
-  name: string
-  type: InitiativeType
-  description?: string
-  address?: string
+  name: string;
+  type: InitiativeType;
+  description?: string;
+  address?: string;
   location: {
-    latitude: number
-    longitude: number
-  }
-  image?: File | string
-  website?: string
-  phone?: string
-  email?: string
-  opening_hours?: OpeningHours
+    latitude: number;
+    longitude: number;
+  };
+  image?: File | string;
+  website?: string;
+  phone?: string;
+  email?: string;
+  opening_hours?: OpeningHours;
 }
 
 /**
  * Données partielles pour la modification d'initiative
  */
-export type InitiativeUpdateData = Partial<Omit<Initiative, 'id' | 'created_at' | 'updated_at'>>
+export type InitiativeUpdateData = Partial<
+  Omit<Initiative, 'id' | 'created_at' | 'updated_at'>
+>;
 
 // ================================
 // TYPES POUR LES FILTRES
@@ -197,17 +199,17 @@ export type InitiativeUpdateData = Partial<Omit<Initiative, 'id' | 'created_at' 
  */
 export interface InitiativeFilters {
   /** Types d'initiatives à inclure */
-  types?: InitiativeType[]
+  types?: InitiativeType[];
   /** Seulement les initiatives vérifiées */
-  verified_only?: boolean
+  verified_only?: boolean;
   /** Recherche textuelle */
-  search_query?: string
+  search_query?: string;
   /** Filtrage géographique */
-  geo_filter?: GeoSearchParams
+  geo_filter?: GeoSearchParams;
   /** Créées après cette date */
-  created_after?: string
+  created_after?: string;
   /** Créées avant cette date */
-  created_before?: string
+  created_before?: string;
 }
 
 /**
@@ -215,9 +217,9 @@ export interface InitiativeFilters {
  */
 export interface InitiativeSortOptions {
   /** Champ sur lequel trier */
-  field: 'created_at' | 'updated_at' | 'name' | 'distance'
+  field: 'created_at' | 'updated_at' | 'name' | 'distance';
   /** Ordre de tri */
-  order: 'asc' | 'desc'
+  order: 'asc' | 'desc';
 }
 
 // ================================
@@ -229,22 +231,22 @@ export interface InitiativeSortOptions {
  */
 export interface PaginatedResponse<T> {
   /** Données de la page courante */
-  data: T[]
+  data: T[];
   /** Informations de pagination */
   pagination: {
     /** Page courante (commence à 1) */
-    current_page: number
+    current_page: number;
     /** Nombre d'éléments par page */
-    per_page: number
+    per_page: number;
     /** Nombre total d'éléments */
-    total_count: number
+    total_count: number;
     /** Nombre total de pages */
-    total_pages: number
+    total_pages: number;
     /** Lien vers la page suivante */
-    next_page?: number
+    next_page?: number;
     /** Lien vers la page précédente */
-    prev_page?: number
-  }
+    prev_page?: number;
+  };
 }
 
 /**
@@ -252,17 +254,17 @@ export interface PaginatedResponse<T> {
  */
 export interface ApiResponse<T = unknown> {
   /** Succès de l'opération */
-  success: boolean
+  success: boolean;
   /** Données de réponse */
-  data?: T
+  data?: T;
   /** Message d'information */
-  message?: string
+  message?: string;
   /** Détails de l'erreur */
   error?: {
-    code: string
-    message: string
-    details?: Record<string, unknown>
-  }
+    code: string;
+    message: string;
+    details?: Record<string, unknown>;
+  };
 }
 
 // ================================
@@ -274,17 +276,17 @@ export interface ApiResponse<T = unknown> {
  */
 export interface MapConfig {
   /** Token d'accès Mapbox */
-  accessToken: string
+  accessToken: string;
   /** Style de la carte */
-  style: string
+  style: string;
   /** Centre initial */
-  center: [number, number]
+  center: [number, number];
   /** Zoom initial */
-  zoom: number
+  zoom: number;
   /** Zoom minimum */
-  minZoom?: number
+  minZoom?: number;
   /** Zoom maximum */
-  maxZoom?: number
+  maxZoom?: number;
 }
 
 /**
@@ -292,13 +294,13 @@ export interface MapConfig {
  */
 export interface MapMarker {
   /** Identifiant unique */
-  id: string
+  id: string;
   /** Coordonnées */
-  coordinates: [number, number]
+  coordinates: [number, number];
   /** Type d'initiative pour le style */
-  type: InitiativeType
+  type: InitiativeType;
   /** Données complètes de l'initiative */
-  initiative: Initiative
+  initiative: Initiative;
 }
 
 /**
@@ -306,9 +308,9 @@ export interface MapMarker {
  */
 export interface MapClickEvent {
   /** Coordonnées du clic */
-  coordinates: [number, number]
+  coordinates: [number, number];
   /** Initiatives à proximité du clic */
-  nearby_initiatives?: Initiative[]
+  nearby_initiatives?: Initiative[];
 }
 
 // ================================
@@ -319,39 +321,39 @@ export interface MapClickEvent {
  * Couleurs associées aux types d'initiatives
  */
 export const INITIATIVE_COLORS: Record<InitiativeType, string> = {
-  'Ressourcerie': '#10b981',        // Vert primary
-  'Repair Café': '#f59e0b',         // Orange accent
-  'AMAP': '#84cc16',                // Vert lime
-  'Entreprise d\'insertion': '#3b82f6', // Bleu secondary
-  'Point de collecte': '#8b5cf6',   // Violet
-  'Recyclerie': '#059669',          // Vert foncé
-  'Épicerie sociale': '#dc2626',    // Rouge
-  'Jardin partagé': '#65a30d',      // Vert nature
-  'Fab Lab': '#7c3aed',             // Violet tech
-  'Coopérative': '#0891b2',         // Bleu cyan
-  'Monnaie locale': '#ca8a04',      // Jaune doré
-  'Tiers-lieu': '#9333ea',          // Violet moderne
-  'Autre': '#6b7280',               // Gris neutre
-} as const
+  Ressourcerie: '#10b981', // Vert primary
+  'Repair Café': '#f59e0b', // Orange accent
+  AMAP: '#84cc16', // Vert lime
+  "Entreprise d'insertion": '#3b82f6', // Bleu secondary
+  'Point de collecte': '#8b5cf6', // Violet
+  Recyclerie: '#059669', // Vert foncé
+  'Épicerie sociale': '#dc2626', // Rouge
+  'Jardin partagé': '#65a30d', // Vert nature
+  'Fab Lab': '#7c3aed', // Violet tech
+  Coopérative: '#0891b2', // Bleu cyan
+  'Monnaie locale': '#ca8a04', // Jaune doré
+  'Tiers-lieu': '#9333ea', // Violet moderne
+  Autre: '#6b7280', // Gris neutre
+} as const;
 
 /**
  * Icônes associées aux types d'initiatives (classes Lucide React)
  */
 export const INITIATIVE_ICONS: Record<InitiativeType, string> = {
-  'Ressourcerie': 'Recycle',
+  Ressourcerie: 'Recycle',
   'Repair Café': 'Wrench',
-  'AMAP': 'Wheat',
-  'Entreprise d\'insertion': 'Building2',
+  AMAP: 'Wheat',
+  "Entreprise d'insertion": 'Building2',
   'Point de collecte': 'Trash2',
-  'Recyclerie': 'RefreshCw',
+  Recyclerie: 'RefreshCw',
   'Épicerie sociale': 'ShoppingCart',
   'Jardin partagé': 'Flower2',
   'Fab Lab': 'Cpu',
-  'Coopérative': 'Users',
+  Coopérative: 'Users',
   'Monnaie locale': 'Coins',
   'Tiers-lieu': 'Coffee',
-  'Autre': 'MapPin',
-} as const
+  Autre: 'MapPin',
+} as const;
 
 // ================================
 // TYPES POUR LES ERREURS
@@ -365,23 +367,23 @@ export enum ErrorCode {
   UNKNOWN_ERROR = 'UNKNOWN_ERROR',
   VALIDATION_ERROR = 'VALIDATION_ERROR',
   NETWORK_ERROR = 'NETWORK_ERROR',
-  
+
   // Erreurs d'authentification
   UNAUTHORIZED = 'UNAUTHORIZED',
   FORBIDDEN = 'FORBIDDEN',
-  
+
   // Erreurs de données
   NOT_FOUND = 'NOT_FOUND',
   DUPLICATE_ENTRY = 'DUPLICATE_ENTRY',
-  
+
   // Erreurs géographiques
   GEOCODING_FAILED = 'GEOCODING_FAILED',
   INVALID_COORDINATES = 'INVALID_COORDINATES',
-  
+
   // Erreurs Mapbox
   MAPBOX_TOKEN_INVALID = 'MAPBOX_TOKEN_INVALID',
   MAPBOX_RATE_LIMIT = 'MAPBOX_RATE_LIMIT',
-  
+
   // Erreurs Supabase
   SUPABASE_CONNECTION_ERROR = 'SUPABASE_CONNECTION_ERROR',
   RLS_POLICY_VIOLATION = 'RLS_POLICY_VIOLATION',
@@ -396,7 +398,7 @@ export class LaMapError extends Error {
     message: string,
     public details?: Record<string, unknown>
   ) {
-    super(message)
-    this.name = 'LaMapError'
+    super(message);
+    this.name = 'LaMapError';
   }
 }

@@ -1,14 +1,18 @@
 /**
  * Types générés pour la base de données Supabase LaMap
- * 
+ *
  * Ces types sont générés automatiquement à partir du schéma de base de données.
  * Ils garantissent la cohérence entre le frontend TypeScript et la base PostgreSQL.
- * 
+ *
  * Pour régénérer ces types après modification du schéma :
  * npx supabase gen types typescript --project-id YOUR_PROJECT_ID --schema public > src/lib/supabase/types.ts
  */
 
-import type { Initiative, InitiativeType, OpeningHours } from '@/types/initiative'
+import type {
+  Initiative,
+  InitiativeType,
+  OpeningHours,
+} from '@/types/initiative';
 
 // ================================
 // TYPES DE BASE DE DONNÉES
@@ -22,55 +26,55 @@ export interface Database {
     Tables: {
       // Table des initiatives ESS
       initiatives: {
-        Row: DatabaseInitiative
-        Insert: DatabaseInitiativeInsert  
-        Update: DatabaseInitiativeUpdate
-      }
-      
+        Row: DatabaseInitiative;
+        Insert: DatabaseInitiativeInsert;
+        Update: DatabaseInitiativeUpdate;
+      };
+
       // Tables futures (à ajouter selon les besoins)
       users_profiles?: {
-        Row: UserProfile
-        Insert: UserProfileInsert
-        Update: UserProfileUpdate
-      }
-      
+        Row: UserProfile;
+        Insert: UserProfileInsert;
+        Update: UserProfileUpdate;
+      };
+
       comments?: {
-        Row: Comment
-        Insert: CommentInsert
-        Update: CommentUpdate
-      }
-    }
+        Row: Comment;
+        Insert: CommentInsert;
+        Update: CommentUpdate;
+      };
+    };
     Views: {
       // Vues utiles pour les requêtes
       initiatives_with_distance?: {
-        Row: InitiativeWithDistance
-      }
-    }
+        Row: InitiativeWithDistance;
+      };
+    };
     Functions: {
       // Fonctions PostgreSQL/PostGIS personnalisées
       get_nearby_initiatives: {
         Args: {
-          lat: number
-          lng: number
-          radius_km?: number
-        }
-        Returns: InitiativeWithDistance[]
-      }
-      
+          lat: number;
+          lng: number;
+          radius_km?: number;
+        };
+        Returns: InitiativeWithDistance[];
+      };
+
       get_initiatives_in_bounds: {
         Args: {
-          min_lat: number
-          min_lng: number
-          max_lat: number
-          max_lng: number
-        }
-        Returns: DatabaseInitiative[]
-      }
-    }
+          min_lat: number;
+          min_lng: number;
+          max_lat: number;
+          max_lng: number;
+        };
+        Returns: DatabaseInitiative[];
+      };
+    };
     Enums: {
-      initiative_type: InitiativeType
-    }
-  }
+      initiative_type: InitiativeType;
+    };
+  };
 }
 
 // ================================
@@ -82,90 +86,90 @@ export interface Database {
  */
 export interface DatabaseInitiative {
   /** UUID généré automatiquement */
-  id: string
-  
+  id: string;
+
   /** Nom de l'initiative (NOT NULL) */
-  name: string
-  
+  name: string;
+
   /** Type d'initiative (enum) */
-  type: InitiativeType
-  
+  type: InitiativeType;
+
   /** Description optionnelle */
-  description: string | null
-  
+  description: string | null;
+
   /** Adresse textuelle */
-  address: string | null
-  
+  address: string | null;
+
   /** Point géographique PostGIS (format WKT: 'POINT(lng lat)') */
-  location: string
-  
+  location: string;
+
   /** Statut de vérification */
-  verified: boolean
-  
+  verified: boolean;
+
   /** URL de l'image */
-  image_url: string | null
-  
+  image_url: string | null;
+
   /** Site web */
-  website: string | null
-  
+  website: string | null;
+
   /** Téléphone */
-  phone: string | null
-  
+  phone: string | null;
+
   /** Email */
-  email: string | null
-  
+  email: string | null;
+
   /** Horaires (JSONB) */
-  opening_hours: OpeningHours | null
-  
+  opening_hours: OpeningHours | null;
+
   /** ID de l'utilisateur créateur */
-  user_id: string | null
-  
+  user_id: string | null;
+
   /** Date de création */
-  created_at: string
-  
+  created_at: string;
+
   /** Date de modification */
-  updated_at: string
+  updated_at: string;
 }
 
 /**
  * Type pour l'insertion en base (certains champs sont optionnels)
  */
 export interface DatabaseInitiativeInsert {
-  id?: string
-  name: string
-  type: InitiativeType
-  description?: string | null
-  address?: string | null
-  location: string // Format PostGIS: 'POINT(longitude latitude)'
-  verified?: boolean
-  image_url?: string | null
-  website?: string | null
-  phone?: string | null
-  email?: string | null
-  opening_hours?: OpeningHours | null
-  user_id?: string | null
-  created_at?: string
-  updated_at?: string
+  id?: string;
+  name: string;
+  type: InitiativeType;
+  description?: string | null;
+  address?: string | null;
+  location: string; // Format PostGIS: 'POINT(longitude latitude)'
+  verified?: boolean;
+  image_url?: string | null;
+  website?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  opening_hours?: OpeningHours | null;
+  user_id?: string | null;
+  created_at?: string;
+  updated_at?: string;
 }
 
 /**
  * Type pour la mise à jour en base (tous les champs optionnels)
  */
 export interface DatabaseInitiativeUpdate {
-  id?: string
-  name?: string
-  type?: InitiativeType
-  description?: string | null
-  address?: string | null
-  location?: string
-  verified?: boolean
-  image_url?: string | null
-  website?: string | null
-  phone?: string | null
-  email?: string | null
-  opening_hours?: OpeningHours | null
-  user_id?: string | null
-  updated_at?: string
+  id?: string;
+  name?: string;
+  type?: InitiativeType;
+  description?: string | null;
+  address?: string | null;
+  location?: string;
+  verified?: boolean;
+  image_url?: string | null;
+  website?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  opening_hours?: OpeningHours | null;
+  user_id?: string | null;
+  updated_at?: string;
 }
 
 // ================================
@@ -177,10 +181,10 @@ export interface DatabaseInitiativeUpdate {
  */
 export interface InitiativeWithDistance extends DatabaseInitiative {
   /** Distance en mètres depuis le point de référence */
-  distance_meters: number
-  
+  distance_meters: number;
+
   /** Distance en kilomètres (calculée) */
-  distance_km: number
+  distance_km: number;
 }
 
 // ================================
@@ -191,39 +195,39 @@ export interface InitiativeWithDistance extends DatabaseInitiative {
  * Profil utilisateur étendu (table séparée de auth.users)
  */
 export interface UserProfile {
-  id: string
-  user_id: string // Référence vers auth.users
-  display_name: string | null
-  avatar_url: string | null
-  bio: string | null
-  location: string | null
-  website: string | null
-  is_moderator: boolean
-  created_at: string
-  updated_at: string
+  id: string;
+  user_id: string; // Référence vers auth.users
+  display_name: string | null;
+  avatar_url: string | null;
+  bio: string | null;
+  location: string | null;
+  website: string | null;
+  is_moderator: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface UserProfileInsert {
-  id?: string
-  user_id: string
-  display_name?: string | null
-  avatar_url?: string | null
-  bio?: string | null
-  location?: string | null
-  website?: string | null
-  is_moderator?: boolean
-  created_at?: string
-  updated_at?: string
+  id?: string;
+  user_id: string;
+  display_name?: string | null;
+  avatar_url?: string | null;
+  bio?: string | null;
+  location?: string | null;
+  website?: string | null;
+  is_moderator?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface UserProfileUpdate {
-  display_name?: string | null
-  avatar_url?: string | null
-  bio?: string | null
-  location?: string | null
-  website?: string | null
-  is_moderator?: boolean
-  updated_at?: string
+  display_name?: string | null;
+  avatar_url?: string | null;
+  bio?: string | null;
+  location?: string | null;
+  website?: string | null;
+  is_moderator?: boolean;
+  updated_at?: string;
 }
 
 // ================================
@@ -234,32 +238,32 @@ export interface UserProfileUpdate {
  * Commentaire sur une initiative
  */
 export interface Comment {
-  id: string
-  initiative_id: string
-  user_id: string
-  content: string
-  rating: number | null // Note de 1 à 5
-  is_public: boolean
-  created_at: string
-  updated_at: string
+  id: string;
+  initiative_id: string;
+  user_id: string;
+  content: string;
+  rating: number | null; // Note de 1 à 5
+  is_public: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface CommentInsert {
-  id?: string
-  initiative_id: string
-  user_id: string
-  content: string
-  rating?: number | null
-  is_public?: boolean
-  created_at?: string
-  updated_at?: string
+  id?: string;
+  initiative_id: string;
+  user_id: string;
+  content: string;
+  rating?: number | null;
+  is_public?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface CommentUpdate {
-  content?: string
-  rating?: number | null
-  is_public?: boolean
-  updated_at?: string
+  content?: string;
+  rating?: number | null;
+  is_public?: boolean;
+  updated_at?: string;
 }
 
 // ================================
@@ -269,15 +273,17 @@ export interface CommentUpdate {
 /**
  * Convertit une initiative de la base vers le format frontend
  */
-export function databaseInitiativeToInitiative(dbInitiative: DatabaseInitiative): Initiative {
+export function databaseInitiativeToInitiative(
+  dbInitiative: DatabaseInitiative
+): Initiative {
   // Parse du point PostGIS 'POINT(lng lat)' vers GeoJSON
-  const locationMatch = dbInitiative.location.match(/POINT\(([^)]+)\)/)
+  const locationMatch = dbInitiative.location.match(/POINT\(([^)]+)\)/);
   if (!locationMatch) {
-    throw new Error(`Format de location invalide: ${dbInitiative.location}`)
+    throw new Error(`Format de location invalide: ${dbInitiative.location}`);
   }
-  
-  const [lng, lat] = locationMatch[1].split(' ').map(Number)
-  
+
+  const [lng, lat] = locationMatch[1].split(' ').map(Number);
+
   return {
     id: dbInitiative.id,
     name: dbInitiative.name,
@@ -286,7 +292,7 @@ export function databaseInitiativeToInitiative(dbInitiative: DatabaseInitiative)
     address: dbInitiative.address || undefined,
     location: {
       type: 'Point',
-      coordinates: [lng, lat]
+      coordinates: [lng, lat],
     },
     verified: dbInitiative.verified,
     image_url: dbInitiative.image_url || undefined,
@@ -296,25 +302,27 @@ export function databaseInitiativeToInitiative(dbInitiative: DatabaseInitiative)
     opening_hours: dbInitiative.opening_hours || undefined,
     user_id: dbInitiative.user_id || undefined,
     created_at: dbInitiative.created_at,
-    updated_at: dbInitiative.updated_at
-  }
+    updated_at: dbInitiative.updated_at,
+  };
 }
 
 /**
  * Convertit une initiative frontend vers le format base de données
  */
-export function initiativeToDatabaseInitiative(initiative: Partial<Initiative>): DatabaseInitiativeInsert {
+export function initiativeToDatabaseInitiative(
+  initiative: Partial<Initiative>
+): DatabaseInitiativeInsert {
   const location = initiative.location
     ? `POINT(${initiative.location.coordinates[0]} ${initiative.location.coordinates[1]})`
-    : undefined
-  
+    : undefined;
+
   return {
     id: initiative.id,
-    name: initiative.name!,
-    type: initiative.type!,
+    name: initiative.name ?? '',
+    type: initiative.type ?? 'Autre',
     description: initiative.description || null,
     address: initiative.address || null,
-    location: location!,
+    location: location ?? 'POINT(0 0)',
     verified: initiative.verified ?? false,
     image_url: initiative.image_url || null,
     website: initiative.website || null,
@@ -322,7 +330,7 @@ export function initiativeToDatabaseInitiative(initiative: Partial<Initiative>):
     email: initiative.email || null,
     opening_hours: initiative.opening_hours || null,
     user_id: initiative.user_id || null,
-  }
+  };
 }
 
 // ================================
@@ -333,19 +341,19 @@ export function initiativeToDatabaseInitiative(initiative: Partial<Initiative>):
  * Paramètres pour la fonction get_nearby_initiatives
  */
 export interface GetNearbyInitiativesParams {
-  lat: number
-  lng: number
-  radius_km?: number
+  lat: number;
+  lng: number;
+  radius_km?: number;
 }
 
 /**
  * Paramètres pour la fonction get_initiatives_in_bounds
  */
 export interface GetInitiativesInBoundsParams {
-  min_lat: number
-  min_lng: number
-  max_lat: number
-  max_lng: number
+  min_lat: number;
+  min_lng: number;
+  max_lat: number;
+  max_lng: number;
 }
 
 // ================================
@@ -356,16 +364,16 @@ export interface GetInitiativesInBoundsParams {
  * Erreur Supabase typée
  */
 export interface SupabaseError {
-  message: string
-  details?: string
-  hint?: string
-  code?: string
+  message: string;
+  details?: string;
+  hint?: string;
+  code?: string;
 }
 
 /**
  * Réponse Supabase avec gestion d'erreur
  */
 export interface SupabaseResponse<T> {
-  data: T | null
-  error: SupabaseError | null
+  data: T | null;
+  error: SupabaseError | null;
 }

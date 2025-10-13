@@ -108,11 +108,35 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xxxxxx
 
 ### Étape 5 : Configurer la base de données Supabase
 
-1. Ouvrir le dashboard Supabase : [app.supabase.com](https://app.supabase.com)
-2. Sélectionner votre projet `lamap`
-3. Aller dans **SQL Editor** (icône de base de données à gauche)
-4. Cliquer sur **+ New Query**
-5. Copier-coller ce SQL :
+#### A) Créer le projet Supabase (si pas déjà fait)
+
+1. Aller sur [supabase.com](https://supabase.com)
+2. Se connecter ou créer un compte (gratuit)
+3. Cliquer sur **"New Project"** (bouton vert en haut à droite)
+4. Remplir le formulaire :
+   - **Name** : `lamap`
+   - **Database Password** : Générer un mot de passe fort (cliquer sur "Generate a password")
+   - **Region** : Choisir `Europe West (Ireland)` ou la plus proche de vous
+   - **Pricing Plan** : Laisser "Free" sélectionné
+5. Cliquer sur **"Create new project"**
+6. ⏳ Attendre 2-3 minutes que le projet soit créé (une barre de progression s'affiche)
+
+#### B) Récupérer les clés API
+
+Une fois le projet créé :
+
+1. Vous êtes automatiquement sur le dashboard du projet
+2. Dans le menu de gauche, cliquer sur l'icône ⚙️ **Settings** (tout en bas)
+3. Cliquer sur **API** dans le sous-menu
+4. Noter ces deux valeurs (vous en aurez besoin pour `.env.local`) :
+   - **Project URL** : `https://xxxxxxxxx.supabase.co`
+   - **anon public** (dans la section "Project API keys") : `eyJhbGc...` (très longue clé)
+
+#### C) Créer la table `initiatives`
+
+1. Dans le menu de gauche, cliquer sur **SQL Editor** (icône `</>`)
+2. Cliquer sur **"+ New Query"** en haut à gauche
+3. Copier-coller ce SQL :
 
 ```sql
 -- Activer l'extension PostGIS pour la géolocalisation
@@ -163,8 +187,9 @@ CREATE POLICY "Suppression par le propriétaire uniquement" ON initiatives
   FOR DELETE USING (auth.uid() = user_id);
 ```
 
-6. Cliquer sur **Run** (ou Cmd/Ctrl + Enter)
-7. Vérifier que le message "Success. No rows returned" apparaît
+4. Cliquer sur le bouton **"Run"** (en bas à droite) ou appuyer sur `Cmd/Ctrl + Enter`
+5. ✅ Vérifier que le message **"Success. No rows returned"** apparaît en bas
+6. 🎉 Votre base de données est prête !
 
 ---
 

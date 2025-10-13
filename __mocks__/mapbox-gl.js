@@ -19,7 +19,7 @@ const mockMapboxGl = {
     setZoom: jest.fn(),
     getBounds: jest.fn(() => ({
       getNorthEast: () => ({ lng: 3, lat: 49 }),
-      getSouthWest: () => ({ lng: 1, lat: 48 })
+      getSouthWest: () => ({ lng: 1, lat: 48 }),
     })),
     fitBounds: jest.fn(),
     project: jest.fn(() => ({ x: 100, y: 100 })),
@@ -28,7 +28,7 @@ const mockMapboxGl = {
     getCanvas: jest.fn(() => ({
       style: { cursor: '' },
       width: 800,
-      height: 600
+      height: 600,
     })),
     resize: jest.fn(),
     loaded: jest.fn(() => true),
@@ -37,40 +37,40 @@ const mockMapboxGl = {
     scrollZoom: {
       enable: jest.fn(),
       disable: jest.fn(),
-      isEnabled: jest.fn(() => true)
+      isEnabled: jest.fn(() => true),
     },
     boxZoom: {
       enable: jest.fn(),
       disable: jest.fn(),
-      isEnabled: jest.fn(() => true)
+      isEnabled: jest.fn(() => true),
     },
     dragRotate: {
       enable: jest.fn(),
       disable: jest.fn(),
-      isEnabled: jest.fn(() => true)
+      isEnabled: jest.fn(() => true),
     },
     dragPan: {
       enable: jest.fn(),
       disable: jest.fn(),
-      isEnabled: jest.fn(() => true)
+      isEnabled: jest.fn(() => true),
     },
     keyboard: {
       enable: jest.fn(),
       disable: jest.fn(),
-      isEnabled: jest.fn(() => true)
+      isEnabled: jest.fn(() => true),
     },
     doubleClickZoom: {
       enable: jest.fn(),
       disable: jest.fn(),
-      isEnabled: jest.fn(() => true)
+      isEnabled: jest.fn(() => true),
     },
     touchZoomRotate: {
       enable: jest.fn(),
       disable: jest.fn(),
-      isEnabled: jest.fn(() => true)
-    }
+      isEnabled: jest.fn(() => true),
+    },
   })),
-  
+
   Marker: jest.fn().mockImplementation(() => ({
     setLngLat: jest.fn().mockReturnThis(),
     addTo: jest.fn().mockReturnThis(),
@@ -87,9 +87,9 @@ const mockMapboxGl = {
     setRotationAlignment: jest.fn().mockReturnThis(),
     getRotationAlignment: jest.fn(() => 'auto'),
     setPitchAlignment: jest.fn().mockReturnThis(),
-    getPitchAlignment: jest.fn(() => 'auto')
+    getPitchAlignment: jest.fn(() => 'auto'),
   })),
-  
+
   Popup: jest.fn().mockImplementation(() => ({
     setLngLat: jest.fn().mockReturnThis(),
     setHTML: jest.fn().mockReturnThis(),
@@ -103,48 +103,48 @@ const mockMapboxGl = {
     addClassName: jest.fn().mockReturnThis(),
     removeClassName: jest.fn().mockReturnThis(),
     setMaxWidth: jest.fn().mockReturnThis(),
-    toggleClassName: jest.fn().mockReturnThis()
+    toggleClassName: jest.fn().mockReturnThis(),
   })),
-  
+
   NavigationControl: jest.fn().mockImplementation(() => ({
     onAdd: jest.fn(),
-    onRemove: jest.fn()
+    onRemove: jest.fn(),
   })),
-  
+
   GeolocateControl: jest.fn().mockImplementation(() => ({
     onAdd: jest.fn(),
     onRemove: jest.fn(),
-    trigger: jest.fn()
+    trigger: jest.fn(),
   })),
-  
+
   FullscreenControl: jest.fn().mockImplementation(() => ({
     onAdd: jest.fn(),
-    onRemove: jest.fn()
+    onRemove: jest.fn(),
   })),
-  
+
   ScaleControl: jest.fn().mockImplementation(() => ({
     onAdd: jest.fn(),
-    onRemove: jest.fn()
+    onRemove: jest.fn(),
   })),
-  
+
   AttributionControl: jest.fn().mockImplementation(() => ({
     onAdd: jest.fn(),
-    onRemove: jest.fn()
+    onRemove: jest.fn(),
   })),
-  
+
   // Propriétés globales
   accessToken: 'pk.test_token',
   version: '3.0.0',
   supported: jest.fn(() => true),
   setRTLTextPlugin: jest.fn(),
   getRTLTextPluginStatus: jest.fn(() => 'loaded'),
-  
+
   // Classes d'événements
   MapboxEvent: class MockMapboxEvent {},
   MapMouseEvent: class MockMapMouseEvent {},
   MapTouchEvent: class MockMapTouchEvent {},
   MapWheelEvent: class MockMapWheelEvent {},
-  
+
   // Utilitaires
   LngLatBounds: jest.fn().mockImplementation(() => ({
     extend: jest.fn().mockReturnThis(),
@@ -155,9 +155,12 @@ const mockMapboxGl = {
     getWest: jest.fn(() => 1),
     getNorth: jest.fn(() => 49),
     getEast: jest.fn(() => 3),
-    toArray: jest.fn(() => [[1, 48], [3, 49]])
+    toArray: jest.fn(() => [
+      [1, 48],
+      [3, 49],
+    ]),
   })),
-  
+
   LngLat: jest.fn().mockImplementation((lng, lat) => ({
     lng: lng || 2.3522,
     lat: lat || 48.8566,
@@ -165,9 +168,9 @@ const mockMapboxGl = {
     toArray: jest.fn(() => [lng || 2.3522, lat || 48.8566]),
     toString: jest.fn(() => `LngLat(${lng || 2.3522}, ${lat || 48.8566})`),
     toBounds: jest.fn(() => new mockMapboxGl.LngLatBounds()),
-    distanceTo: jest.fn(() => 1000)
+    distanceTo: jest.fn(() => 1000),
   })),
-  
+
   Point: jest.fn().mockImplementation((x, y) => ({
     x: x || 0,
     y: y || 0,
@@ -181,15 +184,15 @@ const mockMapboxGl = {
     unit: jest.fn().mockReturnThis(),
     perp: jest.fn().mockReturnThis(),
     round: jest.fn().mockReturnThis(),
-    mag: jest.fn(() => Math.sqrt(x*x + y*y) || 0),
+    mag: jest.fn(() => Math.sqrt(x * x + y * y) || 0),
     equals: jest.fn(() => true),
     dist: jest.fn(() => 100),
     distSqr: jest.fn(() => 10000),
     angle: jest.fn(() => 0),
     angleTo: jest.fn(() => 0),
     angleWith: jest.fn(() => 0),
-    angleWithSep: jest.fn(() => 0)
-  }))
-}
+    angleWithSep: jest.fn(() => 0),
+  })),
+};
 
-module.exports = mockMapboxGl
+module.exports = mockMapboxGl;

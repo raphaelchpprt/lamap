@@ -1,20 +1,21 @@
-'use client'
+'use client';
 
 /**
- * Composant carte principal de LaMap
- * 
- * Utilise Mapbox GL JS pour afficher une carte interactive avec les initiatives ESS.
- * Supporte le clustering, les filtres et l'interaction avec les markers.
+ * Main Map Component for LaMap
+ *
+ * Uses Mapbox GL JS to display an interactive map with ESS initiatives.
+ * Supports clustering, filters, and marker interaction.
  */
 
-import { useEffect, useRef, useState, useCallback } from 'react'
-import mapboxgl from 'mapbox-gl'
-import 'mapbox-gl/dist/mapbox-gl.css'
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
-import type { Initiative, InitiativeType, InitiativeFilters } from '@/types/initiative'
-import { INITIATIVE_COLORS } from '@/types/initiative'
-import { createClient } from '@/lib/supabase/client'
-import { databaseInitiativeToInitiative } from '@/lib/supabase/types'
+import { createClient } from '@/lib/supabase/client';
+import { databaseInitiativeToInitiative } from '@/lib/supabase/types';
+import { INITIATIVE_COLORS } from '@/types/initiative';
+
+import type { Initiative, InitiativeFilters } from '@/types/initiative';
 
 // ================================
 // CONFIGURATION
@@ -26,7 +27,7 @@ const DEFAULT_CONFIG = {
   zoom: 6,
   minZoom: 3,
   maxZoom: 18,
-} as const
+} as const;
 
 // ================================
 // TYPES
@@ -34,25 +35,25 @@ const DEFAULT_CONFIG = {
 
 interface MapProps {
   /** Classes CSS personnalisées */
-  className?: string
-  
+  className?: string;
+
   /** Filtres appliqués aux initiatives */
-  filters?: InitiativeFilters
-  
+  filters?: InitiativeFilters;
+
   /** Callback lors du clic sur une initiative */
-  onInitiativeClick?: (initiative: Initiative) => void
-  
+  onInitiativeClick?: (initiative: Initiative) => void;
+
   /** Callback lors du clic sur la carte */
-  onMapClick?: (coordinates: [number, number]) => void
-  
+  onMapClick?: (coordinates: [number, number]) => void;
+
   /** Activer/désactiver le clustering */
-  enableClustering?: boolean
-  
+  enableClustering?: boolean;
+
   /** Centrer automatiquement sur les initiatives */
-  autoFit?: boolean
-  
+  autoFit?: boolean;
+
   /** Initiatives à afficher (si non fourni, chargées depuis Supabase) */
-  initiatives?: Initiative[]
+  initiatives?: Initiative[];
 }
 
 // ================================
@@ -66,34 +67,34 @@ export default function Map({
   onMapClick,
   enableClustering = true,
   autoFit = false,
-  initiatives: externalInitiatives
+  initiatives: externalInitiatives,
 }: MapProps) {
   // ================================
   // STATE & REFS
   // ================================
-  
-  const mapContainer = useRef<HTMLDivElement>(null)
-  const map = useRef<mapboxgl.Map | null>(null)
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [initiatives, setInitiatives] = useState<Initiative[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const map = useRef<mapboxgl.Map | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [initiatives, setInitiatives] = useState<Initiative[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // ================================
   // INITIALISATION DE LA CARTE
   // ================================
-  
-  useEffect(() => {
-    if (!mapContainer.current || map.current) return
 
-    // Vérification du token Mapbox
-    const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+  useEffect(() => {
+    if (!mapContainer.current || map.current) return;
+
+    // Check for Mapbox token
+    const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
     if (!token) {
-      setError('Token Mapbox manquant. Vérifiez votre fichier .env.local')
-      return
+      setError('Missing Mapbox token. Check your .env.local file');
+      return;
     }
 
-    mapboxgl.accessToken = token
+    mapboxgl.accessToken = token;
 
     try {
       map.current = new mapboxgl.Map({
@@ -104,19 +105,21 @@ export default function Map({
         minZoom: DEFAULT_CONFIG.minZoom,
         maxZoom: DEFAULT_CONFIG.maxZoom,
         antialias: true,
-      })
+      });
 
       map.current.on('load', () => {
-        setIsLoaded(true)
-        setupMapSources()
-        setupMapLayers()
-        setupMapInteractions()
-      })
+        setIsLoaded(true);
+        if (map.current) {
+          setupMapSources();
+          setupMapLayers();
+          setupMapInteractions();
+        }
+      });
 
-      // Contrôles de navigation
-      map.current.addControl(new mapboxgl.NavigationControl(), 'top-right')
-      
-      // Géolocalisation
+      // Navigation controls
+      map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+      // Geolocation
       map.current.addControl(
         new mapboxgl.GeolocateControl({
           positionOptions: { enableHighAccuracy: true },
@@ -124,85 +127,86 @@ export default function Map({
           showUserHeading: true,
         }),
         'top-right'
-      )
+      );
 
-      // Contrôle plein écran
-      map.current.addControl(new mapboxgl.FullscreenControl(), 'top-right')
-
+      // Fullscreen control
+      map.current.addControl(new mapboxgl.FullscreenControl(), 'top-right');
     } catch (err) {
-      console.error('Erreur lors de l\'initialisation de la carte:', err)
-      setError('Impossible d\'initialiser la carte Mapbox')
+      console.error('Error initializing map:', err);
+      setError('Unable to initialize Mapbox map');
     }
 
     return () => {
       if (map.current) {
-        map.current.remove()
-        map.current = null
-        setIsLoaded(false)
+        map.current.remove();
+        map.current = null;
+        setIsLoaded(false);
       }
-    }
-  }, [])
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ================================
   // CHARGEMENT DES INITIATIVES
   // ================================
-  
+
   const loadInitiatives = useCallback(async () => {
     if (externalInitiatives) {
-      setInitiatives(externalInitiatives)
-      return
+      setInitiatives(externalInitiatives);
+      return;
     }
 
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
 
     try {
-      const supabase = createClient()
-      
-      let query = supabase
-        .from('initiatives')
-        .select('*')
+      const supabase = createClient();
+
+      let query = supabase.from('initiatives').select('*');
 
       // Appliquer les filtres
       if (filters?.types?.length) {
-        query = query.in('type', filters.types)
+        query = query.in('type', filters.types);
       }
 
       if (filters?.verified_only) {
-        query = query.eq('verified', true)
+        query = query.eq('verified', true);
       }
 
       if (filters?.search_query) {
-        query = query.or(`name.ilike.%${filters.search_query}%,description.ilike.%${filters.search_query}%`)
+        query = query.or(
+          `name.ilike.%${filters.search_query}%,description.ilike.%${filters.search_query}%`
+        );
       }
 
-      const { data, error: dbError } = await query
+      const { data, error: dbError } = await query;
 
       if (dbError) {
-        throw new Error(`Erreur Supabase: ${dbError.message}`)
+        throw new Error(`Erreur Supabase: ${dbError.message}`);
       }
 
-      const formattedInitiatives = (data || []).map(databaseInitiativeToInitiative)
-      setInitiatives(formattedInitiatives)
-
+      const formattedInitiatives = (data || []).map(
+        databaseInitiativeToInitiative
+      );
+      setInitiatives(formattedInitiatives);
     } catch (err) {
-      console.error('Erreur lors du chargement des initiatives:', err)
-      setError(err instanceof Error ? err.message : 'Erreur inconnue')
+      console.error('Erreur lors du chargement des initiatives:', err);
+      setError(err instanceof Error ? err.message : 'Erreur inconnue');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [filters, externalInitiatives])
+  }, [filters, externalInitiatives]);
 
   useEffect(() => {
-    loadInitiatives()
-  }, [loadInitiatives])
+    loadInitiatives();
+  }, [loadInitiatives]);
 
   // ================================
   // CONFIGURATION DES SOURCES MAPBOX
   // ================================
-  
+
   const setupMapSources = useCallback(() => {
-    if (!map.current) return
+    if (!map.current) return;
 
     // Source pour les initiatives (points)
     if (!map.current.getSource('initiatives')) {
@@ -210,21 +214,21 @@ export default function Map({
         type: 'geojson',
         data: {
           type: 'FeatureCollection',
-          features: []
+          features: [],
         },
         cluster: enableClustering,
         clusterMaxZoom: 14,
-        clusterRadius: 50
-      })
+        clusterRadius: 50,
+      });
     }
-  }, [enableClustering])
+  }, [enableClustering]);
 
   // ================================
   // CONFIGURATION DES COUCHES
   // ================================
-  
+
   const setupMapLayers = useCallback(() => {
-    if (!map.current) return
+    if (!map.current) return;
 
     // Clusters
     if (enableClustering) {
@@ -240,20 +244,24 @@ export default function Map({
               'step',
               ['get', 'point_count'],
               '#51bbd6', // Couleur pour 1-10 points
-              10, '#f1c40f', // 10-50 points
-              50, '#e74c3c'  // 50+ points
+              10,
+              '#f1c40f', // 10-50 points
+              50,
+              '#e74c3c', // 50+ points
             ],
             'circle-radius': [
               'step',
               ['get', 'point_count'],
               20, // Rayon pour 1-10 points
-              10, 30, // 10-50 points
-              50, 40  // 50+ points
+              10,
+              30, // 10-50 points
+              50,
+              40, // 50+ points
             ],
             'circle-stroke-width': 2,
-            'circle-stroke-color': '#fff'
-          }
-        })
+            'circle-stroke-color': '#fff',
+          },
+        });
       }
 
       // Nombres sur les clusters
@@ -266,136 +274,157 @@ export default function Map({
           layout: {
             'text-field': '{point_count_abbreviated}',
             'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-            'text-size': 12
+            'text-size': 12,
           },
           paint: {
-            'text-color': '#ffffff'
-          }
-        })
+            'text-color': '#ffffff',
+          },
+        });
       }
     }
 
-    // Points individuels
+    // Individual points (not clustered)
     if (!map.current.getLayer('unclustered-point')) {
       map.current.addLayer({
         id: 'unclustered-point',
         type: 'circle',
         source: 'initiatives',
-        filter: enableClustering ? ['!', ['has', 'point_count']] : true,
+        filter: enableClustering ? (['!', ['has', 'point_count']] as mapboxgl.FilterSpecification) : undefined,
         paint: {
           'circle-radius': [
             'interpolate',
             ['linear'],
             ['zoom'],
-            8, 4,
-            12, 8,
-            16, 12
+            8,
+            4,
+            12,
+            8,
+            16,
+            12,
           ],
           'circle-color': [
             'match',
             ['get', 'type'],
-            'Ressourcerie', INITIATIVE_COLORS['Ressourcerie'],
-            'Repair Café', INITIATIVE_COLORS['Repair Café'],
-            'AMAP', INITIATIVE_COLORS['AMAP'],
-            'Entreprise d\'insertion', INITIATIVE_COLORS['Entreprise d\'insertion'],
-            'Point de collecte', INITIATIVE_COLORS['Point de collecte'],
-            'Recyclerie', INITIATIVE_COLORS['Recyclerie'],
-            'Épicerie sociale', INITIATIVE_COLORS['Épicerie sociale'],
-            'Jardin partagé', INITIATIVE_COLORS['Jardin partagé'],
-            'Fab Lab', INITIATIVE_COLORS['Fab Lab'],
-            'Coopérative', INITIATIVE_COLORS['Coopérative'],
-            'Monnaie locale', INITIATIVE_COLORS['Monnaie locale'],
-            'Tiers-lieu', INITIATIVE_COLORS['Tiers-lieu'],
-            INITIATIVE_COLORS['Autre'] // Défaut
+            'Ressourcerie',
+            INITIATIVE_COLORS['Ressourcerie'],
+            'Repair Café',
+            INITIATIVE_COLORS['Repair Café'],
+            'AMAP',
+            INITIATIVE_COLORS['AMAP'],
+            "Entreprise d'insertion",
+            INITIATIVE_COLORS["Entreprise d'insertion"],
+            'Point de collecte',
+            INITIATIVE_COLORS['Point de collecte'],
+            'Recyclerie',
+            INITIATIVE_COLORS['Recyclerie'],
+            'Épicerie sociale',
+            INITIATIVE_COLORS['Épicerie sociale'],
+            'Jardin partagé',
+            INITIATIVE_COLORS['Jardin partagé'],
+            'Fab Lab',
+            INITIATIVE_COLORS['Fab Lab'],
+            'Coopérative',
+            INITIATIVE_COLORS['Coopérative'],
+            'Monnaie locale',
+            INITIATIVE_COLORS['Monnaie locale'],
+            'Tiers-lieu',
+            INITIATIVE_COLORS['Tiers-lieu'],
+            INITIATIVE_COLORS['Autre'], // Défaut
           ],
           'circle-stroke-width': 2,
           'circle-stroke-color': '#ffffff',
-          'circle-opacity': 0.8
-        }
-      })
+          'circle-opacity': 0.8,
+        },
+      });
     }
-  }, [enableClustering])
+  }, [enableClustering]);
 
   // ================================
   // INTERACTIONS AVEC LA CARTE
   // ================================
-  
+
   const setupMapInteractions = useCallback(() => {
-    if (!map.current) return
+    if (!map.current) return;
 
     // Curseur pointer sur les éléments interactifs
     map.current.on('mouseenter', 'clusters', () => {
-      if (map.current) map.current.getCanvas().style.cursor = 'pointer'
-    })
+      if (map.current) map.current.getCanvas().style.cursor = 'pointer';
+    });
     map.current.on('mouseleave', 'clusters', () => {
-      if (map.current) map.current.getCanvas().style.cursor = ''
-    })
+      if (map.current) map.current.getCanvas().style.cursor = '';
+    });
 
     map.current.on('mouseenter', 'unclustered-point', () => {
-      if (map.current) map.current.getCanvas().style.cursor = 'pointer'
-    })
+      if (map.current) map.current.getCanvas().style.cursor = 'pointer';
+    });
     map.current.on('mouseleave', 'unclustered-point', () => {
-      if (map.current) map.current.getCanvas().style.cursor = ''
-    })
+      if (map.current) map.current.getCanvas().style.cursor = '';
+    });
 
     // Clic sur cluster : zoomer
     map.current.on('click', 'clusters', (e) => {
-      if (!map.current) return
+      if (!map.current) return;
 
       const features = map.current.queryRenderedFeatures(e.point, {
-        layers: ['clusters']
-      })
+        layers: ['clusters'],
+      });
 
-      const clusterId = features[0]?.properties?.cluster_id
+      const clusterId = features[0]?.properties?.cluster_id;
       if (clusterId) {
-        const source = map.current.getSource('initiatives') as mapboxgl.GeoJSONSource
+        const source = map.current.getSource(
+          'initiatives'
+        ) as mapboxgl.GeoJSONSource;
         source.getClusterExpansionZoom(clusterId, (err, zoom) => {
-          if (err || !map.current) return
+          if (err || !map.current || zoom === null || zoom === undefined) return;
 
           map.current.easeTo({
-            center: (features[0].geometry as any).coordinates,
-            zoom: zoom
-          })
-        })
+            center: (features[0].geometry as GeoJSON.Point).coordinates as [number, number],
+            zoom,
+          });
+        });
       }
-    })
+    });
 
     // Clic sur point : afficher détails
     map.current.on('click', 'unclustered-point', (e) => {
-      const features = e.features?.[0]
+      const features = e.features?.[0];
       if (features?.properties && onInitiativeClick) {
-        const initiative = JSON.parse(features.properties.initiative) as Initiative
-        onInitiativeClick(initiative)
+        const initiative = JSON.parse(
+          features.properties.initiative
+        ) as Initiative;
+        onInitiativeClick(initiative);
       }
-    })
+    });
 
     // Clic sur la carte
     map.current.on('click', (e) => {
       const features = map.current?.queryRenderedFeatures(e.point, {
-        layers: ['clusters', 'unclustered-point']
-      })
+        layers: ['clusters', 'unclustered-point'],
+      });
 
       // Si on n'a pas cliqué sur un marker/cluster
       if (!features?.length && onMapClick) {
-        onMapClick([e.lngLat.lng, e.lngLat.lat])
+        onMapClick([e.lngLat.lng, e.lngLat.lat]);
       }
-    })
-  }, [onInitiativeClick, onMapClick])
+    });
+  }, [onInitiativeClick, onMapClick]);
 
   // ================================
   // MISE À JOUR DES DONNÉES
   // ================================
-  
-  useEffect(() => {
-    if (!map.current || !isLoaded) return
 
-    const source = map.current.getSource('initiatives') as mapboxgl.GeoJSONSource
-    if (!source) return
+  useEffect(() => {
+    if (!map.current || !isLoaded) return;
+
+    const source = map.current.getSource(
+      'initiatives'
+    ) as mapboxgl.GeoJSONSource;
+    if (!source) return;
 
     // Conversion en GeoJSON
     const geojsonData = {
       type: 'FeatureCollection' as const,
-      features: initiatives.map(initiative => ({
+      features: initiatives.map((initiative) => ({
         type: 'Feature' as const,
         geometry: initiative.location,
         properties: {
@@ -403,89 +432,100 @@ export default function Map({
           name: initiative.name,
           type: initiative.type,
           verified: initiative.verified,
-          initiative: JSON.stringify(initiative) // Données complètes pour les popups
-        }
-      }))
-    }
+          initiative: JSON.stringify(initiative), // Données complètes pour les popups
+        },
+      })),
+    };
 
-    source.setData(geojsonData)
+    source.setData(geojsonData);
 
     // Auto-fit si demandé
     if (autoFit && initiatives.length > 0) {
-      const coordinates = initiatives.map(i => i.location.coordinates)
+      const coordinates = initiatives.map((i) => i.location.coordinates);
       const bounds = coordinates.reduce(
         (bounds, coord) => bounds.extend(coord),
         new mapboxgl.LngLatBounds(coordinates[0], coordinates[0])
-      )
+      );
 
       map.current.fitBounds(bounds, {
         padding: 50,
-        maxZoom: 12
-      })
+        maxZoom: 12,
+      });
     }
-  }, [initiatives, isLoaded, autoFit])
+  }, [initiatives, isLoaded, autoFit]);
 
   // ================================
-  // MÉTHODES PUBLIQUES
+  // PUBLIC METHODS (exposed via ref if needed)
   // ================================
-  
-  const flyTo = useCallback((coordinates: [number, number], zoom = 14) => {
-    if (map.current) {
-      map.current.flyTo({ center: coordinates, zoom })
-    }
-  }, [])
 
-  const fitBounds = useCallback((bounds: [[number, number], [number, number]]) => {
+  const _flyTo = useCallback((coordinates: [number, number], zoom = 14) => {
     if (map.current) {
-      map.current.fitBounds(bounds, { padding: 50 })
+      map.current.flyTo({ center: coordinates, zoom });
     }
-  }, [])
+  }, []);
+
+  const _fitBounds = useCallback(
+    (bounds: [[number, number], [number, number]]) => {
+      if (map.current) {
+        map.current.fitBounds(bounds, { padding: 50 });
+      }
+    },
+    []
+  );
 
   // ================================
   // RENDU
   // ================================
-  
+
   return (
     <div className={`relative ${className}`}>
       {/* Conteneur de la carte */}
-      <div 
-        ref={mapContainer} 
+      <div
+        ref={mapContainer}
         className="h-full w-full"
         data-testid="mapbox-container"
       />
-      
+
       {/* Indicateur de chargement */}
       {loading && (
         <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-10">
           <div className="bg-white rounded-lg shadow-lg p-4 flex items-center space-x-3">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-500" />
-            <span className="text-sm font-medium">Chargement des initiatives...</span>
+            <span className="text-sm font-medium">
+              Chargement des initiatives...
+            </span>
           </div>
         </div>
       )}
-      
+
       {/* Affichage d'erreur */}
       {error && (
         <div className="absolute top-4 left-4 right-4 z-20">
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <div className="flex">
               <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                <svg
+                  className="h-5 w-5 text-red-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               </div>
               <div className="ml-3">
                 <h3 className="text-sm font-medium text-red-800">
                   Erreur de chargement
                 </h3>
-                <div className="mt-2 text-sm text-red-700">
-                  {error}
-                </div>
+                <div className="mt-2 text-sm text-red-700">{error}</div>
                 <div className="mt-3">
                   <button
                     onClick={() => {
-                      setError(null)
-                      loadInitiatives()
+                      setError(null);
+                      loadInitiatives();
                     }}
                     className="text-sm bg-red-100 hover:bg-red-200 text-red-800 px-3 py-2 rounded-md transition-colors"
                   >
@@ -497,17 +537,18 @@ export default function Map({
           </div>
         </div>
       )}
-      
+
       {/* Informations sur les données */}
       {!loading && !error && (
         <div className="absolute bottom-4 left-4 z-10">
           <div className="bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm">
             <span className="text-xs text-gray-600">
-              {initiatives.length} initiative{initiatives.length > 1 ? 's' : ''} affichée{initiatives.length > 1 ? 's' : ''}
+              {initiatives.length} initiative{initiatives.length > 1 ? 's' : ''}{' '}
+              affichée{initiatives.length > 1 ? 's' : ''}
             </span>
           </div>
         </div>
       )}
     </div>
-  )
+  );
 }
