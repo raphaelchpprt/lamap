@@ -1,10 +1,10 @@
-# 📦 Dépendances à installer pour LaMap
+# 📦 Dependencies to Install for LaMap
 
-Ce fichier liste toutes les dépendances nécessaires au bon fonctionnement de LaMap.
+This file lists all dependencies required for LaMap to function properly.
 
-## ✅ Dépendances déjà installées
+## ✅ Already Installed Dependencies
 
-Les dépendances suivantes sont déjà présentes dans `package.json` :
+The following dependencies are already present in `package.json`:
 
 ### Production
 - ✅ `next` (15.x)
@@ -14,7 +14,7 @@ Les dépendances suivantes sont déjà présentes dans `package.json` :
 - ✅ `@supabase/supabase-js`
 - ✅ `mapbox-gl`
 
-### Développement
+### Development
 - ✅ `@testing-library/jest-dom`
 - ✅ `@testing-library/react`
 - ✅ `@types/mapbox-gl`
@@ -31,42 +31,42 @@ Les dépendances suivantes sont déjà présentes dans `package.json` :
 - ✅ `tailwindcss`
 - ✅ `typescript`
 
-## 📋 Dépendances manquantes à installer
+## 📋 Missing Dependencies to Install
 
-### 1. Utilitaires CSS
+### 1. CSS Utilities
 
 ```bash
 npm install clsx tailwind-merge
 ```
 
-**Utilisation :**
-- `clsx` : Construction conditionnelle de classes CSS
-- `tailwind-merge` : Fusion intelligente de classes Tailwind (évite les conflits)
+**Usage:**
+- `clsx`: Conditional CSS class construction
+- `tailwind-merge`: Smart Tailwind class merging (prevents conflicts)
 
-**Où utilisé :**
-- `src/lib/utils.ts` (fonction `cn()`)
-- Tous les composants pour combiner les classes conditionnelles
+**Where used:**
+- `src/lib/utils.ts` (`cn()` function)
+- All components for combining conditional classes
 
 ---
 
-### 2. Validation de formulaires (recommandé)
+### 2. Form Validation (recommended)
 
 ```bash
 npm install zod react-hook-form @hookform/resolvers
 ```
 
-**Utilisation :**
-- `zod` : Validation de schémas TypeScript-first
-- `react-hook-form` : Gestion performante de formulaires
-- `@hookform/resolvers` : Intégration Zod avec React Hook Form
+**Usage:**
+- `zod`: TypeScript-first schema validation
+- `react-hook-form`: Performant form management
+- `@hookform/resolvers`: Zod integration with React Hook Form
 
-**Exemple d'utilisation future :**
+**Future usage example:**
 ```tsx
 // src/schemas/initiative.ts
 import { z } from 'zod'
 
 export const initiativeSchema = z.object({
-  name: z.string().min(3, 'Nom trop court'),
+  name: z.string().min(3, 'Name too short'),
   type: z.enum(['Ressourcerie', 'AMAP', ...]),
   location: z.object({
     latitude: z.number().min(-90).max(90),
@@ -77,17 +77,17 @@ export const initiativeSchema = z.object({
 
 ---
 
-### 3. Icônes (recommandé)
+### 3. Icons (recommended)
 
 ```bash
 npm install lucide-react
 ```
 
-**Utilisation :**
-- Bibliothèque d'icônes moderne, légère et tree-shakeable
-- Compatible avec React et TypeScript
+**Usage:**
+- Modern, lightweight, and tree-shakeable icon library
+- Compatible with React and TypeScript
 
-**Exemple d'utilisation :**
+**Usage example:**
 ```tsx
 import { MapPin, Plus, Filter, Search } from 'lucide-react'
 
@@ -96,17 +96,17 @@ import { MapPin, Plus, Filter, Search } from 'lucide-react'
 
 ---
 
-### 4. Gestion de dates (si besoin)
+### 4. Date Management (if needed)
 
 ```bash
 npm install date-fns
 ```
 
-**Utilisation :**
-- Manipulation et formatage de dates (alternative à `utils.ts`)
-- Plus complet que les fonctions custom
+**Usage:**
+- Date manipulation and formatting (alternative to `utils.ts`)
+- More complete than custom functions
 
-**Exemple :**
+**Example:**
 ```tsx
 import { format, formatDistanceToNow } from 'date-fns'
 import { fr } from 'date-fns/locale'
@@ -117,45 +117,45 @@ formatDistanceToNow(date, { locale: fr, addSuffix: true })
 
 ---
 
-### 5. Toast notifications (recommandé)
+### 5. Toast Notifications (recommended)
 
 ```bash
 npm install sonner
 ```
 
-**Utilisation :**
-- Notifications toast élégantes et accessibles
-- API simple, compatible avec Next.js
+**Usage:**
+- Elegant and accessible toast notifications
+- Simple API, compatible with Next.js
 
-**Exemple :**
+**Example:**
 ```tsx
 import { toast } from 'sonner'
 
-toast.success('Initiative ajoutée avec succès !')
-toast.error('Une erreur est survenue')
+toast.success('Initiative added successfully!')
+toast.error('An error occurred')
 ```
 
 ---
 
-### 6. Sanitization HTML (sécurité)
+### 6. HTML Sanitization (security)
 
 ```bash
 npm install isomorphic-dompurify
 ```
 
-**Utilisation :**
-- Nettoyer les inputs utilisateur contenant du HTML
-- Protection contre les attaques XSS
+**Usage:**
+- Sanitize user inputs containing HTML
+- Protection against XSS attacks
 
 ---
 
-### 7. Analyse de bundle (développement)
+### 7. Bundle Analysis (development)
 
 ```bash
 npm install --save-dev @next/bundle-analyzer
 ```
 
-**Configuration dans `next.config.ts` :**
+**Configuration in `next.config.ts`:**
 ```typescript
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
@@ -166,16 +166,16 @@ module.exports = withBundleAnalyzer({
 })
 ```
 
-**Utilisation :**
+**Usage:**
 ```bash
 ANALYZE=true npm run build
 ```
 
 ---
 
-### 8. Geocoding (API Adresse)
+### 8. Geocoding (Address API)
 
-Pas de dépendance nécessaire, utiliser l'API gratuite du gouvernement français :
+No dependency required, use the free French government API:
 
 ```typescript
 // src/lib/geocoding.ts
@@ -190,9 +190,9 @@ export async function geocodeAddress(address: string) {
 
 ---
 
-## 🚀 Installation complète recommandée
+## 🚀 Complete Recommended Installation
 
-Pour installer toutes les dépendances recommandées en une seule commande :
+To install all recommended dependencies in one command:
 
 ```bash
 npm install \
@@ -211,36 +211,36 @@ npm install --save-dev \
 
 ---
 
-## 📝 Installation minimale (essentiels uniquement)
+## 📝 Minimal Installation (essentials only)
 
-Si vous voulez commencer avec le strict minimum :
+If you want to start with the bare minimum:
 
 ```bash
 npm install clsx tailwind-merge lucide-react
 ```
 
-Ces trois packages sont essentiels pour :
-- `clsx` + `tailwind-merge` : Utilisés dans `src/lib/utils.ts`
-- `lucide-react` : Icônes utilisées dans les composants
+These three packages are essential for:
+- `clsx` + `tailwind-merge`: Used in `src/lib/utils.ts`
+- `lucide-react`: Icons used in components
 
 ---
 
-## ⚙️ Dépendances optionnelles (à installer selon les besoins)
+## ⚙️ Optional Dependencies (install as needed)
 
-### Authentification sociale
+### Social Authentication
 ```bash
 npm install @supabase/auth-ui-react @supabase/auth-ui-shared
 ```
 
-### Graphiques et visualisations
+### Charts and Visualizations
 ```bash
 npm install recharts
 ```
 
-### Gestion d'état global (si nécessaire)
+### Global State Management (if needed)
 ```bash
 npm install zustand
-# ou
+# or
 npm install jotai
 ```
 
@@ -256,7 +256,7 @@ npm install react-markdown remark-gfm
 
 ---
 
-## 🔍 Vérifier les versions installées
+## 🔍 Check Installed Versions
 
 ```bash
 npm list --depth=0
@@ -264,7 +264,7 @@ npm list --depth=0
 
 ---
 
-## 🧹 Nettoyer les dépendances inutilisées
+## 🧹 Clean Up Unused Dependencies
 
 ```bash
 npm install -g depcheck
@@ -273,7 +273,7 @@ depcheck
 
 ---
 
-## 📚 Documentation des packages
+## 📚 Package Documentation
 
 - [clsx](https://github.com/lukeed/clsx)
 - [tailwind-merge](https://github.com/dcastil/tailwind-merge)
@@ -286,4 +286,6 @@ depcheck
 
 ---
 
-**Dernière mise à jour :** 10 octobre 2025
+**Last updated:** October 10, 2025
+
+````

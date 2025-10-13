@@ -1,84 +1,84 @@
-# 📦 Récapitulatif de la configuration LaMap
+# 📦 LaMap Configuration Summary
 
-**Date :** 10 octobre 2025  
-**Session :** Configuration initiale complète
+**Date:** October 10, 2025  
+**Session:** Complete Initial Configuration
 
-## ✅ Ce qui a été créé et configuré
+## ✅ What Has Been Created and Configured
 
 ### 📄 Documentation
 
-| Fichier | Description | État |
-|---------|-------------|------|
-| `README.md` | Documentation principale du projet | ✅ Créé |
-| `CONTEXT_ENGINEERING.md` | Historique des décisions techniques | ✅ Créé |
-| `BEST_PRACTICES.md` | Guide des meilleures pratiques | ✅ Créé |
-| `DEPENDENCIES.md` | Liste des dépendances à installer | ✅ Créé |
-| `QUICKSTART.md` | Guide de démarrage rapide | ✅ Créé |
-| `.env.example` | Template des variables d'environnement | ✅ Créé |
+| File | Description | Status |
+|------|-------------|--------|
+| `README.md` | Main project documentation | ✅ Created |
+| `CONTEXT_ENGINEERING.md` | Technical decisions history | ✅ Created |
+| `BEST_PRACTICES.md` | Best practices guide | ✅ Created |
+| `DEPENDENCIES.md` | List of dependencies to install | ✅ Created |
+| `QUICKSTART.md` | Quick start guide | ✅ Created |
+| `.env.example` | Environment variables template | ✅ Created |
 
-### 🎨 Composants React
+### 🎨 React Components
 
-| Composant | Type | Description | État |
-|-----------|------|-------------|------|
-| `InitiativeCard.tsx` | Client | Carte d'affichage d'une initiative | ✅ Créé |
-| `AddInitiativeForm.tsx` | Client | Formulaire d'ajout d'initiative | ✅ Créé |
-| `FilterPanel.tsx` | Client | Panneau de filtrage par type | ✅ Créé |
-| `Map.tsx` | Client | Carte Mapbox interactive | ⏳ À créer |
+| Component | Type | Description | Status |
+|-----------|------|-------------|--------|
+| `InitiativeCard.tsx` | Client | Initiative display card | ✅ Created |
+| `AddInitiativeForm.tsx` | Client | Initiative add form | ✅ Created |
+| `FilterPanel.tsx` | Client | Type filtering panel | ✅ Created |
+| `Map.tsx` | Client | Interactive Mapbox map | ⏳ To create |
 
-### 🧪 Tests Jest
+### 🧪 Jest Tests
 
-| Test | Composant testé | État |
-|------|-----------------|------|
-| `InitiativeCard.test.tsx` | InitiativeCard | ✅ Créé |
-| `FilterPanel.test.tsx` | FilterPanel | ✅ Créé |
-| `jest.d.ts` | Types TypeScript pour Jest | ✅ Créé |
+| Test | Tested Component | Status |
+|------|------------------|--------|
+| `InitiativeCard.test.tsx` | InitiativeCard | ✅ Created |
+| `FilterPanel.test.tsx` | FilterPanel | ✅ Created |
+| `jest.d.ts` | TypeScript types for Jest | ✅ Created |
 
-### 🛠️ Utilitaires & Lib
+### 🛠️ Utilities & Lib
 
-| Fichier | Description | État |
-|---------|-------------|------|
-| `lib/utils.ts` | Fonctions utilitaires (distance, dates, etc.) | ✅ Créé |
-| `lib/supabase/client.ts` | Client Supabase navigateur | ✅ Existait |
-| `lib/supabase/server.ts` | Client Supabase serveur | ✅ Existait |
-| `types/initiative.ts` | Types TypeScript complets | ✅ Existait |
+| File | Description | Status |
+|------|-------------|--------|
+| `lib/utils.ts` | Utility functions (distance, dates, etc.) | ✅ Created |
+| `lib/supabase/client.ts` | Supabase browser client | ✅ Existed |
+| `lib/supabase/server.ts` | Supabase server client | ✅ Existed |
+| `types/initiative.ts` | Complete TypeScript types | ✅ Existed |
 
 ### ⚙️ Configuration
 
-| Fichier | Description | État |
-|---------|-------------|------|
-| `eslint.config.mjs` | Configuration ESLint | ✅ Déjà configuré |
-| `tailwind.config.ts` | Configuration Tailwind + palette | ✅ Déjà configuré |
-| `jest.config.js` | Configuration Jest | ✅ Déjà configuré |
-| `jest.setup.js` | Setup global Jest | ✅ Déjà configuré |
-| `tsconfig.json` | Configuration TypeScript | ✅ Déjà configuré |
+| File | Description | Status |
+|------|-------------|--------|
+| `eslint.config.mjs` | ESLint configuration | ✅ Already configured |
+| `tailwind.config.ts` | Tailwind configuration + palette | ✅ Already configured |
+| `jest.config.js` | Jest configuration | ✅ Already configured |
+| `jest.setup.js` | Jest global setup | ✅ Already configured |
+| `tsconfig.json` | TypeScript configuration | ✅ Already configured |
 
 ---
 
-## 🚧 Ce qui reste à faire
+## 🚧 What Remains to Be Done
 
-### 1. Installer les dépendances manquantes
+### 1. Install Missing Dependencies
 
 ```bash
 npm install clsx tailwind-merge lucide-react
 ```
 
-**Pourquoi :**
-- `clsx` et `tailwind-merge` : Utilisés dans `lib/utils.ts` pour la fonction `cn()`
-- `lucide-react` : Icônes pour les composants
+**Why:**
+- `clsx` and `tailwind-merge`: Used in `lib/utils.ts` for the `cn()` function
+- `lucide-react`: Icons for components
 
-### 2. Créer le composant Map.tsx
+### 2. Create Map.tsx Component
 
-**Fichier :** `src/components/Map/Map.tsx`
+**File:** `src/components/Map/Map.tsx`
 
-**Fonctionnalités à implémenter :**
-- Initialisation Mapbox GL
-- Affichage des markers pour chaque initiative
-- Clustering des markers (performances)
-- Popups au clic sur un marker
-- Gestion du zoom et du centre
-- Intégration avec les filtres
+**Features to implement:**
+- Mapbox GL initialization
+- Display markers for each initiative
+- Marker clustering (performance)
+- Popups on marker click
+- Zoom and center management
+- Integration with filters
 
-**Props attendues :**
+**Expected props:**
 ```tsx
 interface MapProps {
   initiatives: Initiative[]
@@ -89,33 +89,33 @@ interface MapProps {
 }
 ```
 
-### 3. Configurer Supabase
+### 3. Configure Supabase
 
-**a) Créer un projet sur supabase.com**
+**a) Create a project on supabase.com**
 
-**b) Exécuter le SQL :**
+**b) Execute the SQL:**
 
-Voir le fichier `QUICKSTART.md` section "Étape 5" pour le SQL complet.
+See the `QUICKSTART.md` file "Step 5" section for the complete SQL.
 
-**c) Créer le fichier `.env.local` :**
+**c) Create the `.env.local` file:**
 
 ```bash
 cp .env.example .env.local
 ```
 
-Puis remplir avec vos vraies clés.
+Then fill with your actual keys.
 
-### 4. Mettre à jour la page d'accueil
+### 4. Update the Homepage
 
-**Fichier :** `src/app/page.tsx`
+**File:** `src/app/page.tsx`
 
-**À implémenter :**
-- Layout avec carte + panneau de filtres
-- Récupération des initiatives depuis Supabase
-- État de filtrage
-- Gestion du chargement
+**To implement:**
+- Layout with map + filter panel
+- Fetch initiatives from Supabase
+- Filtering state
+- Loading management
 
-**Structure suggérée :**
+**Suggested structure:**
 ```tsx
 export default async function HomePage() {
   const supabase = await createClient()
@@ -125,12 +125,12 @@ export default async function HomePage() {
 
   return (
     <div className="flex h-screen">
-      {/* Sidebar avec filtres */}
+      {/* Sidebar with filters */}
       <aside className="w-80 overflow-y-auto">
         <FilterPanel {...} />
       </aside>
       
-      {/* Carte principale */}
+      {/* Main map */}
       <main className="flex-1">
         <Map initiatives={initiatives} />
       </main>
@@ -139,9 +139,9 @@ export default async function HomePage() {
 }
 ```
 
-### 5. Créer les Server Actions
+### 5. Create Server Actions
 
-**Fichier :** `src/app/actions.ts`
+**File:** `src/app/actions.ts`
 
 ```tsx
 'use server'
@@ -152,7 +152,7 @@ import { createClient } from '@/lib/supabase/server'
 export async function createInitiative(formData: FormData) {
   const supabase = await createClient()
   
-  // Validation et insertion
+  // Validation and insertion
   // ...
   
   revalidatePath('/')
@@ -168,85 +168,85 @@ export async function deleteInitiative(id: string) {
 }
 ```
 
-### 6. Implémenter l'authentification
+### 6. Implement Authentication
 
-**Pages à créer :**
+**Pages to create:**
 - `src/app/login/page.tsx`
 - `src/app/signup/page.tsx`
 
-**Middleware :**
-- `src/middleware.ts` pour protéger les routes
+**Middleware:**
+- `src/middleware.ts` to protect routes
 
-### 7. Tests supplémentaires
+### 7. Additional Tests
 
-**À créer :**
+**To create:**
 - `src/__tests__/components/Map.test.tsx`
 - `src/__tests__/components/AddInitiativeForm.test.tsx`
 - `src/__tests__/lib/utils.test.ts`
 - `src/__tests__/app/actions.test.ts`
 
-### 8. Optimisations
+### 8. Optimizations
 
-- Ajouter le lazy loading des composants lourds
-- Implémenter le clustering Mapbox
-- Optimiser les images (Next.js Image)
-- Ajouter les meta tags SEO
-- Configurer le sitemap.xml
+- Add lazy loading for heavy components
+- Implement Mapbox clustering
+- Optimize images (Next.js Image)
+- Add SEO meta tags
+- Configure sitemap.xml
 
 ---
 
-## 📊 État d'avancement
+## 📊 Progress Status
 
 ```
-Configuration projet:     ████████████████████ 100%
+Project configuration:    ████████████████████ 100%
 Documentation:            ████████████████████ 100%
-Types TypeScript:         ████████████████████ 100%
-Composants base:          ████████████████░░░░  80%
-Tests unitaires:          ███████████░░░░░░░░░  55%
-Intégration Supabase:     ████████░░░░░░░░░░░░  40%
-Carte Mapbox:             ░░░░░░░░░░░░░░░░░░░░   0%
-Authentification:         ░░░░░░░░░░░░░░░░░░░░   0%
+TypeScript types:         ████████████████████ 100%
+Base components:          ████████████████░░░░  80%
+Unit tests:               ███████████░░░░░░░░░  55%
+Supabase integration:     ████████░░░░░░░░░░░░  40%
+Mapbox map:               ░░░░░░░░░░░░░░░░░░░░   0%
+Authentication:           ░░░░░░░░░░░░░░░░░░░░   0%
 ```
 
-**Progression globale : 60%**
+**Overall progress: 60%**
 
 ---
 
-## 🎯 Ordre de priorité recommandé
+## 🎯 Recommended Priority Order
 
-1. **[PRIORITÉ 1]** Installer les dépendances manquantes
-2. **[PRIORITÉ 1]** Configurer Supabase (.env.local + SQL)
-3. **[PRIORITÉ 1]** Créer le composant Map.tsx
-4. **[PRIORITÉ 2]** Mettre à jour page.tsx avec layout complet
-5. **[PRIORITÉ 2]** Créer les Server Actions
-6. **[PRIORITÉ 3]** Implémenter l'authentification
-7. **[PRIORITÉ 3]** Ajouter les tests manquants
-8. **[PRIORITÉ 4]** Optimisations et features avancées
+1. **[PRIORITY 1]** Install missing dependencies
+2. **[PRIORITY 1]** Configure Supabase (.env.local + SQL)
+3. **[PRIORITY 1]** Create Map.tsx component
+4. **[PRIORITY 2]** Update page.tsx with complete layout
+5. **[PRIORITY 2]** Create Server Actions
+6. **[PRIORITY 3]** Implement authentication
+7. **[PRIORITY 3]** Add missing tests
+8. **[PRIORITY 4]** Optimizations and advanced features
 
 ---
 
-## 🧰 Commandes utiles
+## 🧰 Useful Commands
 
 ```bash
-# Développement
-npm run dev              # Lancer le serveur de dev
-npm run build            # Build de production
-npm start                # Serveur de production
-npm run lint             # Vérifier ESLint
-npm test                 # Lancer les tests
-npm test -- --watch      # Tests en mode watch
-npm test -- --coverage   # Tests avec couverture
+# Development
+npm run dev              # Start dev server
+npm run build            # Production build
+npm start                # Production server
+npm run lint             # Check ESLint
+npm test                 # Run tests
+npm test -- --watch      # Tests in watch mode
+npm test -- --coverage   # Tests with coverage
 
-# Utilitaires
-npm run type-check       # Vérifier les types TypeScript (à ajouter)
-npm run format           # Formater le code (à ajouter)
+# Utilities
+npm run type-check       # Check TypeScript types (to add)
+npm run format           # Format code (to add)
 ```
 
 ---
 
-## 📦 Dépendances actuelles
+## 📦 Current Dependencies
 
-### Installées ✅
+### Installed ✅
 
 - next (15.x)
 - react (19.x)
@@ -262,13 +262,13 @@ npm run format           # Formater le code (à ajouter)
 - @tailwindcss/forms
 - @tailwindcss/typography
 
-### À installer ⏳
+### To install ⏳
 
 - clsx
 - tailwind-merge
 - lucide-react
 
-### Optionnelles (recommandées)
+### Optional (recommended)
 
 - zod
 - react-hook-form
@@ -277,35 +277,37 @@ npm run format           # Formater le code (à ajouter)
 - isomorphic-dompurify
 - date-fns
 
-Voir `DEPENDENCIES.md` pour plus de détails.
+See `DEPENDENCIES.md` for more details.
 
 ---
 
-## 🔗 Liens utiles
+## 🔗 Useful Links
 
-- **Projet GitHub** : (à configurer)
-- **Supabase Dashboard** : https://app.supabase.com
-- **Mapbox Account** : https://account.mapbox.com
-- **Vercel Deploy** : (à configurer)
-
----
-
-## ✅ Checklist avant de continuer
-
-- [ ] Lire le `README.md` complet
-- [ ] Installer les dépendances manquantes
-- [ ] Créer le fichier `.env.local`
-- [ ] Configurer Supabase (projet + SQL)
-- [ ] Tester que le projet démarre (`npm run dev`)
-- [ ] Lire `BEST_PRACTICES.md`
-- [ ] Lire `CONTEXT_ENGINEERING.md`
+- **GitHub Project**: (to configure)
+- **Supabase Dashboard**: https://app.supabase.com
+- **Mapbox Account**: https://account.mapbox.com
+- **Vercel Deploy**: (to configure)
 
 ---
 
-**Prêt à coder !** 🚀
+## ✅ Checklist Before Continuing
 
-Commencez par installer les dépendances, puis suivez le `QUICKSTART.md` pour la configuration complète.
+- [ ] Read the complete `README.md`
+- [ ] Install missing dependencies
+- [ ] Create the `.env.local` file
+- [ ] Configure Supabase (project + SQL)
+- [ ] Test that the project starts (`npm run dev`)
+- [ ] Read `BEST_PRACTICES.md`
+- [ ] Read `CONTEXT_ENGINEERING.md`
 
 ---
 
-**Dernière mise à jour :** 10 octobre 2025
+**Ready to code!** 🚀
+
+Start by installing the dependencies, then follow the `QUICKSTART.md` for the complete configuration.
+
+---
+
+**Last updated:** October 10, 2025
+
+````

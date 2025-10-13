@@ -1,30 +1,30 @@
-# 🎨 Configuration shadcn/ui - LaMap
+# 🎨 shadcn/ui Configuration - LaMap
 
-**Date :** 13 octobre 2025  
-**Status :** ✅ Configuration terminée
+**Date:** October 13, 2025  
+**Status:** ✅ Configuration complete
 
 ---
 
-## ✅ Ce qui a été fait
+## ✅ What Has Been Done
 
-### 1. Installation des dépendances
+### 1. Dependencies Installation
 
 ```bash
 npm install tailwindcss-animate class-variance-authority clsx tailwind-merge lucide-react @radix-ui/react-slot @radix-ui/react-label
 ```
 
-**Packages installés :**
-- `tailwindcss-animate` : Animations pour shadcn/ui
-- `class-variance-authority` : Gestion des variants de composants
-- `clsx` : Utilitaire pour classes conditionnelles
-- `tailwind-merge` : Fusion intelligente de classes Tailwind
-- `lucide-react` : Icônes (déjà utilisé dans le projet)
-- `@radix-ui/react-slot` : Composant Slot pour Button
-- `@radix-ui/react-label` : Composant Label accessible
+**Installed packages:**
+- `tailwindcss-animate`: Animations for shadcn/ui
+- `class-variance-authority`: Component variants management
+- `clsx`: Utility for conditional classes
+- `tailwind-merge`: Smart Tailwind class merging
+- `lucide-react`: Icons (already used in the project)
+- `@radix-ui/react-slot`: Slot component for Button
+- `@radix-ui/react-label`: Accessible Label component
 
-### 2. Configuration du projet
+### 2. Project Configuration
 
-#### A) Fichier `components.json` créé
+#### A) `components.json` file created
 
 ```json
 {
@@ -49,56 +49,56 @@ npm install tailwindcss-animate class-variance-authority clsx tailwind-merge luc
 }
 ```
 
-#### B) `tailwind.config.ts` mis à jour
+#### B) `tailwind.config.ts` updated
 
-- Ajout de `darkMode: 'class'`
-- Ajout des variables CSS shadcn/ui (border, input, ring, etc.)
-- Conservation de la palette LaMap (primary, secondary, accent)
-- Intégration des deux systèmes de couleurs
-- Ajout de `tailwindcss-animate` dans les plugins
+- Added `darkMode: 'class'`
+- Added shadcn/ui CSS variables (border, input, ring, etc.)
+- Preserved LaMap palette (primary, secondary, accent)
+- Integration of both color systems
+- Added `tailwindcss-animate` to plugins
 
-#### C) `globals.css` mis à jour
+#### C) `globals.css` updated
 
-- Ajout des variables CSS HSL pour les couleurs shadcn/ui
-- Support du dark mode
-- Variables compatibles avec les composants shadcn/ui
+- Added HSL CSS variables for shadcn/ui colors
+- Dark mode support
+- Variables compatible with shadcn/ui components
 
-### 3. Composants shadcn/ui créés
+### 3. shadcn/ui Components Created
 
-| Composant | Fichier | Status |
-|-----------|---------|--------|
-| Button | `src/components/ui/button.tsx` | ✅ Créé |
-| Card | `src/components/ui/card.tsx` | ✅ Créé |
-| Input | `src/components/ui/input.tsx` | ✅ Créé |
-| Label | `src/components/ui/label.tsx` | ✅ Créé |
-| Badge | `src/components/ui/badge.tsx` | ✅ Créé |
+| Component | File | Status |
+|-----------|------|--------|
+| Button | `src/components/ui/button.tsx` | ✅ Created |
+| Card | `src/components/ui/card.tsx` | ✅ Created |
+| Input | `src/components/ui/input.tsx` | ✅ Created |
+| Label | `src/components/ui/label.tsx` | ✅ Created |
+| Badge | `src/components/ui/badge.tsx` | ✅ Created |
 
-### 4. Structure des dossiers
+### 4. Folder Structure
 
 ```
 src/
 ├── components/
-│   ├── ui/                    # ✅ Nouveau dossier shadcn/ui
+│   ├── ui/                    # ✅ New shadcn/ui folder
 │   │   ├── button.tsx
 │   │   ├── card.tsx
 │   │   ├── input.tsx
 │   │   ├── label.tsx
 │   │   └── badge.tsx
 │   ├── Initiative/
-│   │   └── InitiativeCard.tsx # Existant (à migrer)
+│   │   └── InitiativeCard.tsx # Existing (to migrate)
 │   ├── Map/
 │   │   └── Map.tsx
-│   ├── AddInitiativeForm.tsx  # Existant (à migrer)
-│   └── FilterPanel.tsx        # Existant (à migrer)
+│   ├── AddInitiativeForm.tsx  # Existing (to migrate)
+│   └── FilterPanel.tsx        # Existing (to migrate)
 ```
 
 ---
 
-## 🎨 Système de design hybride
+## 🎨 Hybrid Design System
 
-Le projet utilise maintenant un **système de design hybride** :
+The project now uses a **hybrid design system**:
 
-### Variables shadcn/ui (pour les composants UI)
+### shadcn/ui Variables (for UI components)
 
 ```css
 --background, --foreground
@@ -111,29 +111,29 @@ Le projet utilise maintenant un **système de design hybride** :
 --border, --input, --ring
 ```
 
-### Palette LaMap (conservée pour le branding)
+### LaMap Palette (preserved for branding)
 
 ```typescript
 primary: {
-  50-950: Nuances de vert (ESS)
+  50-950: Green shades (SSE)
 }
 secondary: {
-  50-950: Nuances de bleu
+  50-950: Blue shades
 }
 accent: {
-  50-950: Nuances d'orange
+  50-950: Orange shades
 }
 ```
 
-**Avantage :** Vous pouvez utiliser les deux !
-- Composants shadcn/ui → Utilisent les variables HSL automatiquement
-- Composants LaMap custom → Peuvent utiliser `bg-primary-500`, etc.
+**Advantage:** You can use both!
+- shadcn/ui components → Use HSL variables automatically
+- Custom LaMap components → Can use `bg-primary-500`, etc.
 
 ---
 
-## 📝 Comment utiliser shadcn/ui dans vos composants
+## 📝 How to Use shadcn/ui in Your Components
 
-### Exemple 1 : Utiliser le Button
+### Example 1: Using Button
 
 ```tsx
 import { Button } from '@/components/ui/button'
@@ -141,8 +141,8 @@ import { Button } from '@/components/ui/button'
 export default function MyComponent() {
   return (
     <div>
-      <Button>Ajouter une initiative</Button>
-      <Button variant="outline">Annuler</Button>
+      <Button>Add initiative</Button>
+      <Button variant="outline">Cancel</Button>
       <Button variant="ghost" size="icon">
         <Plus className="h-4 w-4" />
       </Button>
@@ -151,7 +151,7 @@ export default function MyComponent() {
 }
 ```
 
-### Exemple 2 : Utiliser Card
+### Example 2: Using Card
 
 ```tsx
 import {
@@ -175,14 +175,14 @@ export default function InitiativeCard({ initiative }) {
         <p>{initiative.description}</p>
       </CardContent>
       <CardFooter>
-        <Button>Voir détails</Button>
+        <Button>View details</Button>
       </CardFooter>
     </Card>
   )
 }
 ```
 
-### Exemple 3 : Formulaire avec Input et Label
+### Example 3: Form with Input and Label
 
 ```tsx
 import { Label } from '@/components/ui/label'
@@ -194,17 +194,17 @@ export default function MyForm() {
     <form>
       <div className="space-y-4">
         <div>
-          <Label htmlFor="name">Nom de l'initiative</Label>
-          <Input id="name" placeholder="Ex: Ressourcerie de Belleville" />
+          <Label htmlFor="name">Initiative name</Label>
+          <Input id="name" placeholder="e.g.: Ressourcerie de Belleville" />
         </div>
-        <Button type="submit">Enregistrer</Button>
+        <Button type="submit">Save</Button>
       </div>
     </form>
   )
 }
 ```
 
-### Exemple 4 : Badge
+### Example 4: Badge
 
 ```tsx
 import { Badge } from '@/components/ui/badge'
@@ -213,7 +213,7 @@ export default function InitiativeType({ type, verified }) {
   return (
     <div className="flex gap-2">
       <Badge variant="secondary">{type}</Badge>
-      {verified && <Badge variant="default">Vérifié</Badge>}
+      {verified && <Badge variant="default">Verified</Badge>}
     </div>
   )
 }
@@ -221,9 +221,9 @@ export default function InitiativeType({ type, verified }) {
 
 ---
 
-## 🚀 Ajouter plus de composants shadcn/ui
+## 🚀 Add More shadcn/ui Components
 
-Pour ajouter d'autres composants shadcn/ui (Dialog, Dropdown, etc.) :
+To add other shadcn/ui components (Dialog, Dropdown, etc.):
 
 ```bash
 npx shadcn@latest add dialog
@@ -234,34 +234,34 @@ npx shadcn@latest add toast
 npx shadcn@latest add alert
 ```
 
-Ou voir tous les composants disponibles :
+Or see all available components:
 https://ui.shadcn.com/docs/components
 
 ---
 
-## 🔄 Migration des composants existants
+## 🔄 Migrating Existing Components
 
-### À faire (recommandé)
+### To Do (recommended)
 
 1. **AddInitiativeForm.tsx**
-   - Remplacer les `<input>` par `<Input />` de shadcn/ui
-   - Ajouter des `<Label />` pour l'accessibilité
-   - Utiliser `<Button />` au lieu de `<button>`
-   - Améliorer la validation visuelle
+   - Replace `<input>` with `<Input />` from shadcn/ui
+   - Add `<Label />` for accessibility
+   - Use `<Button />` instead of `<button>`
+   - Improve visual validation
 
 2. **FilterPanel.tsx**
-   - Utiliser `<Card />` pour le conteneur
-   - Utiliser `<Badge />` pour les compteurs
-   - Utiliser `<Button />` pour les actions
+   - Use `<Card />` for the container
+   - Use `<Badge />` for counters
+   - Use `<Button />` for actions
 
 3. **InitiativeCard.tsx**
-   - Déjà très complet, peut utiliser `<Card />` comme base
-   - Ajouter `<Badge />` pour les types
-   - Utiliser `<Button />` pour les actions
+   - Already very complete, can use `<Card />` as base
+   - Add `<Badge />` for types
+   - Use `<Button />` for actions
 
-### Exemple de migration : AddInitiativeForm
+### Migration Example: AddInitiativeForm
 
-**Avant :**
+**Before:**
 ```tsx
 <input
   type="text"
@@ -270,48 +270,48 @@ https://ui.shadcn.com/docs/components
 />
 ```
 
-**Après :**
+**After:**
 ```tsx
 <div className="space-y-2">
-  <Label htmlFor="name">Nom de l'initiative</Label>
+  <Label htmlFor="name">Initiative name</Label>
   <Input
     id="name"
-    placeholder="Ex: Ressourcerie de Belleville"
+    placeholder="e.g.: Ressourcerie de Belleville"
   />
 </div>
 ```
 
 ---
 
-## 🎨 Personnalisation des couleurs
+## 🎨 Color Customization
 
-Pour adapter les couleurs shadcn/ui à la palette LaMap, modifiez dans `globals.css` :
+To adapt shadcn/ui colors to the LaMap palette, modify in `globals.css`:
 
 ```css
 :root {
-  --primary: 142.1 76.2% 36.3%;        /* Vert LaMap */
-  --secondary: 210 40% 96.1%;          /* Bleu clair */
+  --primary: 142.1 76.2% 36.3%;        /* LaMap Green */
+  --secondary: 210 40% 96.1%;          /* Light Blue */
   --accent: 37.7 92.1% 50.2%;          /* Orange */
   /* ... */
 }
 ```
 
-Ces valeurs sont en format **HSL** (Hue, Saturation, Lightness).
+These values are in **HSL** format (Hue, Saturation, Lightness).
 
 ---
 
 ## 🌙 Dark Mode
 
-Le dark mode est configuré et prêt à l'emploi !
+Dark mode is configured and ready to use!
 
-Pour l'activer, ajoutez `className="dark"` sur l'élément `<html>` :
+To activate it, add `className="dark"` on the `<html>` element:
 
 ```tsx
 // src/app/layout.tsx
-<html lang="fr" className="dark"> {/* Ou utiliser un toggle */}
+<html lang="fr" className="dark"> {/* Or use a toggle */}
 ```
 
-Ou utilisez `next-themes` pour un toggle dynamique :
+Or use `next-themes` for a dynamic toggle:
 
 ```bash
 npm install next-themes
@@ -319,29 +319,31 @@ npm install next-themes
 
 ---
 
-## ✅ Checklist post-configuration
+## ✅ Post-Configuration Checklist
 
-- [x] shadcn/ui installé et configuré
-- [x] Composants de base créés (Button, Card, Input, Label, Badge)
-- [x] Tailwind config mise à jour avec les variables
-- [x] globals.css mis à jour avec les couleurs HSL
-- [x] Palette LaMap conservée et compatible
-- [x] Dark mode configuré
-- [ ] Migrer AddInitiativeForm vers shadcn/ui
-- [ ] Migrer FilterPanel vers shadcn/ui
-- [ ] Migrer InitiativeCard vers shadcn/ui (optionnel)
-- [ ] Ajouter d'autres composants si nécessaire (Dialog, Toast, etc.)
-
----
-
-## 📚 Ressources
-
-- **shadcn/ui Docs** : https://ui.shadcn.com
-- **Composants disponibles** : https://ui.shadcn.com/docs/components
-- **Radix UI** (base de shadcn/ui) : https://www.radix-ui.com
-- **Tailwind CSS** : https://tailwindcss.com
-- **CVA (class-variance-authority)** : https://cva.style
+- [x] shadcn/ui installed and configured
+- [x] Base components created (Button, Card, Input, Label, Badge)
+- [x] Tailwind config updated with variables
+- [x] globals.css updated with HSL colors
+- [x] LaMap palette preserved and compatible
+- [x] Dark mode configured
+- [ ] Migrate AddInitiativeForm to shadcn/ui
+- [ ] Migrate FilterPanel to shadcn/ui
+- [ ] Migrate InitiativeCard to shadcn/ui (optional)
+- [ ] Add other components if needed (Dialog, Toast, etc.)
 
 ---
 
-**Dernière mise à jour :** 13 octobre 2025
+## 📚 Resources
+
+- **shadcn/ui Docs**: https://ui.shadcn.com
+- **Available Components**: https://ui.shadcn.com/docs/components
+- **Radix UI** (shadcn/ui base): https://www.radix-ui.com
+- **Tailwind CSS**: https://tailwindcss.com
+- **CVA (class-variance-authority)**: https://cva.style
+
+---
+
+**Last updated:** October 13, 2025
+
+````
