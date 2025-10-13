@@ -91,9 +91,12 @@ describe('InitiativeCard', () => {
     // Phone and email are displayed as icon links with title attributes
     const phoneLink = screen.getByTitle('Appeler');
     expect(phoneLink).toHaveAttribute('href', 'tel:01 23 45 67 89');
-    
+
     const emailLink = screen.getByTitle('Envoyer un email');
-    expect(emailLink).toHaveAttribute('href', 'mailto:contact@ressourcerie-belleville.fr');
+    expect(emailLink).toHaveAttribute(
+      'href',
+      'mailto:contact@ressourcerie-belleville.fr'
+    );
   });
 
   it('handles card click to display more details', () => {
@@ -164,9 +167,11 @@ describe('InitiativeCard', () => {
 
     // Without onClick, card is a simple div container
     // With onClick, it becomes a button with proper accessibility
-    const heading = screen.getByRole('heading', { name: 'Ressourcerie de Belleville' });
+    const heading = screen.getByRole('heading', {
+      name: 'Ressourcerie de Belleville',
+    });
     expect(heading).toBeInTheDocument();
-    
+
     // Image has proper alt text
     const image = screen.getByAltText('Ressourcerie de Belleville');
     expect(image).toBeInTheDocument();
