@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 
+import { createInitiative } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -12,7 +13,6 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { createClient } from '@/lib/supabase/client';
 
 import type { InitiativeType } from '@/types/initiative';
 
@@ -67,35 +67,24 @@ export default function AddInitiativeForm({
     }
 
     try {
-      const supabase = createClient();
-
-      // Check authentication
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) {
-        setError('You must be logged in to add an initiative');
-        setIsSubmitting(false);
-        return;
-      }
-
-      // Create initiative with PostGIS POINT
-      // @ts-expect-error - Supabase types need to be generated
-      const { error: insertError } = await supabase.from('initiatives').insert({
+      // Call server action
+      const result = await createInitiative({
         name,
         type,
-        description: description || null,
-        address: address || null,
-        location: `POINT(${longitude} ${latitude})`,
-        website: website || null,
-        phone: phone || null,
-        email: email || null,
-        user_id: user.id,
+        description: description || undefined,
+        address: address || undefined,
+        latitude,
+        longitude,
+        website: website || undefined,
+        phone: phone || undefined,
+        email: email || undefined,
       });
 
-      if (insertError) throw insertError;
+      if (!result.success) {
+        throw new Error(result.error || 'Une erreur est survenue');
+      }
 
-      // Reset form
+      // Reset form and notify success
       e.currentTarget.reset();
       onSuccess?.();
     } catch (err) {

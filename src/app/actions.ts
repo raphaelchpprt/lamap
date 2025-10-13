@@ -135,8 +135,7 @@ export async function createInitiative(
     console.error('Error creating initiative:', error);
     return {
       success: false,
-      error:
-        error instanceof Error ? error.message : 'Une erreur est survenue',
+      error: error instanceof Error ? error.message : 'Une erreur est survenue',
     };
   }
 }
@@ -277,8 +276,7 @@ export async function updateInitiative(
     console.error('Error updating initiative:', error);
     return {
       success: false,
-      error:
-        error instanceof Error ? error.message : 'Une erreur est survenue',
+      error: error instanceof Error ? error.message : 'Une erreur est survenue',
     };
   }
 }
@@ -355,8 +353,7 @@ export async function deleteInitiative(id: string): Promise<ActionResponse> {
     console.error('Error deleting initiative:', error);
     return {
       success: false,
-      error:
-        error instanceof Error ? error.message : 'Une erreur est survenue',
+      error: error instanceof Error ? error.message : 'Une erreur est survenue',
     };
   }
 }
@@ -419,8 +416,7 @@ export async function verifyInitiative(
     console.error('Error verifying initiative:', error);
     return {
       success: false,
-      error:
-        error instanceof Error ? error.message : 'Une erreur est survenue',
+      error: error instanceof Error ? error.message : 'Une erreur est survenue',
     };
   }
 }
@@ -484,8 +480,7 @@ export async function getInitiativeById(id: string): Promise<
     console.error('Error fetching initiative:', error);
     return {
       success: false,
-      error:
-        error instanceof Error ? error.message : 'Une erreur est survenue',
+      error: error instanceof Error ? error.message : 'Une erreur est survenue',
     };
   }
 }

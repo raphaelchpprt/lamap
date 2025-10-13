@@ -1,0 +1,44 @@
+d27760ed00351433bd88920074c41cb8
+/**
+ * Supabase client for browser (Client Components)
+ *
+ * This client is used in React components that run on the client side.
+ * It automatically manages authentication and user sessions.
+ */ "use strict";
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+function _export(target, all) {
+    for(var name in all)Object.defineProperty(target, name, {
+        enumerable: true,
+        get: Object.getOwnPropertyDescriptor(all, name).get
+    });
+}
+_export(exports, {
+    get createClient () {
+        return createClient;
+    },
+    get useSupabase () {
+        return useSupabase;
+    }
+});
+const _ssr = require("@supabase/ssr");
+let supabaseClient = null;
+function createClient() {
+    // Check environment variables
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!supabaseUrl || !supabaseAnonKey) {
+        throw new Error('Missing Supabase environment variables. ' + 'Check NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local');
+    }
+    // Use singleton to avoid recreations
+    if (!supabaseClient) {
+        supabaseClient = (0, _ssr.createBrowserClient)(supabaseUrl, supabaseAnonKey);
+    }
+    return supabaseClient;
+}
+function useSupabase() {
+    return createClient();
+}
+
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9SYXBoYWVsL0RvY3VtZW50cy9ERVYubm9zeW5jL2xhbWFwL3NyYy9saWIvc3VwYWJhc2UvY2xpZW50LnRzIl0sInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogU3VwYWJhc2UgY2xpZW50IGZvciBicm93c2VyIChDbGllbnQgQ29tcG9uZW50cylcbiAqXG4gKiBUaGlzIGNsaWVudCBpcyB1c2VkIGluIFJlYWN0IGNvbXBvbmVudHMgdGhhdCBydW4gb24gdGhlIGNsaWVudCBzaWRlLlxuICogSXQgYXV0b21hdGljYWxseSBtYW5hZ2VzIGF1dGhlbnRpY2F0aW9uIGFuZCB1c2VyIHNlc3Npb25zLlxuICovXG5cbmltcG9ydCB7IGNyZWF0ZUJyb3dzZXJDbGllbnQgfSBmcm9tICdAc3VwYWJhc2Uvc3NyJztcblxuaW1wb3J0IHR5cGUgeyBEYXRhYmFzZSB9IGZyb20gJy4vdHlwZXMnO1xuXG5sZXQgc3VwYWJhc2VDbGllbnQ6IFJldHVyblR5cGU8dHlwZW9mIGNyZWF0ZUJyb3dzZXJDbGllbnQ8RGF0YWJhc2U+PiB8IG51bGwgPVxuICBudWxsO1xuXG4vKipcbiAqIENyZWF0ZSBvciByZXR1cm4gdGhlIFN1cGFiYXNlIGNsaWVudCBmb3IgYnJvd3NlclxuICpcbiAqIFVzZXMgYSBzaW5nbGV0b24gcGF0dGVybiB0byBhdm9pZCBjcmVhdGluZyBtdWx0aXBsZSBpbnN0YW5jZXNcbiAqIGFuZCBvcHRpbWl6ZSBwZXJmb3JtYW5jZS5cbiAqXG4gKiBAcmV0dXJucyBTdXBhYmFzZSBjbGllbnQgY29uZmlndXJlZCBmb3IgYnJvd3NlclxuICovXG5leHBvcnQgZnVuY3Rpb24gY3JlYXRlQ2xpZW50KCkge1xuICAvLyBDaGVjayBlbnZpcm9ubWVudCB2YXJpYWJsZXNcbiAgY29uc3Qgc3VwYWJhc2VVcmwgPSBwcm9jZXNzLmVudi5ORVhUX1BVQkxJQ19TVVBBQkFTRV9VUkw7XG4gIGNvbnN0IHN1cGFiYXNlQW5vbktleSA9IHByb2Nlc3MuZW52Lk5FWFRfUFVCTElDX1NVUEFCQVNFX0FOT05fS0VZO1xuXG4gIGlmICghc3VwYWJhc2VVcmwgfHwgIXN1cGFiYXNlQW5vbktleSkge1xuICAgIHRocm93IG5ldyBFcnJvcihcbiAgICAgICdNaXNzaW5nIFN1cGFiYXNlIGVudmlyb25tZW50IHZhcmlhYmxlcy4gJyArXG4gICAgICAgICdDaGVjayBORVhUX1BVQkxJQ19TVVBBQkFTRV9VUkwgYW5kIE5FWFRfUFVCTElDX1NVUEFCQVNFX0FOT05fS0VZIGluIC5lbnYubG9jYWwnXG4gICAgKTtcbiAgfVxuXG4gIC8vIFVzZSBzaW5nbGV0b24gdG8gYXZvaWQgcmVjcmVhdGlvbnNcbiAgaWYgKCFzdXBhYmFzZUNsaWVudCkge1xuICAgIHN1cGFiYXNlQ2xpZW50ID0gY3JlYXRlQnJvd3NlckNsaWVudDxEYXRhYmFzZT4oXG4gICAgICBzdXBhYmFzZVVybCxcbiAgICAgIHN1cGFiYXNlQW5vbktleVxuICAgICk7XG4gIH1cblxuICByZXR1cm4gc3VwYWJhc2VDbGllbnQ7XG59XG5cbi8qKlxuICogSG9vayB0byB1c2UgU3VwYWJhc2UgY2xpZW50IGluIFJlYWN0IGNvbXBvbmVudHNcbiAqXG4gKiBAcmV0dXJucyBTdXBhYmFzZSBjbGllbnQgdHlwZWQgd2l0aCBMYU1hcCBkYXRhYmFzZVxuICovXG5leHBvcnQgZnVuY3Rpb24gdXNlU3VwYWJhc2UoKSB7XG4gIHJldHVybiBjcmVhdGVDbGllbnQoKTtcbn1cbiJdLCJuYW1lcyI6WyJjcmVhdGVDbGllbnQiLCJ1c2VTdXBhYmFzZSIsInN1cGFiYXNlQ2xpZW50Iiwic3VwYWJhc2VVcmwiLCJwcm9jZXNzIiwiZW52IiwiTkVYVF9QVUJMSUNfU1VQQUJBU0VfVVJMIiwic3VwYWJhc2VBbm9uS2V5IiwiTkVYVF9QVUJMSUNfU1VQQUJBU0VfQU5PTl9LRVkiLCJFcnJvciIsImNyZWF0ZUJyb3dzZXJDbGllbnQiXSwibWFwcGluZ3MiOiJBQUFBOzs7OztDQUtDOzs7Ozs7Ozs7OztRQWlCZUE7ZUFBQUE7O1FBNEJBQztlQUFBQTs7O3FCQTNDb0I7QUFJcEMsSUFBSUMsaUJBQ0Y7QUFVSyxTQUFTRjtJQUNkLDhCQUE4QjtJQUM5QixNQUFNRyxjQUFjQyxRQUFRQyxHQUFHLENBQUNDLHdCQUF3QjtJQUN4RCxNQUFNQyxrQkFBa0JILFFBQVFDLEdBQUcsQ0FBQ0csNkJBQTZCO0lBRWpFLElBQUksQ0FBQ0wsZUFBZSxDQUFDSSxpQkFBaUI7UUFDcEMsTUFBTSxJQUFJRSxNQUNSLDZDQUNFO0lBRU47SUFFQSxxQ0FBcUM7SUFDckMsSUFBSSxDQUFDUCxnQkFBZ0I7UUFDbkJBLGlCQUFpQlEsSUFBQUEsd0JBQW1CLEVBQ2xDUCxhQUNBSTtJQUVKO0lBRUEsT0FBT0w7QUFDVDtBQU9PLFNBQVNEO0lBQ2QsT0FBT0Q7QUFDVCJ9
