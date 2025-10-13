@@ -595,6 +595,26 @@ Constraints:
 
 ---
 
+## 🎓 Learning Context (CRITICAL)
+
+**This is a learning project for @raphaelchpprt.**
+
+**Profile:**
+- ✅ Knows React well
+- ⚠️ Learning Next.js 14, TypeScript, Supabase, Mapbox, shadcn/ui, Jest, Tailwind
+
+**Therefore:**
+1. **Explain concepts BEFORE showing code**
+2. **Build incrementally** (simple → complex)
+3. **Add pedagogical comments** in code
+4. **Warn about common pitfalls**
+5. **Ask questions** to check understanding
+6. **Encourage experimentation**
+
+See `LEARNING_CONTEXT.md` for detailed pedagogical approach.
+
+---
+
 ## 🏆 Summary of Commandments
 
 1. **Context first**: Ask for what's missing before coding
