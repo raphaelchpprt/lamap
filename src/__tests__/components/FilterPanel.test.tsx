@@ -195,7 +195,7 @@ describe('FilterPanel', () => {
     ).toBeVisible();
   });
 
-  it('applies different visual styles to selected types', () => {
+  it('highlights selected type checkboxes', () => {
     const { container } = render(
       <FilterPanel
         selectedTypes={['Ressourcerie']}
@@ -203,14 +203,15 @@ describe('FilterPanel', () => {
       />
     );
 
-    // Find Ressourcerie label and verify it has selection class
-    const labels = container.querySelectorAll('label');
-    const ressourcerieLabel = Array.from(labels).find((label) =>
-      label.textContent?.includes('Ressourcerie')
-    );
+    // 🎨 Find Ressourcerie container (div now, not label) and verify selection class
+    const ressourcerieCheckbox = screen.getByLabelText('Ressourcerie');
+    expect(ressourcerieCheckbox).toBeChecked();
 
-    expect(ressourcerieLabel).toHaveClass('bg-primary/5');
-    expect(ressourcerieLabel).toHaveClass('border-primary');
+    // Verify the parent container has selection styles
+    const ressourcerieContainer = container.querySelector(
+      '.bg-primary\\/5.border-primary'
+    );
+    expect(ressourcerieContainer).toBeInTheDocument();
   });
 
   it('displays colored visual indicator for each type', () => {

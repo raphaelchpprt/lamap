@@ -1,7 +1,9 @@
 'use client';
 
+import { ChevronDown, Lightbulb } from 'lucide-react';
 import { useState } from 'react';
 
+// shadcn/ui components
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,7 +13,11 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
+// 4. Types
 import type { InitiativeType } from '@/types/initiative';
 
 interface FilterPanelProps {
@@ -102,21 +108,12 @@ export default function FilterPanel({
             onClick={() => setIsExpanded(!isExpanded)}
             aria-label={isExpanded ? 'Réduire' : 'Développer'}
           >
-            <svg
-              className={`w-5 h-5 transform transition-transform ${
+            {/* 🎨 Icône Lucide avec animation */}
+            <ChevronDown
+              className={`h-5 w-5 transform transition-transform ${
                 isExpanded ? 'rotate-180' : ''
               }`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
+            />
           </Button>
         </div>
 
@@ -144,56 +141,67 @@ export default function FilterPanel({
         )}
       </CardHeader>
 
-      {/* Liste des types */}
+      {/* 📜 Liste des types avec scroll élégant */}
       {isExpanded && (
         <CardContent className="space-y-2">
-          {INITIATIVE_TYPES.map((type) => {
-            const count = initiativeCounts[type] || 0;
-            const isSelected = selectedTypes.includes(type);
+          <ScrollArea className="h-[400px] pr-4">
+            <div className="space-y-2">
+              {INITIATIVE_TYPES.map((type) => {
+                const count = initiativeCounts[type] || 0;
+                const isSelected = selectedTypes.includes(type);
 
-            return (
-              <label
-                key={type}
-                className={`
-                  flex items-center justify-between p-3 rounded-lg cursor-pointer
-                  transition-colors border-2
+                return (
+                  <div
+                    key={type}
+                    className={`
+                  flex items-center justify-between p-3 rounded-lg
+                  transition-colors border-2 cursor-pointer
                   ${
                     isSelected
                       ? 'bg-primary/5 border-primary'
                       : 'bg-muted/50 border-transparent hover:bg-muted'
                   }
                 `}
-              >
-                <div className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    checked={isSelected}
-                    onChange={() => handleTypeToggle(type)}
-                    className="w-4 h-4 text-primary rounded focus:ring-primary"
-                  />
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`w-3 h-3 rounded-full ${TYPE_COLORS[type]}`}
-                    />
-                    <span className="text-sm font-medium">{type}</span>
+                  >
+                    <div className="flex items-center gap-3">
+                      {/* 🎨 Checkbox shadcn/ui avec accessibilité Radix UI */}
+                      <Checkbox
+                        id={`filter-${type}`}
+                        checked={isSelected}
+                        onCheckedChange={() => handleTypeToggle(type)}
+                        className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                      />
+                      <Label
+                        htmlFor={`filter-${type}`}
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
+                        <span
+                          className={`w-3 h-3 rounded-full ${TYPE_COLORS[type]}`}
+                        />
+                        <span className="text-sm font-medium">{type}</span>
+                      </Label>
+                    </div>
+                    {count > 0 && (
+                      <Badge variant={isSelected ? 'default' : 'secondary'}>
+                        {count}
+                      </Badge>
+                    )}
                   </div>
-                </div>
-                {count > 0 && (
-                  <Badge variant={isSelected ? 'default' : 'secondary'}>
-                    {count}
-                  </Badge>
-                )}
-              </label>
-            );
-          })}
+                );
+              })}
+            </div>
+          </ScrollArea>
 
-          {/* Légende */}
+          {/* 💡 Légende avec icône Lucide */}
           {totalCount > 0 && (
             <div className="pt-4 border-t mt-4">
-              <p className="text-xs text-muted-foreground">
-                💡 Cliquez sur un type pour afficher/masquer les initiatives
-                correspondantes sur la carte
-              </p>
+              <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                <Lightbulb className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                <p>
+                  Cliquez sur un type pour afficher/masquer les initiatives
+                  correspondantes sur la carte
+                </p>
+              </div>
             </div>
           )}
         </CardContent>
