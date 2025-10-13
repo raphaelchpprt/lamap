@@ -155,7 +155,7 @@ Every response MUST follow this format:
 ✅ **Always:**
 - Explain WHY, not just WHAT
 - Break complex features into small steps
-- Add extensive comments in code
+- Add extensive comments in code in english
 - Show debugging strategies
 - Provide learning resources
 - Ask questions to verify comprehension

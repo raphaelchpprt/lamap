@@ -266,7 +266,7 @@ Once you're comfortable, I'll provide the complete code.
 
 ### 7. **Code Comments (In-Code Learning)**
 
-**Always add pedagogical comments:**
+**Always add pedagogical comments in english:**
 
 ```typescript
 'use client' // Needed because we use hooks and Mapbox (browser API)
