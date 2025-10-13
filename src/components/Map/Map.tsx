@@ -289,7 +289,9 @@ export default function Map({
         id: 'unclustered-point',
         type: 'circle',
         source: 'initiatives',
-        filter: enableClustering ? (['!', ['has', 'point_count']] as mapboxgl.FilterSpecification) : undefined,
+        filter: enableClustering
+          ? (['!', ['has', 'point_count']] as mapboxgl.FilterSpecification)
+          : undefined,
         paint: {
           'circle-radius': [
             'interpolate',
@@ -375,10 +377,14 @@ export default function Map({
           'initiatives'
         ) as mapboxgl.GeoJSONSource;
         source.getClusterExpansionZoom(clusterId, (err, zoom) => {
-          if (err || !map.current || zoom === null || zoom === undefined) return;
+          if (err || !map.current || zoom === null || zoom === undefined)
+            return;
 
           map.current.easeTo({
-            center: (features[0].geometry as GeoJSON.Point).coordinates as [number, number],
+            center: (features[0].geometry as GeoJSON.Point).coordinates as [
+              number,
+              number
+            ],
             zoom,
           });
         });

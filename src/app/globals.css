@@ -6,7 +6,7 @@
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
-  
+
   /* Light mode colors */
   --color-background: #ffffff;
   --color-foreground: #0a0a0a;
@@ -14,31 +14,31 @@
   --color-card-foreground: #0a0a0a;
   --color-popover: #ffffff;
   --color-popover-foreground: #0a0a0a;
-  
+
   /* Primary color - Vert ESS LaMap */
   --color-primary: #10b981;
   --color-primary-foreground: #ffffff;
-  
+
   /* Secondary color */
   --color-secondary: #f4f4f5;
   --color-secondary-foreground: #0a0a0a;
-  
+
   /* Muted colors */
   --color-muted: #f4f4f5;
   --color-muted-foreground: #71717a;
-  
+
   /* Accent colors - Orange LaMap */
   --color-accent: #f59e0b;
   --color-accent-foreground: #ffffff;
-  
+
   /* Destructive */
   --color-destructive: #ef4444;
   --color-destructive-foreground: #ffffff;
-  
+
   /* Border and input */
   --color-border: #e4e4e7;
   --color-input: #e4e4e7;
-  
+
   /* Ring color for focus */
   --color-ring: #10b981;
 }
@@ -51,25 +51,25 @@
     --color-card-foreground: #fafafa;
     --color-popover: #0a0a0a;
     --color-popover-foreground: #fafafa;
-    
+
     --color-primary: #10b981;
     --color-primary-foreground: #0a0a0a;
-    
+
     --color-secondary: #27272a;
     --color-secondary-foreground: #fafafa;
-    
+
     --color-muted: #27272a;
     --color-muted-foreground: #a1a1aa;
-    
+
     --color-accent: #f59e0b;
     --color-accent-foreground: #0a0a0a;
-    
+
     --color-destructive: #7f1d1d;
     --color-destructive-foreground: #fafafa;
-    
+
     --color-border: #27272a;
     --color-input: #27272a;
-    
+
     --color-ring: #059669;
   }
 }
