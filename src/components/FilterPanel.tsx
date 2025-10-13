@@ -2,6 +2,16 @@
 
 import { useState } from 'react';
 
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+
 import type { InitiativeType } from '@/types/initiative';
 
 interface FilterPanelProps {
@@ -75,21 +85,21 @@ export default function FilterPanel({
   );
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      {/* Header */}
-      <div className="p-4 border-b border-gray-200">
+    <Card className="w-full">
+      <CardHeader>
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Filtres
+          <div>
+            <CardTitle>Filtres</CardTitle>
             {totalCount > 0 && (
-              <span className="ml-2 text-sm font-normal text-gray-600">
-                ({selectedCount} / {totalCount})
-              </span>
+              <CardDescription>
+                {selectedCount} / {totalCount} initiatives
+              </CardDescription>
             )}
-          </h2>
-          <button
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setIsExpanded(!isExpanded)}
-            className="text-gray-500 hover:text-gray-700 focus:outline-none"
             aria-label={isExpanded ? 'Réduire' : 'Développer'}
           >
             <svg
@@ -107,32 +117,36 @@ export default function FilterPanel({
                 d="M19 9l-7 7-7-7"
               />
             </svg>
-          </button>
+          </Button>
         </div>
 
         {/* Actions rapides */}
         {isExpanded && (
-          <div className="flex gap-2 mt-3">
-            <button
+          <div className="flex gap-2 mt-2">
+            <Button
+              variant="link"
+              size="sm"
               onClick={handleSelectAll}
-              className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+              className="h-auto p-0"
             >
               Tout sélectionner
-            </button>
-            <span className="text-gray-300">|</span>
-            <button
+            </Button>
+            <span className="text-muted-foreground">|</span>
+            <Button
+              variant="link"
+              size="sm"
               onClick={handleDeselectAll}
-              className="text-sm text-gray-600 hover:text-gray-700 font-medium"
+              className="h-auto p-0 text-muted-foreground"
             >
               Tout désélectionner
-            </button>
+            </Button>
           </div>
         )}
-      </div>
+      </CardHeader>
 
       {/* Liste des types */}
       {isExpanded && (
-        <div className="p-4 space-y-2">
+        <CardContent className="space-y-2">
           {INITIATIVE_TYPES.map((type) => {
             const count = initiativeCounts[type] || 0;
             const isSelected = selectedTypes.includes(type);
@@ -142,11 +156,11 @@ export default function FilterPanel({
                 key={type}
                 className={`
                   flex items-center justify-between p-3 rounded-lg cursor-pointer
-                  transition-colors
+                  transition-colors border-2
                   ${
                     isSelected
-                      ? 'bg-primary-50 border-2 border-primary-200'
-                      : 'bg-gray-50 border-2 border-transparent hover:bg-gray-100'
+                      ? 'bg-primary/5 border-primary'
+                      : 'bg-muted/50 border-transparent hover:bg-muted'
                   }
                 `}
               >
@@ -155,47 +169,35 @@ export default function FilterPanel({
                     type="checkbox"
                     checked={isSelected}
                     onChange={() => handleTypeToggle(type)}
-                    className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                    className="w-4 h-4 text-primary rounded focus:ring-primary"
                   />
                   <div className="flex items-center gap-2">
                     <span
                       className={`w-3 h-3 rounded-full ${TYPE_COLORS[type]}`}
                     />
-                    <span
-                      className={`text-sm font-medium ${
-                        isSelected ? 'text-gray-900' : 'text-gray-700'
-                      }`}
-                    >
-                      {type}
-                    </span>
+                    <span className="text-sm font-medium">{type}</span>
                   </div>
                 </div>
                 {count > 0 && (
-                  <span
-                    className={`text-xs font-semibold px-2 py-1 rounded-full ${
-                      isSelected
-                        ? 'bg-primary-100 text-primary-700'
-                        : 'bg-gray-200 text-gray-600'
-                    }`}
-                  >
+                  <Badge variant={isSelected ? 'default' : 'secondary'}>
                     {count}
-                  </span>
+                  </Badge>
                 )}
               </label>
             );
           })}
-        </div>
-      )}
 
-      {/* Légende */}
-      {isExpanded && totalCount > 0 && (
-        <div className="px-4 py-3 bg-gray-50 border-t border-gray-200">
-          <p className="text-xs text-gray-600">
-            💡 Cliquez sur un type pour afficher/masquer les initiatives
-            correspondantes sur la carte
-          </p>
-        </div>
+          {/* Légende */}
+          {totalCount > 0 && (
+            <div className="pt-4 border-t mt-4">
+              <p className="text-xs text-muted-foreground">
+                💡 Cliquez sur un type pour afficher/masquer les initiatives
+                correspondantes sur la carte
+              </p>
+            </div>
+          )}
+        </CardContent>
       )}
-    </div>
+    </Card>
   );
 }

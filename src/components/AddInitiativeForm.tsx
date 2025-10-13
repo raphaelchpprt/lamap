@@ -2,6 +2,16 @@
 
 import { useState } from 'react';
 
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { createClient } from '@/lib/supabase/client';
 
 import type { InitiativeType } from '@/types/initiative';
@@ -97,211 +107,157 @@ export default function AddInitiativeForm({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-6 bg-white p-6 rounded-lg shadow-md"
-    >
-      <h2 className="text-2xl font-bold text-gray-900">
-        Ajouter une initiative
-      </h2>
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>Ajouter une initiative</CardTitle>
+        <CardDescription>
+          Remplissez ce formulaire pour ajouter une nouvelle initiative ESS
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {error && (
+            <div
+              className="bg-destructive/10 border border-destructive/30 text-destructive px-4 py-3 rounded-lg"
+              role="alert"
+            >
+              {error}
+            </div>
+          )}
 
-      {error && (
-        <div
-          className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded"
-          role="alert"
-        >
-          {error}
-        </div>
-      )}
+          {/* Nom */}
+          <div className="space-y-2">
+            <Label htmlFor="name">Initiative Name *</Label>
+            <Input
+              type="text"
+              id="name"
+              name="name"
+              required
+              placeholder="Ex: Ressourcerie de Belleville"
+            />
+          </div>
 
-      {/* Nom */}
-      <div>
-        <label
-          htmlFor="name"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Initiative Name *
-        </label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-          placeholder="Ex: Ressourcerie de Belleville"
-        />
-      </div>
+          {/* Type */}
+          <div className="space-y-2">
+            <Label htmlFor="type">Initiative Type *</Label>
+            <select
+              id="type"
+              name="type"
+              required
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              <option value="">Sélectionnez un type</option>
+              {initiativeTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
 
-      {/* Type */}
-      <div>
-        <label
-          htmlFor="type"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Initiative Type *
-        </label>
-        <select
-          id="type"
-          name="type"
-          required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-        >
-          <option value="">Sélectionnez un type</option>
-          {initiativeTypes.map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))}
-        </select>
-      </div>
+          {/* Description */}
+          <div className="space-y-2">
+            <Label htmlFor="description">Description</Label>
+            <textarea
+              id="description"
+              name="description"
+              rows={4}
+              className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              placeholder="Décrivez l'initiative..."
+            />
+          </div>
 
-      {/* Description */}
-      <div>
-        <label
-          htmlFor="description"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Description
-        </label>
-        <textarea
-          id="description"
-          name="description"
-          rows={4}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-          placeholder="Décrivez l'initiative..."
-        />
-      </div>
+          {/* Adresse */}
+          <div className="space-y-2">
+            <Label htmlFor="address">Adresse</Label>
+            <Input
+              type="text"
+              id="address"
+              name="address"
+              placeholder="Ex: 12 rue de la Paix, 75002 Paris"
+            />
+          </div>
 
-      {/* Adresse */}
-      <div>
-        <label
-          htmlFor="address"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Adresse
-        </label>
-        <input
-          type="text"
-          id="address"
-          name="address"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-          placeholder="Ex: 12 rue de la Paix, 75002 Paris"
-        />
-      </div>
+          {/* Coordonnées GPS */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="latitude">Latitude *</Label>
+              <Input
+                type="number"
+                id="latitude"
+                name="latitude"
+                step="0.000001"
+                required
+                placeholder="Ex: 48.8566"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="longitude">Longitude *</Label>
+              <Input
+                type="number"
+                id="longitude"
+                name="longitude"
+                step="0.000001"
+                required
+                placeholder="Ex: 2.3522"
+              />
+            </div>
+          </div>
 
-      {/* Coordonnées GPS */}
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label
-            htmlFor="latitude"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Latitude *
-          </label>
-          <input
-            type="number"
-            id="latitude"
-            name="latitude"
-            step="0.000001"
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-            placeholder="Ex: 48.8566"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="longitude"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Longitude *
-          </label>
-          <input
-            type="number"
-            id="longitude"
-            name="longitude"
-            step="0.000001"
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-            placeholder="Ex: 2.3522"
-          />
-        </div>
-      </div>
+          {/* Informations de contact */}
+          <div className="space-y-4 pt-4 border-t">
+            <h3 className="text-lg font-semibold">Informations de contact</h3>
 
-      {/* Informations de contact */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-900">
-          Informations de contact
-        </h3>
+            <div className="space-y-2">
+              <Label htmlFor="website">Site web</Label>
+              <Input
+                type="url"
+                id="website"
+                name="website"
+                placeholder="https://exemple.com"
+              />
+            </div>
 
-        <div>
-          <label
-            htmlFor="website"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Site web
-          </label>
-          <input
-            type="url"
-            id="website"
-            name="website"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-            placeholder="https://exemple.com"
-          />
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">Téléphone</Label>
+              <Input
+                type="tel"
+                id="phone"
+                name="phone"
+                placeholder="01 23 45 67 89"
+              />
+            </div>
 
-        <div>
-          <label
-            htmlFor="phone"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Téléphone
-          </label>
-          <input
-            type="tel"
-            id="phone"
-            name="phone"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-            placeholder="01 23 45 67 89"
-          />
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="contact@exemple.com"
+              />
+            </div>
+          </div>
 
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-            placeholder="contact@exemple.com"
-          />
-        </div>
-      </div>
+          {/* Boutons */}
+          <div className="flex gap-4 pt-4">
+            <Button type="submit" disabled={isSubmitting} className="flex-1">
+              {isSubmitting ? 'Ajout en cours...' : "Ajouter l'initiative"}
+            </Button>
 
-      {/* Boutons */}
-      <div className="flex gap-4">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="flex-1 bg-primary-500 text-white py-2 px-4 rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isSubmitting ? 'Ajout en cours...' : "Ajouter l'initiative"}
-        </button>
-
-        {onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-          >
-            Annuler
-          </button>
-        )}
-      </div>
-    </form>
+            {onCancel && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onCancel}
+                className="px-6"
+              >
+                Annuler
+              </Button>
+            )}
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
