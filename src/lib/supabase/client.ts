@@ -13,26 +13,26 @@ let supabaseClient: ReturnType<typeof createBrowserClient<Database>> | null =
   null;
 
 /**
- * Crée ou retourne le client Supabase pour le navigateur
+ * Create or return the Supabase client for browser
  *
- * Utilise un singleton pour éviter de créer plusieurs instances
- * et optimiser les performances.
+ * Uses a singleton pattern to avoid creating multiple instances
+ * and optimize performance.
  *
- * @returns Client Supabase configuré pour le navigateur
+ * @returns Supabase client configured for browser
  */
 export function createClient() {
-  // Vérification des variables d'environnement
+  // Check environment variables
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error(
-      "Variables d'environnement Supabase manquantes. " +
-        'Vérifiez NEXT_PUBLIC_SUPABASE_URL et NEXT_PUBLIC_SUPABASE_ANON_KEY dans .env.local'
+      'Missing Supabase environment variables. ' +
+        'Check NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local'
     );
   }
 
-  // Utilisation du singleton pour éviter les recréations
+  // Use singleton to avoid recreations
   if (!supabaseClient) {
     supabaseClient = createBrowserClient<Database>(
       supabaseUrl,
@@ -44,9 +44,9 @@ export function createClient() {
 }
 
 /**
- * Hook pour utiliser le client Supabase dans les composants React
+ * Hook to use Supabase client in React components
  *
- * @returns Client Supabase typé avec la base de données LaMap
+ * @returns Supabase client typed with LaMap database
  */
 export function useSupabase() {
   return createClient();

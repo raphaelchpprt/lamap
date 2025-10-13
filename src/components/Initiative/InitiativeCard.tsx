@@ -28,37 +28,37 @@ import type { Initiative, OpeningHours } from '@/types/initiative';
 // ================================
 
 interface InitiativeCardProps {
-  /** Données de l'initiative */
+  /** Initiative data */
   initiative: Initiative;
 
-  /** Variant d'affichage */
+  /** Display variant */
   variant?: 'card' | 'popup' | 'list' | 'detailed';
 
-  /** Classes CSS personnalisées */
+  /** Custom CSS classes */
   className?: string;
 
-  /** Afficher la distance si disponible */
+  /** Show distance if available */
   distance?: number;
 
-  /** Callback au clic sur la carte */
+  /** Click callback on card */
   onClick?: (initiative: Initiative) => void;
 
-  /** Afficher les actions d'édition */
+  /** Show edit actions */
   showActions?: boolean;
 
-  /** Callback pour éditer */
+  /** Edit callback */
   onEdit?: (initiative: Initiative) => void;
 
-  /** Callback pour supprimer */
+  /** Delete callback */
   onDelete?: (initiative: Initiative) => void;
 }
 
 // ================================
-// UTILITAIRES
+// UTILITIES
 // ================================
 
 /**
- * Formate la distance en texte lisible
+ * Format distance as readable text
  */
 function formatDistance(meters: number): string {
   if (meters < 1000) {
@@ -68,7 +68,7 @@ function formatDistance(meters: number): string {
 }
 
 /**
- * Détermine si l'initiative est ouverte maintenant
+ * Determine if initiative is currently open
  */
 function isOpenNow(openingHours: OpeningHours | undefined): boolean {
   if (!openingHours) return false;
@@ -99,10 +99,10 @@ function isOpenNow(openingHours: OpeningHours | undefined): boolean {
 }
 
 /**
- * Formate les horaires pour affichage
+ * Format opening hours for display
  */
 function formatOpeningHours(openingHours: OpeningHours | undefined): string {
-  if (!openingHours) return 'Horaires non renseignés';
+  if (!openingHours) return 'Hours not provided';
 
   const days = [
     'monday',

@@ -23,7 +23,7 @@ import type { Initiative, InitiativeFilters } from '@/types/initiative';
 
 const DEFAULT_CONFIG = {
   style: 'mapbox://styles/mapbox/light-v11',
-  center: [2.3522, 46.6034] as [number, number], // Centre de la France
+  center: [2.3522, 46.6034] as [number, number], // Center of France
   zoom: 6,
   minZoom: 3,
   maxZoom: 18,
@@ -57,7 +57,7 @@ interface MapProps {
 }
 
 // ================================
-// COMPOSANT PRINCIPAL
+// MAIN COMPONENT
 // ================================
 
 export default function Map({
@@ -70,7 +70,7 @@ export default function Map({
   initiatives: externalInitiatives,
 }: MapProps) {
   // ================================
-  // STATE & REFS
+  // STATE // STATE & REFS REFS
   // ================================
 
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -81,7 +81,7 @@ export default function Map({
   const [error, setError] = useState<string | null>(null);
 
   // ================================
-  // INITIALISATION DE LA CARTE
+  // MAP INITIALIZATION
   // ================================
 
   useEffect(() => {
@@ -147,7 +147,7 @@ export default function Map({
   }, []);
 
   // ================================
-  // CHARGEMENT DES INITIATIVES
+  // LOADING INITIATIVES
   // ================================
 
   const loadInitiatives = useCallback(async () => {
@@ -164,7 +164,7 @@ export default function Map({
 
       let query = supabase.from('initiatives').select('*');
 
-      // Appliquer les filtres
+      // Apply filters
       if (filters?.types?.length) {
         query = query.in('type', filters.types);
       }
@@ -202,13 +202,13 @@ export default function Map({
   }, [loadInitiatives]);
 
   // ================================
-  // CONFIGURATION DES SOURCES MAPBOX
+  // MAPBOX SOURCES CONFIGURATION
   // ================================
 
   const setupMapSources = useCallback(() => {
     if (!map.current) return;
 
-    // Source pour les initiatives (points)
+    // Source for initiatives (points)
     if (!map.current.getSource('initiatives')) {
       map.current.addSource('initiatives', {
         type: 'geojson',
@@ -224,7 +224,7 @@ export default function Map({
   }, [enableClustering]);
 
   // ================================
-  // CONFIGURATION DES COUCHES
+  // LAYERS CONFIGURATION
   // ================================
 
   const setupMapLayers = useCallback(() => {
@@ -232,7 +232,7 @@ export default function Map({
 
     // Clusters
     if (enableClustering) {
-      // Cercles pour les clusters
+      // Circles for clusters
       if (!map.current.getLayer('clusters')) {
         map.current.addLayer({
           id: 'clusters',
@@ -243,7 +243,7 @@ export default function Map({
             'circle-color': [
               'step',
               ['get', 'point_count'],
-              '#51bbd6', // Couleur pour 1-10 points
+              '#51bbd6', // Color for 1-10 points
               10,
               '#f1c40f', // 10-50 points
               50,
@@ -252,7 +252,7 @@ export default function Map({
             'circle-radius': [
               'step',
               ['get', 'point_count'],
-              20, // Rayon pour 1-10 points
+              20, // Radius for 1-10 points
               10,
               30, // 10-50 points
               50,
@@ -264,7 +264,7 @@ export default function Map({
         });
       }
 
-      // Nombres sur les clusters
+      // Numbers on clusters
       if (!map.current.getLayer('cluster-count')) {
         map.current.addLayer({
           id: 'cluster-count',
@@ -329,7 +329,7 @@ export default function Map({
             INITIATIVE_COLORS['Monnaie locale'],
             'Tiers-lieu',
             INITIATIVE_COLORS['Tiers-lieu'],
-            INITIATIVE_COLORS['Autre'], // Défaut
+            INITIATIVE_COLORS['Autre'], // Default
           ],
           'circle-stroke-width': 2,
           'circle-stroke-color': '#ffffff',
@@ -340,13 +340,13 @@ export default function Map({
   }, [enableClustering]);
 
   // ================================
-  // INTERACTIONS AVEC LA CARTE
+  // MAP INTERACTIONS
   // ================================
 
   const setupMapInteractions = useCallback(() => {
     if (!map.current) return;
 
-    // Curseur pointer sur les éléments interactifs
+    // Pointer cursor on interactive elements
     map.current.on('mouseenter', 'clusters', () => {
       if (map.current) map.current.getCanvas().style.cursor = 'pointer';
     });
@@ -361,7 +361,7 @@ export default function Map({
       if (map.current) map.current.getCanvas().style.cursor = '';
     });
 
-    // Clic sur cluster : zoomer
+    // Click on cluster: zoom
     map.current.on('click', 'clusters', (e) => {
       if (!map.current) return;
 
@@ -385,7 +385,7 @@ export default function Map({
       }
     });
 
-    // Clic sur point : afficher détails
+    // Click on point: show details
     map.current.on('click', 'unclustered-point', (e) => {
       const features = e.features?.[0];
       if (features?.properties && onInitiativeClick) {
@@ -396,13 +396,13 @@ export default function Map({
       }
     });
 
-    // Clic sur la carte
+    // Click on map
     map.current.on('click', (e) => {
       const features = map.current?.queryRenderedFeatures(e.point, {
         layers: ['clusters', 'unclustered-point'],
       });
 
-      // Si on n'a pas cliqué sur un marker/cluster
+      // If we didn't click on a marker/cluster
       if (!features?.length && onMapClick) {
         onMapClick([e.lngLat.lng, e.lngLat.lat]);
       }
@@ -410,7 +410,7 @@ export default function Map({
   }, [onInitiativeClick, onMapClick]);
 
   // ================================
-  // MISE À JOUR DES DONNÉES
+  // DATA UPDATE
   // ================================
 
   useEffect(() => {
@@ -421,7 +421,7 @@ export default function Map({
     ) as mapboxgl.GeoJSONSource;
     if (!source) return;
 
-    // Conversion en GeoJSON
+    // Convert to GeoJSON
     const geojsonData = {
       type: 'FeatureCollection' as const,
       features: initiatives.map((initiative) => ({

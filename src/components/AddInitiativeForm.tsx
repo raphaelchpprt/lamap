@@ -59,12 +59,12 @@ export default function AddInitiativeForm({
     try {
       const supabase = createClient();
 
-      // Vérifier l'authentification
+      // Check authentication
       const {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) {
-        setError('Vous devez être connecté pour ajouter une initiative');
+        setError('You must be logged in to add an initiative');
         setIsSubmitting(false);
         return;
       }

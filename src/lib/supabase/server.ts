@@ -11,44 +11,44 @@ import { cookies } from 'next/headers';
 import type { Database } from './types';
 
 /**
- * Crée le client Supabase pour les Server Components
+ * Create Supabase client for Server Components
  *
- * Utilise les cookies Next.js pour gérer l'authentification côté serveur.
- * Cette fonction doit être appelée dans un contexte async.
+ * Uses Next.js cookies to manage server-side authentication.
+ * This function must be called in an async context.
  *
- * @returns Client Supabase configuré pour le serveur
+ * @returns Supabase client configured for server
  */
 export async function createClient() {
-  // Vérification des variables d'environnement
+  // Check environment variables
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error(
-      "Variables d'environnement Supabase manquantes. " +
-        'Vérifiez NEXT_PUBLIC_SUPABASE_URL et NEXT_PUBLIC_SUPABASE_ANON_KEY dans .env.local'
+      'Missing Supabase environment variables. ' +
+        'Check NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local'
     );
   }
 
-  // Récupération du store de cookies Next.js
+  // Get Next.js cookie store
   const cookieStore = await cookies();
 
   return createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
     cookies: {
-      // Récupère tous les cookies
+      // Get all cookies
       getAll() {
         return cookieStore.getAll();
       },
-      // Définit plusieurs cookies à la fois
+      // Set multiple cookies at once
       setAll(cookiesToSet) {
         try {
           cookiesToSet.forEach(({ name, value, options }) => {
             cookieStore.set(name, value, options);
           });
         } catch (error) {
-          // Les erreurs de cookies peuvent être ignorées dans certains contextes
-          // (par exemple, lors du rendu côté serveur)
-          console.warn('Impossible de définir les cookies:', error);
+          // Cookie errors can be ignored in some contexts
+          // (e.g., during server-side rendering)
+          console.warn('Unable to set cookies:', error);
         }
       },
     },
@@ -56,14 +56,14 @@ export async function createClient() {
 }
 
 /**
- * Crée le client Supabase pour les API Routes
+ * Create Supabase client for API Routes
  *
- * Version spécialisée pour les API Routes qui ont besoin d'un contrôle
- * plus fin sur les cookies.
+ * Specialized version for API Routes that need finer control
+ * over cookies.
  *
- * @param request - Objet Request de l'API Route
- * @param response - Objet Response de l'API Route
- * @returns Client Supabase configuré pour les API Routes
+ * @param request - API Route Request object
+ * @param response - API Route Response object
+ * @returns Supabase client configured for API Routes
  */
 export function createClientForApiRoute(request: Request, response?: Response) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -71,15 +71,15 @@ export function createClientForApiRoute(request: Request, response?: Response) {
 
   if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error(
-      "Variables d'environnement Supabase manquantes. " +
-        'Vérifiez NEXT_PUBLIC_SUPABASE_URL et NEXT_PUBLIC_SUPABASE_ANON_KEY dans .env.local'
+      'Missing Supabase environment variables. ' +
+        'Check NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local'
     );
   }
 
   return createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
     cookies: {
       getAll() {
-        // Récupère les cookies depuis la requête
+        // Get cookies from request
         const cookieHeader = request.headers.get('cookie');
         if (!cookieHeader) return [];
 
@@ -95,7 +95,7 @@ export function createClientForApiRoute(request: Request, response?: Response) {
           .filter((cookie) => cookie.name && cookie.value);
       },
       setAll(cookiesToSet) {
-        // Définit les cookies dans la réponse si disponible
+        // Set cookies in response if available
         if (response) {
           cookiesToSet.forEach(({ name, value, options }) => {
             response.headers.append(

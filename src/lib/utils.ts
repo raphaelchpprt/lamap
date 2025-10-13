@@ -8,8 +8,8 @@ import { twMerge } from 'tailwind-merge';
 import type { Initiative, GeoJSONPoint } from '@/types/initiative';
 
 /**
- * Fusionne les classes Tailwind de manière intelligente
- * Évite les conflits de classes grâce à tailwind-merge
+ * Merge Tailwind classes intelligently
+ * Avoids class conflicts using tailwind-merge
  *
  * @example
  * cn('px-2 py-1', 'px-4') // => 'py-1 px-4'
@@ -19,11 +19,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Formate une date en français
+ * Format a date in French locale
  *
- * @param date - Date à formater (string ISO ou Date)
- * @param format - Format de sortie
- * @returns Date formatée
+ * @param date - Date to format (ISO string or Date object)
+ * @param format - Output format
+ * @returns Formatted date
  *
  * @example
  * formatDate('2024-01-15T10:00:00Z') // => "15 janvier 2024"
@@ -64,11 +64,11 @@ export function formatDate(
 }
 
 /**
- * Calcule la distance entre deux points géographiques (formule de Haversine)
+ * Calculate distance between two geographic points (Haversine formula)
  *
- * @param point1 - Premier point [longitude, latitude]
- * @param point2 - Deuxième point [longitude, latitude]
- * @returns Distance en kilomètres
+ * @param point1 - First point [longitude, latitude]
+ * @param point2 - Second point [longitude, latitude]
+ * @returns Distance in kilometers
  *
  * @example
  * const paris = [2.3522, 48.8566]
@@ -82,7 +82,7 @@ export function calculateDistance(
   const [lon1, lat1] = point1;
   const [lon2, lat2] = point2;
 
-  const R = 6371; // Rayon de la Terre en km
+  const R = 6371; // Earth's radius in km
   const dLat = toRad(lat2 - lat1);
   const dLon = toRad(lon2 - lon1);
 
@@ -96,21 +96,21 @@ export function calculateDistance(
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const distance = R * c;
 
-  return Math.round(distance * 10) / 10; // Arrondi à 1 décimale
+  return Math.round(distance * 10) / 10; // Round to 1 decimal
 }
 
 /**
- * Convertit des degrés en radians
+ * Convert degrees to radians
  */
 function toRad(degrees: number): number {
   return degrees * (Math.PI / 180);
 }
 
 /**
- * Formate une distance de manière lisible
+ * Format distance in a readable way
  *
- * @param distanceKm - Distance en kilomètres
- * @returns Distance formatée avec unité
+ * @param distanceKm - Distance in kilometers
+ * @returns Formatted distance with unit
  *
  * @example
  * formatDistance(0.5) // => "500 m"
@@ -124,10 +124,10 @@ export function formatDistance(distanceKm: number): string {
 }
 
 /**
- * Extrait les coordonnées latitude/longitude d'un point GeoJSON
+ * Extract latitude/longitude coordinates from a GeoJSON point
  *
- * @param location - Point GeoJSON
- * @returns Objet { latitude, longitude }
+ * @param location - GeoJSON Point
+ * @returns Object { latitude, longitude }
  */
 export function extractCoordinates(location: GeoJSONPoint): {
   latitude: number;
@@ -138,11 +138,11 @@ export function extractCoordinates(location: GeoJSONPoint): {
 }
 
 /**
- * Crée un point GeoJSON à partir de coordonnées
+ * Create a GeoJSON point from coordinates
  *
  * @param latitude - Latitude
  * @param longitude - Longitude
- * @returns Point GeoJSON
+ * @returns GeoJSON Point
  */
 export function createGeoJSONPoint(
   latitude: number,
@@ -155,10 +155,10 @@ export function createGeoJSONPoint(
 }
 
 /**
- * Valide un email
+ * Validate an email address
  *
- * @param email - Email à valider
- * @returns true si valide
+ * @param email - Email to validate
+ * @returns true if valid
  */
 export function isValidEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -166,10 +166,10 @@ export function isValidEmail(email: string): boolean {
 }
 
 /**
- * Valide un numéro de téléphone français
+ * Validate a French phone number
  *
- * @param phone - Numéro à valider
- * @returns true si valide
+ * @param phone - Phone number to validate
+ * @returns true if valid
  */
 export function isValidFrenchPhone(phone: string): boolean {
   const phoneRegex = /^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/;
@@ -177,10 +177,10 @@ export function isValidFrenchPhone(phone: string): boolean {
 }
 
 /**
- * Formate un numéro de téléphone français
+ * Format a French phone number
  *
- * @param phone - Numéro brut
- * @returns Numéro formaté
+ * @param phone - Raw phone number
+ * @returns Formatted phone number
  *
  * @example
  * formatPhoneNumber('0123456789') // => "01 23 45 67 89"
@@ -201,11 +201,11 @@ export function formatPhoneNumber(phone: string): string {
 }
 
 /**
- * Tronque un texte à une longueur donnée
+ * Truncate text to a given length
  *
- * @param text - Texte à tronquer
- * @param maxLength - Longueur maximum
- * @returns Texte tronqué avec "..."
+ * @param text - Text to truncate
+ * @param maxLength - Maximum length
+ * @returns Truncated text with "..."
  *
  * @example
  * truncate('Un très long texte...', 10) // => "Un très lo..."
@@ -216,11 +216,11 @@ export function truncate(text: string, maxLength: number): string {
 }
 
 /**
- * Génère une couleur hexadécimale à partir d'une chaîne de caractères
- * Utile pour générer des couleurs cohérentes pour les utilisateurs, etc.
+ * Generate a hexadecimal color from a string
+ * Useful for generating consistent colors for users, etc.
  *
- * @param str - Chaîne de caractères
- * @returns Couleur hexadécimale
+ * @param str - Input string
+ * @returns Hexadecimal color
  *
  * @example
  * stringToColor('user-123') // => "#a3c2f1"
@@ -292,12 +292,12 @@ export function throttle<T extends (...args: unknown[]) => unknown>(
 }
 
 /**
- * Filtre les initiatives par distance par rapport à un point
+ * Filter initiatives by distance from a point
  *
- * @param initiatives - Liste des initiatives
- * @param center - Point central [longitude, latitude]
- * @param maxDistanceKm - Distance maximum en km
- * @returns Initiatives filtrées avec leur distance
+ * @param initiatives - List of initiatives
+ * @param center - Center point [longitude, latitude]
+ * @param maxDistanceKm - Maximum distance in km
+ * @returns Filtered initiatives with their distance
  */
 export function filterByDistance(
   initiatives: Initiative[],
@@ -314,10 +314,10 @@ export function filterByDistance(
 }
 
 /**
- * Groupe les initiatives par type
+ * Group initiatives by type
  *
- * @param initiatives - Liste des initiatives
- * @returns Map avec le type comme clé et les initiatives comme valeur
+ * @param initiatives - List of initiatives
+ * @returns Map with type as key and initiatives as value
  */
 export function groupByType(
   initiatives: Initiative[]
@@ -333,26 +333,26 @@ export function groupByType(
 }
 
 /**
- * Copie un texte dans le presse-papiers
+ * Copy text to clipboard
  *
- * @param text - Texte à copier
- * @returns Promise<boolean> - true si succès
+ * @param text - Text to copy
+ * @returns Promise<boolean> - true if successful
  */
 export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
     return true;
   } catch (err) {
-    console.error('Erreur lors de la copie:', err);
+    console.error('Error copying to clipboard:', err);
     return false;
   }
 }
 
 /**
- * Génère une URL de partage pour une initiative
+ * Generate a share URL for an initiative
  *
- * @param initiativeId - ID de l'initiative
- * @returns URL complète
+ * @param initiativeId - Initiative ID
+ * @returns Complete URL
  */
 export function generateShareUrl(initiativeId: string): string {
   if (typeof window === 'undefined') return '';
@@ -360,12 +360,12 @@ export function generateShareUrl(initiativeId: string): string {
 }
 
 /**
- * Parse un paramètre de recherche URL
+ * Parse a URL search parameter
  *
  * @param searchParams - URLSearchParams
- * @param key - Clé du paramètre
- * @param defaultValue - Valeur par défaut
- * @returns Valeur du paramètre ou valeur par défaut
+ * @param key - Parameter key
+ * @param defaultValue - Default value
+ * @returns Parameter value or default value
  */
 export function getSearchParam(
   searchParams: URLSearchParams,
@@ -376,10 +376,10 @@ export function getSearchParam(
 }
 
 /**
- * Génère une description SEO pour une initiative
+ * Generate an SEO description for an initiative
  *
  * @param initiative - Initiative
- * @returns Description optimisée pour le SEO
+ * @returns SEO-optimized description
  */
 export function generateSEODescription(initiative: Initiative): string {
   const { name, type, address, description } = initiative;
@@ -398,16 +398,16 @@ export function generateSEODescription(initiative: Initiative): string {
 }
 
 /**
- * Vérifie si le navigateur supporte la géolocalisation
+ * Check if browser supports geolocation
  *
- * @returns true si supporté
+ * @returns true if supported
  */
 export function supportsGeolocation(): boolean {
   return typeof navigator !== 'undefined' && 'geolocation' in navigator;
 }
 
 /**
- * Récupère la position géographique de l'utilisateur
+ * Get user's geographic position
  *
  * @returns Promise<{ latitude: number; longitude: number }>
  */
@@ -417,7 +417,7 @@ export function getCurrentPosition(): Promise<{
 }> {
   return new Promise((resolve, reject) => {
     if (!supportsGeolocation()) {
-      reject(new Error('Géolocalisation non supportée'));
+      reject(new Error('Geolocation not supported'));
       return;
     }
 

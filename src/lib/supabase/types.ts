@@ -267,19 +267,19 @@ export interface CommentUpdate {
 }
 
 // ================================
-// UTILITAIRES DE CONVERSION
+// CONVERSION UTILITIES
 // ================================
 
 /**
- * Convertit une initiative de la base vers le format frontend
+ * Convert initiative from database format to frontend format
  */
 export function databaseInitiativeToInitiative(
   dbInitiative: DatabaseInitiative
 ): Initiative {
-  // Parse du point PostGIS 'POINT(lng lat)' vers GeoJSON
+  // Parse PostGIS point 'POINT(lng lat)' to GeoJSON
   const locationMatch = dbInitiative.location.match(/POINT\(([^)]+)\)/);
   if (!locationMatch) {
-    throw new Error(`Format de location invalide: ${dbInitiative.location}`);
+    throw new Error(`Invalid location format: ${dbInitiative.location}`);
   }
 
   const [lng, lat] = locationMatch[1].split(' ').map(Number);
@@ -307,7 +307,7 @@ export function databaseInitiativeToInitiative(
 }
 
 /**
- * Convertit une initiative frontend vers le format base de données
+ * Convert initiative from frontend format to database format
  */
 export function initiativeToDatabaseInitiative(
   initiative: Partial<Initiative>
