@@ -4,7 +4,7 @@ import MapView from '@/components/MapView';
 
 export default function HomePage() {
   return (
-    <div className="h-screen w-screen overflow-hidden">
+    <div className="flex h-screen w-screen flex-col overflow-hidden">
       <Suspense
         fallback={
           <div className="flex h-full items-center justify-center bg-background">
@@ -17,7 +17,9 @@ export default function HomePage() {
           </div>
         }
       >
-        <MapView />
+        <div className="flex-1 overflow-hidden">
+          <MapView />
+        </div>
       </Suspense>
     </div>
   );
