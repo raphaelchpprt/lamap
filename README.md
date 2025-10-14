@@ -6,6 +6,7 @@
 [![React](https://img.shields.io/badge/React-19-blue)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38bdf8)](https://tailwindcss.com/)
+[![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-latest-000000)](https://ui.shadcn.com/)
 [![Supabase](https://img.shields.io/badge/Supabase-PostGIS-3ECF8E)](https://supabase.com/)
 
 ## 🎯 Objectifs du projet
@@ -25,6 +26,7 @@ LaMap permet aux utilisateurs de :
 | **React** | 19+ | Bibliothèque UI |
 | **TypeScript** | 5+ | Typage statique |
 | **Tailwind CSS** | 3+ | Styling utility-first |
+| **shadcn/ui** | Latest | Bibliothèque de composants (Radix UI) |
 | **Jest** | Latest | Tests unitaires |
 | **React Testing Library** | Latest | Tests composants |
 | **Mapbox GL JS** | Latest | Cartographie WebGL |
