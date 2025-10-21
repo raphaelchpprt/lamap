@@ -25,7 +25,7 @@ const DEFAULT_CONFIG = {
   style: 'mapbox://styles/mapbox/light-v11',
   center: [2.3522, 46.6034] as [number, number], // Center of France
   zoom: 6,
-  minZoom: 5, // Prevent zooming out too far
+  minZoom: 6, // Can't zoom out to see other countries
   maxZoom: 18,
 } as const;
 
@@ -120,6 +120,7 @@ export default function Map({
       map.current.on('load', () => {
         setIsLoaded(true);
         if (map.current) {
+          addFranceMask();
           setupMapSources();
           setupMapLayers();
           setupMapInteractions();
@@ -210,6 +211,56 @@ export default function Map({
   useEffect(() => {
     loadInitiatives();
   }, [loadInitiatives]);
+
+  // ================================
+  // FRANCE MASK (Gray out other countries)
+  // ================================
+
+  const addFranceMask = useCallback(() => {
+    if (!map.current) return;
+
+    // Create a polygon covering the world with a hole for France
+    // This creates a "donut" shape: world boundary minus France
+    const worldBounds = [
+      [-180, -90],
+      [-180, 90],
+      [180, 90],
+      [180, -90],
+      [-180, -90],
+    ];
+
+    const franceBounds = [
+      [-5.5, 41.0], // Southwest
+      [-5.5, 51.5], // Northwest
+      [10.0, 51.5], // Northeast
+      [10.0, 41.0], // Southeast
+      [-5.5, 41.0], // Close the loop
+    ];
+
+    // Add source with polygon (world minus France hole)
+    map.current.addSource('world-mask', {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Polygon',
+          coordinates: [worldBounds, franceBounds], // Outer ring and inner hole
+        },
+      },
+    });
+
+    // Add semi-transparent gray layer
+    map.current.addLayer({
+      id: 'world-mask-layer',
+      type: 'fill',
+      source: 'world-mask',
+      paint: {
+        'fill-color': '#e5e7eb', // Light gray
+        'fill-opacity': 0.7, // Semi-transparent
+      },
+    });
+  }, []);
 
   // ================================
   // MAPBOX SOURCES CONFIGURATION

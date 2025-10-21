@@ -38,10 +38,11 @@ export default function MapView() {
 
     try {
       const supabase = createClient();
-      const { data, error: dbError } = await supabase
-        .from('initiatives')
-        .select('*')
-        .order('created_at', { ascending: false });
+
+      // Fetch with PostGIS text format for location using ST_AsText()
+      const { data, error: dbError } = await supabase.rpc(
+        'get_all_initiatives_with_text_location'
+      );
 
       if (dbError) {
         throw new Error(`Supabase error: ${dbError.message}`);

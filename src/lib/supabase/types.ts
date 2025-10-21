@@ -271,18 +271,37 @@ export interface CommentUpdate {
 // ================================
 
 /**
+ * Parse PostGIS location (handles both WKT text and WKB binary formats)
+ */
+function parsePostGISLocation(location: string): [number, number] {
+  // Check if it's WKT text format: "POINT(lng lat)"
+  const textMatch = location.match(/POINT\(([^)]+)\)/);
+  if (textMatch) {
+    const [lng, lat] = textMatch[1].split(' ').map(Number);
+    return [lng, lat];
+  }
+
+  // If it's WKB binary format (hex string starting with 01010000...)
+  // We need to use a SQL query to convert it
+  // For now, throw a helpful error
+  if (location.startsWith('0101000020')) {
+    throw new Error(
+      'Location is in WKB binary format. Need to use ST_AsText() in SQL query. ' +
+        'Please update the Supabase query to: select(*, location_text:ST_AsText(location))'
+    );
+  }
+
+  throw new Error(`Invalid location format: ${location}`);
+}
+
+/**
  * Convert initiative from database format to frontend format
  */
 export function databaseInitiativeToInitiative(
   dbInitiative: DatabaseInitiative
 ): Initiative {
-  // Parse PostGIS point 'POINT(lng lat)' to GeoJSON
-  const locationMatch = dbInitiative.location.match(/POINT\(([^)]+)\)/);
-  if (!locationMatch) {
-    throw new Error(`Invalid location format: ${dbInitiative.location}`);
-  }
-
-  const [lng, lat] = locationMatch[1].split(' ').map(Number);
+  // Parse PostGIS point to GeoJSON
+  const [lng, lat] = parsePostGISLocation(dbInitiative.location);
 
   return {
     id: dbInitiative.id,
