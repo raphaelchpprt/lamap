@@ -127,11 +127,11 @@ function formatOpeningHours(openingHours: OpeningHours | undefined): string {
 }
 
 // ================================
-// COMPOSANTS
+// COMPONENTS
 // ================================
 
 /**
- * Badge de type d'initiative
+ * Initiative type badge
  */
 function TypeBadge({ type }: { type: Initiative['type'] }) {
   const color = INITIATIVE_COLORS[type];
@@ -147,7 +147,7 @@ function TypeBadge({ type }: { type: Initiative['type'] }) {
 }
 
 /**
- * Badge de vérification
+ * Verification badge
  */
 function VerifiedBadge({ verified }: { verified: boolean }) {
   if (!verified) return null;
@@ -164,7 +164,7 @@ function VerifiedBadge({ verified }: { verified: boolean }) {
 }
 
 /**
- * Informations de contact rapide
+ * Quick contact information
  */
 function QuickContact({ initiative }: { initiative: Initiative }) {
   const hasContact = initiative.phone || initiative.email || initiative.website;
@@ -210,7 +210,7 @@ function QuickContact({ initiative }: { initiative: Initiative }) {
 }
 
 // ================================
-// COMPOSANT PRINCIPAL
+// MAIN COMPONENT
 // ================================
 
 export default function InitiativeCard({
@@ -226,7 +226,7 @@ export default function InitiativeCard({
   const [imageError, setImageError] = useState(false);
   const [showFullDescription, setShowFullDescription] = useState(false);
 
-  // Classes CSS selon le variant
+  // CSS classes based on variant
   const variantClasses = {
     card: 'bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden',
     popup: 'bg-white rounded-lg shadow-lg overflow-hidden max-w-sm',
@@ -236,14 +236,14 @@ export default function InitiativeCard({
 
   const containerClass = `${variantClasses[variant]} ${className}`;
 
-  // Gestion du clic
+  // Handle click
   const handleClick = () => {
     if (onClick) {
       onClick(initiative);
     }
   };
 
-  // Texte de description tronqué
+  // Truncated description text
   const description = initiative.description || '';
   const truncatedDescription =
     description.length > 120 && !showFullDescription
@@ -360,7 +360,7 @@ export default function InitiativeCard({
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
     >
-      {/* Image d'en-tête */}
+      {/* Header image */}
       {initiative.image_url && !imageError && (
         <div className="relative h-48 w-full">
           <Image
@@ -371,48 +371,49 @@ export default function InitiativeCard({
             onError={() => setImageError(true)}
           />
 
-          {/* Overlay avec badges */}
+          {/* Overlay with type badge only */}
           <div className="absolute top-3 left-3 flex gap-2">
             <TypeBadge type={initiative.type} />
-            <VerifiedBadge verified={initiative.verified} />
+            {initiative.verified && <VerifiedBadge verified={true} />}
           </div>
         </div>
       )}
 
-      {/* Contenu principal */}
-      <div className="p-4">
-        {/* En-tête sans image */}
+      {/* Main content */}
+      <div className="p-6 space-y-4">
+        {/* Header: Type badge + Verified (if no image) */}
         {(!initiative.image_url || imageError) && (
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
             <TypeBadge type={initiative.type} />
-            <VerifiedBadge verified={initiative.verified} />
+            {initiative.verified && <VerifiedBadge verified={true} />}
           </div>
         )}
 
-        {/* Titre */}
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">
-          {initiative.name}
-        </h3>
-
-        {/* Adresse et distance */}
-        <div className="space-y-2 mb-3">
-          {initiative.address && (
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <MapPin size={16} className="flex-shrink-0" />
-              <span>{initiative.address}</span>
-            </div>
-          )}
-
-          {distance && (
-            <div className="text-sm text-primary-600 font-medium">
-              À {formatDistance(distance)}
-            </div>
-          )}
+        {/* Main title - larger and clearer */}
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 leading-tight">
+            {initiative.name}
+          </h2>
         </div>
+
+        {/* Address and distance */}
+        {initiative.address && (
+          <div className="flex items-start gap-2 text-gray-700">
+            <MapPin size={18} className="flex-shrink-0 mt-0.5 text-gray-500" />
+            <div className="flex-1">
+              <p className="text-sm leading-relaxed">{initiative.address}</p>
+              {distance && (
+                <p className="text-sm font-semibold text-primary-600 mt-1">
+                  À {formatDistance(distance)}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Description */}
         {description && (
-          <div className="mb-4">
+          <div className="border-t border-gray-100 pt-4">
             <p className="text-sm text-gray-600 leading-relaxed">
               {truncatedDescription}
             </p>
@@ -422,79 +423,131 @@ export default function InitiativeCard({
                   e.stopPropagation();
                   setShowFullDescription(!showFullDescription);
                 }}
-                className="text-sm text-primary-600 hover:text-primary-700 mt-1"
+                className="text-sm font-medium text-primary-600 hover:text-primary-700 mt-2 transition-colors"
               >
-                {showFullDescription ? 'Voir moins' : 'Voir plus'}
+                {showFullDescription ? '− Voir moins' : '+ Voir plus'}
               </button>
             )}
           </div>
         )}
 
-        {/* Horaires pour variant detailed */}
+        {/* Opening hours (only for detailed variant) */}
         {variant === 'detailed' && initiative.opening_hours && (
-          <div className="mb-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Clock size={16} className="text-gray-400" />
-              <span className="text-sm font-medium text-gray-700">
-                Horaires
+          <div className="border-t border-gray-100 pt-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Clock size={18} className="text-primary-600" />
+              <span className="text-sm font-semibold text-gray-900">
+                Horaires d&apos;ouverture
               </span>
               {isOpen && (
-                <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                  Ouvert
+                <span className="text-xs bg-green-100 text-green-800 px-2.5 py-1 rounded-full font-medium">
+                  • Ouvert maintenant
                 </span>
               )}
             </div>
-            <pre className="text-xs text-gray-600 whitespace-pre-line">
+            <pre className="text-xs text-gray-600 whitespace-pre-line leading-relaxed font-sans">
               {formatOpeningHours(initiative.opening_hours)}
             </pre>
           </div>
         )}
 
         {/* Contact */}
-        <div className="flex items-center justify-between">
-          <QuickContact initiative={initiative} />
-
-          {/* Actions d'administration */}
-          {showActions && (onEdit || onDelete) && (
-            <div className="flex items-center gap-2">
-              {onEdit && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onEdit(initiative);
-                  }}
-                  className="text-sm text-blue-600 hover:text-blue-700 px-2 py-1 rounded"
+        {(initiative.website || initiative.phone || initiative.email) && (
+          <div className="border-t border-gray-100 pt-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Globe size={18} className="text-primary-600" />
+              <span className="text-sm font-semibold text-gray-900">
+                Contact
+              </span>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              {initiative.website && (
+                <a
+                  href={initiative.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-primary-50 text-primary-700 rounded-lg hover:bg-primary-100 transition-colors text-sm font-medium"
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  Éditer
-                </button>
+                  <Globe size={16} />
+                  <span>Site web</span>
+                  <ExternalLink size={14} />
+                </a>
               )}
-              {onDelete && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete(initiative);
-                  }}
-                  className="text-sm text-red-600 hover:text-red-700 px-2 py-1 rounded"
+
+              {initiative.phone && (
+                <a
+                  href={`tel:${initiative.phone}`}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors text-sm font-medium"
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  Supprimer
-                </button>
+                  <Phone size={16} />
+                  <span>{initiative.phone}</span>
+                </a>
+              )}
+
+              {initiative.email && (
+                <a
+                  href={`mailto:${initiative.email}`}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Mail size={16} />
+                  <span>{initiative.email}</span>
+                </a>
               )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* Métadonnées pour variant detailed */}
+        {/* Admin actions */}
+        {showActions && (onEdit || onDelete) && (
+          <div className="border-t border-gray-100 pt-4 flex items-center gap-2">
+            {onEdit && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit(initiative);
+                }}
+                className="px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"
+              >
+                ✏️ Éditer
+              </button>
+            )}
+            {onDelete && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(initiative);
+                }}
+                className="px-4 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium"
+              >
+                🗑️ Supprimer
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Metadata (only for detailed variant) */}
         {variant === 'detailed' && (
-          <div className="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-500">
-            <div className="flex justify-between">
-              <span>
-                Ajouté le{' '}
-                {new Date(initiative.created_at).toLocaleDateString('fr-FR')}
+          <div className="border-t border-gray-100 pt-4">
+            <div className="flex items-center justify-between text-xs text-gray-500">
+              <span className="flex items-center gap-1">
+                📅 Ajouté le{' '}
+                {new Date(initiative.created_at).toLocaleDateString('fr-FR', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                })}
               </span>
               {initiative.updated_at !== initiative.created_at && (
-                <span>
-                  Modifié le{' '}
-                  {new Date(initiative.updated_at).toLocaleDateString('fr-FR')}
+                <span className="flex items-center gap-1">
+                  ✏️ Modifié le{' '}
+                  {new Date(initiative.updated_at).toLocaleDateString('fr-FR', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                  })}
                 </span>
               )}
             </div>
