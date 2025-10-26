@@ -12,7 +12,10 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { useEffect, useRef, useState, useCallback } from 'react';
 
 import { createClient } from '@/lib/supabase/client';
-import { databaseInitiativeToInitiative } from '@/lib/supabase/types';
+import {
+  databaseInitiativeToInitiative,
+  type DatabaseInitiative,
+} from '@/lib/supabase/types';
 import { INITIATIVE_COLORS } from '@/types/initiative';
 
 import type { Initiative, InitiativeFilters } from '@/types/initiative';
@@ -79,7 +82,7 @@ export default function Map({
   initiatives: externalInitiatives,
 }: MapProps) {
   // ================================
-  // STATE // STATE & REFS REFS
+  // STATE & REFS
   // ================================
 
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -88,6 +91,8 @@ export default function Map({
   const [initiatives, setInitiatives] = useState<Initiative[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const loadTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastBoundsRef = useRef<mapboxgl.LngLatBounds | null>(null);
 
   // ================================
   // MAP INITIALIZATION
@@ -115,6 +120,9 @@ export default function Map({
         maxZoom: DEFAULT_CONFIG.maxZoom,
         maxBounds: FRANCE_BOUNDS, // Limite la navigation à la France
         antialias: true,
+        // Disable Mapbox telemetry to avoid CORS warnings in development
+        trackResize: true,
+        collectResourceTiming: false,
       });
 
       map.current.on('load', () => {
@@ -158,59 +166,141 @@ export default function Map({
   }, []);
 
   // ================================
-  // LOADING INITIATIVES
+  // LOADING INITIATIVES (Viewport-based)
   // ================================
 
-  const loadInitiatives = useCallback(async () => {
+  /**
+   * Load initiatives within the current map bounds
+   * Uses PostGIS function get_initiatives_in_bounds for performance
+   */
+  const loadInitiativesInViewport = useCallback(async () => {
+    // Use external initiatives if provided
     if (externalInitiatives) {
       setInitiatives(externalInitiatives);
       return;
     }
 
-    setLoading(true);
-    setError(null);
+    // Wait for map to be ready
+    if (!map.current || !isLoaded) return;
 
-    try {
-      const supabase = createClient();
-
-      let query = supabase.from('initiatives').select('*');
-
-      // Apply filters
-      if (filters?.types?.length) {
-        query = query.in('type', filters.types);
-      }
-
-      if (filters?.verified_only) {
-        query = query.eq('verified', true);
-      }
-
-      if (filters?.search_query) {
-        query = query.or(
-          `name.ilike.%${filters.search_query}%,description.ilike.%${filters.search_query}%`
-        );
-      }
-
-      const { data, error: dbError } = await query;
-
-      if (dbError) {
-        throw new Error(`Erreur Supabase: ${dbError.message}`);
-      }
-
-      const formattedInitiatives = (data || []).map(
-        databaseInitiativeToInitiative
-      );
-      setInitiatives(formattedInitiatives);
-    } catch (err) {
-      console.error('Erreur lors du chargement des initiatives:', err);
-      setError(err instanceof Error ? err.message : 'Erreur inconnue');
-    } finally {
-      setLoading(false);
+    // Clear any pending load timeout (debounce)
+    if (loadTimeoutRef.current) {
+      clearTimeout(loadTimeoutRef.current);
     }
-  }, [filters, externalInitiatives]);
 
+    // Check if bounds changed significantly (avoid reload on tiny movements)
+    const currentBounds = map.current.getBounds();
+    if (lastBoundsRef.current && currentBounds) {
+      const lastCenter = lastBoundsRef.current.getCenter();
+      const currentCenter = currentBounds.getCenter();
+      const distance = lastCenter.distanceTo(currentCenter);
+
+      // Only reload if moved more than 1km or zoomed
+      const lastZoom = map.current.getZoom();
+      const zoomChanged =
+        lastBoundsRef.current &&
+        Math.abs(lastZoom - map.current.getZoom()) > 0.5;
+
+      if (distance < 1000 && !zoomChanged) {
+        return;
+      }
+    }
+
+    // Debounce: wait 500ms before loading
+    loadTimeoutRef.current = setTimeout(async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const supabase = createClient();
+
+        // Safety check
+        if (!map.current) return;
+
+        const bounds = map.current.getBounds();
+        if (!bounds) return; // Safety check for bounds
+
+        const zoom = map.current.getZoom();
+
+        // Get bounds coordinates
+        const west = bounds.getWest();
+        const south = bounds.getSouth();
+        const east = bounds.getEast();
+        const north = bounds.getNorth();
+
+        // Adaptive limit based on zoom level - SHOW EVERYTHING in viewport
+        // Low zoom (< 9): load ALL for heatmap (max 50000)
+        // Medium zoom (9-14): load for clustering (max 30000)
+        // High zoom (> 14): load for individual markers (max 10000)
+        let limit = 10000;
+        if (zoom < 9) {
+          limit = 50000;
+        } else if (zoom < 14) {
+          limit = 30000;
+        }
+
+        // Call PostGIS function with viewport bounds
+        const { data, error: dbError } = (await supabase.rpc(
+          'get_initiatives_in_bounds' as never,
+          {
+            p_west: west,
+            p_south: south,
+            p_east: east,
+            p_north: north,
+            p_types: filters?.types?.length ? filters.types : null,
+            p_verified_only: filters?.verified_only || false,
+            p_limit: limit,
+          } as never
+        )) as {
+          data: DatabaseInitiative[] | null;
+          error: { message: string } | null;
+        };
+
+        if (dbError) {
+          throw new Error(`Erreur Supabase: ${dbError.message}`);
+        }
+
+        const formattedInitiatives = ((data as DatabaseInitiative[]) || []).map(
+          databaseInitiativeToInitiative
+        );
+        setInitiatives(formattedInitiatives);
+
+        // Store current bounds for next comparison
+        if (map.current) {
+          lastBoundsRef.current = map.current.getBounds();
+        }
+      } catch (err) {
+        console.error('Erreur lors du chargement des initiatives:', err);
+        setError(err instanceof Error ? err.message : 'Erreur inconnue');
+      } finally {
+        setLoading(false);
+      }
+    }, 500); // 500ms debounce
+  }, [filters, externalInitiatives, isLoaded]);
+
+  // Load on mount and when filters change
   useEffect(() => {
-    loadInitiatives();
-  }, [loadInitiatives]);
+    loadInitiativesInViewport();
+  }, [loadInitiativesInViewport]);
+
+  // Reload when map moves or zooms (viewport-based loading)
+  useEffect(() => {
+    if (!map.current || !isLoaded) return;
+
+    const handleMoveEnd = () => {
+      loadInitiativesInViewport();
+    };
+
+    map.current.on('moveend', handleMoveEnd);
+    map.current.on('zoomend', handleMoveEnd);
+
+    return () => {
+      if (map.current) {
+        map.current.off('moveend', handleMoveEnd);
+        map.current.off('zoomend', handleMoveEnd);
+      }
+    };
+  }, [isLoaded, loadInitiativesInViewport]);
 
   // ================================
   // FRANCE MASK (Gray out other countries)
@@ -278,8 +368,12 @@ export default function Map({
           features: [],
         },
         cluster: enableClustering,
-        clusterMaxZoom: 14,
-        clusterRadius: 50,
+        clusterMaxZoom: 14, // Stop clustering at zoom 14
+        clusterRadius: 60, // Cluster radius in pixels (increased for better performance)
+        clusterProperties: {
+          // Calculate sum of points in each cluster
+          sum: ['+', ['get', 'point_count']],
+        },
       });
     }
   }, [enableClustering]);
@@ -291,6 +385,50 @@ export default function Map({
   const setupMapLayers = useCallback(() => {
     if (!map.current) return;
 
+    // Heatmap layer (visible at low zoom levels)
+    if (!map.current.getLayer('heatmap')) {
+      map.current.addLayer({
+        id: 'heatmap',
+        type: 'heatmap',
+        source: 'initiatives',
+        maxzoom: 9, // Only show heatmap when zoomed out
+        paint: {
+          // Intensity based on zoom level
+          'heatmap-intensity': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            0,
+            1,
+            9,
+            3,
+          ],
+          // Color ramp for heatmap
+          'heatmap-color': [
+            'interpolate',
+            ['linear'],
+            ['heatmap-density'],
+            0,
+            'rgba(33,102,172,0)',
+            0.2,
+            'rgb(103,169,207)',
+            0.4,
+            'rgb(209,229,240)',
+            0.6,
+            'rgb(253,219,199)',
+            0.8,
+            'rgb(239,138,98)',
+            1,
+            'rgb(178,24,43)',
+          ],
+          // Radius of each "point" on heatmap
+          'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 0, 2, 9, 20],
+          // Opacity
+          'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 7, 1, 9, 0],
+        },
+      });
+    }
+
     // Clusters
     if (enableClustering) {
       // Circles for clusters
@@ -300,27 +438,34 @@ export default function Map({
           type: 'circle',
           source: 'initiatives',
           filter: ['has', 'point_count'],
+          minzoom: 9, // Show clusters starting at zoom 9
+          maxzoom: 14, // Stop showing clusters at zoom 14
           paint: {
             'circle-color': [
               'step',
               ['get', 'point_count'],
-              '#51bbd6', // Color for 1-10 points
-              10,
-              '#f1c40f', // 10-50 points
+              '#10b981', // Green for 1-50 points
               50,
-              '#e74c3c', // 50+ points
+              '#3b82f6', // Blue for 50-100 points
+              100,
+              '#f59e0b', // Orange for 100-500 points
+              500,
+              '#ef4444', // Red for 500+ points
             ],
             'circle-radius': [
               'step',
               ['get', 'point_count'],
-              20, // Radius for 1-10 points
-              10,
-              30, // 10-50 points
+              15, // Radius for 1-50 points
               50,
-              40, // 50+ points
+              25, // 50-100 points
+              100,
+              35, // 100-500 points
+              500,
+              45, // 500+ points
             ],
             'circle-stroke-width': 2,
             'circle-stroke-color': '#fff',
+            'circle-opacity': 0.9,
           },
         });
       }
@@ -332,10 +477,12 @@ export default function Map({
           type: 'symbol',
           source: 'initiatives',
           filter: ['has', 'point_count'],
+          minzoom: 9,
+          maxzoom: 14,
           layout: {
-            'text-field': '{point_count_abbreviated}',
+            'text-field': ['get', 'point_count_abbreviated'],
             'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-            'text-size': 12,
+            'text-size': 14,
           },
           paint: {
             'text-color': '#ffffff',
@@ -344,7 +491,7 @@ export default function Map({
       }
     }
 
-    // Individual points (not clustered)
+    // Individual points (not clustered, visible at high zoom)
     if (!map.current.getLayer('unclustered-point')) {
       map.current.addLayer({
         id: 'unclustered-point',
@@ -353,6 +500,7 @@ export default function Map({
         filter: enableClustering
           ? (['!', ['has', 'point_count']] as mapboxgl.FilterSpecification)
           : undefined,
+        minzoom: 9, // Only show individual points at zoom 9+
         paint: {
           'circle-radius': [
             'interpolate',
@@ -400,6 +548,33 @@ export default function Map({
         },
       });
     }
+
+    // Labels for individual points (visible at high zoom)
+    if (!map.current.getLayer('unclustered-point-label')) {
+      map.current.addLayer({
+        id: 'unclustered-point-label',
+        type: 'symbol',
+        source: 'initiatives',
+        filter: enableClustering
+          ? (['!', ['has', 'point_count']] as mapboxgl.FilterSpecification)
+          : undefined,
+        minzoom: 13, // Only show labels at high zoom
+        layout: {
+          'text-field': ['get', 'name'],
+          'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
+          'text-size': 11,
+          'text-offset': [0, 1.5],
+          'text-anchor': 'top',
+          'text-max-width': 10,
+        },
+        paint: {
+          'text-color': '#1f2937',
+          'text-halo-color': '#ffffff',
+          'text-halo-width': 1.5,
+          'text-halo-blur': 0.5,
+        },
+      });
+    }
   }, [enableClustering]);
 
   // ================================
@@ -409,6 +584,13 @@ export default function Map({
   const setupMapInteractions = useCallback(() => {
     if (!map.current) return;
 
+    // Create a popup for hover interactions
+    const hoverPopup = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false,
+      className: 'hover-popup',
+    });
+
     // Pointer cursor on interactive elements
     map.current.on('mouseenter', 'clusters', () => {
       if (map.current) map.current.getCanvas().style.cursor = 'pointer';
@@ -417,11 +599,44 @@ export default function Map({
       if (map.current) map.current.getCanvas().style.cursor = '';
     });
 
-    map.current.on('mouseenter', 'unclustered-point', () => {
-      if (map.current) map.current.getCanvas().style.cursor = 'pointer';
+    // Hover on unclustered point: show name
+    map.current.on('mouseenter', 'unclustered-point', (e) => {
+      if (!map.current) return;
+      map.current.getCanvas().style.cursor = 'pointer';
+
+      const features = e.features?.[0];
+      if (features?.properties) {
+        const initiative = JSON.parse(
+          features.properties.initiative
+        ) as Initiative;
+
+        // Create popup HTML with title as main heading
+        const html = `
+          <div class="p-3">
+            <h2 class="font-bold text-base mb-1">${initiative.name}</h2>
+            <p class="text-xs text-gray-600">${initiative.type}</p>
+            ${
+              initiative.address
+                ? `<p class="text-xs text-gray-500 mt-1">${initiative.address}</p>`
+                : ''
+            }
+          </div>
+        `;
+
+        hoverPopup
+          .setLngLat(
+            (features.geometry as GeoJSON.Point).coordinates as [number, number]
+          )
+          .setHTML(html)
+          .addTo(map.current);
+      }
     });
+
     map.current.on('mouseleave', 'unclustered-point', () => {
-      if (map.current) map.current.getCanvas().style.cursor = '';
+      if (map.current) {
+        map.current.getCanvas().style.cursor = '';
+        hoverPopup.remove();
+      }
     });
 
     // Click on cluster: zoom
@@ -455,11 +670,17 @@ export default function Map({
     // Click on point: show details
     map.current.on('click', 'unclustered-point', (e) => {
       const features = e.features?.[0];
-      if (features?.properties && onInitiativeClick) {
+      if (features?.properties) {
         const initiative = JSON.parse(
           features.properties.initiative
         ) as Initiative;
-        onInitiativeClick(initiative);
+
+        // Remove hover popup when clicking
+        hoverPopup.remove();
+
+        if (onInitiativeClick) {
+          onInitiativeClick(initiative);
+        }
       }
     });
 
@@ -553,18 +774,6 @@ export default function Map({
         data-testid="map-container"
       />
 
-      {/* Indicateur de chargement */}
-      {loading && (
-        <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-10">
-          <div className="bg-white rounded-lg shadow-lg p-4 flex items-center space-x-3">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-500" />
-            <span className="text-sm font-medium">
-              Chargement des initiatives...
-            </span>
-          </div>
-        </div>
-      )}
-
       {/* Affichage d'erreur */}
       {error && (
         <div className="absolute top-4 left-4 right-4 z-20">
@@ -592,7 +801,7 @@ export default function Map({
                   <button
                     onClick={() => {
                       setError(null);
-                      loadInitiatives();
+                      loadInitiativesInViewport();
                     }}
                     className="text-sm bg-red-100 hover:bg-red-200 text-red-800 px-3 py-2 rounded-md transition-colors"
                   >
@@ -606,16 +815,22 @@ export default function Map({
       )}
 
       {/* Informations sur les données */}
-      {!loading && !error && (
-        <div className="absolute bottom-4 left-4 z-10">
-          <div className="bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm">
-            <span className="text-xs text-gray-600">
-              {initiatives.length} initiative{initiatives.length > 1 ? 's' : ''}{' '}
-              affichée{initiatives.length > 1 ? 's' : ''}
-            </span>
-          </div>
+      <div className="absolute bottom-4 left-4 z-10 flex items-center gap-2">
+        <div className="bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm">
+          <span className="text-xs text-gray-600">
+            {initiatives.length} initiative{initiatives.length > 1 ? 's' : ''}{' '}
+            affichée{initiatives.length > 1 ? 's' : ''}
+          </span>
         </div>
-      )}
+
+        {/* Indicateur de chargement discret */}
+        {loading && (
+          <div className="bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm flex items-center gap-2">
+            <div className="animate-spin rounded-full h-3 w-3 border-2 border-primary border-t-transparent" />
+            <span className="text-xs text-gray-600">Chargement...</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
