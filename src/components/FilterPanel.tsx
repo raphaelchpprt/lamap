@@ -81,14 +81,15 @@ export default function FilterPanel({
     onFilterChange([]);
   };
 
-  const totalCount = Object.values(initiativeCounts).reduce(
-    (sum, count) => sum + count,
-    0
-  );
-  const selectedCount = selectedTypes.reduce(
-    (sum, type) => sum + (initiativeCounts[type] || 0),
-    0
-  );
+  const totalCount = initiativeCounts
+    ? Object.values(initiativeCounts).reduce((sum, count) => sum + count, 0)
+    : 0;
+  const selectedCount = initiativeCounts
+    ? selectedTypes.reduce(
+        (sum, type) => sum + (initiativeCounts[type] || 0),
+        0
+      )
+    : 0;
 
   return (
     <Card className="w-full">
