@@ -35,21 +35,22 @@ const INITIATIVE_TYPES: InitiativeType[] = [
   'Autre',
 ];
 
-// Modern gradient colors for each type - Eco-tech green theme
+// Modern tech gradients - distinctive colors for each type
+// Balanced between green eco-theme and modern grays/blues
 const TYPE_GRADIENTS: Record<InitiativeType, string> = {
-  Ressourcerie: 'from-emerald-400 to-green-600',
-  'Repair Café': 'from-lime-400 to-green-600',
-  AMAP: 'from-green-400 to-emerald-600',
-  "Entreprise d'insertion": 'from-teal-400 to-cyan-600',
-  'Point de collecte': 'from-emerald-300 to-teal-600',
-  Recyclerie: 'from-green-500 to-emerald-700',
-  'Épicerie sociale': 'from-lime-400 to-yellow-600',
-  'Jardin partagé': 'from-green-400 to-lime-600',
-  'Fab Lab': 'from-cyan-400 to-teal-600',
-  Coopérative: 'from-emerald-400 to-green-700',
-  'Monnaie locale': 'from-yellow-400 to-lime-600',
-  'Tiers-lieu': 'from-teal-400 to-emerald-600',
-  Autre: 'from-gray-400 to-slate-600',
+  Ressourcerie: 'from-slate-400 to-gray-600', // Gray - Recycling
+  'Repair Café': 'from-amber-400 to-orange-600', // Orange - Repair/Fix
+  AMAP: 'from-emerald-400 to-green-600', // Green - Food/Agriculture
+  "Entreprise d'insertion": 'from-blue-400 to-indigo-600', // Blue - Social
+  'Point de collecte': 'from-purple-400 to-violet-600', // Purple - Collection
+  Recyclerie: 'from-teal-400 to-cyan-600', // Cyan - Recycling center
+  'Épicerie sociale': 'from-rose-400 to-pink-600', // Pink - Social grocery
+  'Jardin partagé': 'from-lime-400 to-green-600', // Lime - Gardens
+  'Fab Lab': 'from-violet-400 to-purple-600', // Violet - Tech/Making
+  Coopérative: 'from-sky-400 to-blue-600', // Sky blue - Cooperative
+  'Monnaie locale': 'from-yellow-400 to-amber-600', // Yellow - Currency
+  'Tiers-lieu': 'from-fuchsia-400 to-pink-600', // Fuchsia - Third place
+  Autre: 'from-gray-400 to-slate-600', // Gray - Other
 };
 
 export default function FilterPanel({

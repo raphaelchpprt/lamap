@@ -2,7 +2,7 @@
 
 /**
  * Statistics Panel Component
- * 
+ *
  * Displays initiative statistics with modern glassmorphism design
  * Features: Real-time counts, type distribution, animated counters
  */
@@ -21,10 +21,10 @@ import type { Initiative, InitiativeType } from '@/types/initiative';
 interface StatsPanelProps {
   /** List of initiatives to analyze */
   initiatives: Initiative[];
-  
+
   /** Selected types for filtering stats */
   selectedTypes?: InitiativeType[];
-  
+
   /** Show detailed breakdown */
   detailed?: boolean;
 }
@@ -51,7 +51,7 @@ function AnimatedCounter({ value, duration = 1000 }: AnimatedCounterProps) {
     const animate = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / duration, 1);
-      
+
       // Easing function (ease-out)
       const easeOut = 1 - Math.pow(1 - progress, 3);
       setCount(Math.floor(easeOut * value));
@@ -104,21 +104,21 @@ function StatCard({
 
         <div className="relative z-10 flex items-start justify-between">
           <div className="flex-1">
-            <p className="text-xs font-medium text-white/70 uppercase tracking-wider mb-1">
+            <p className="text-xs font-semibold text-white uppercase tracking-wider mb-1">
               {label}
             </p>
             <p className="text-3xl font-bold text-white mb-1">
               <AnimatedCounter value={value} />
             </p>
             {subtitle && (
-              <p className="text-xs text-white/60">{subtitle}</p>
+              <p className="text-sm font-medium text-white/90">{subtitle}</p>
             )}
           </div>
-          
+
           <div
             className="rounded-xl p-2 transition-transform duration-300 group-hover:scale-110"
             style={{
-              background: 'rgba(255, 255, 255, 0.1)',
+              background: 'rgba(255, 255, 255, 0.15)',
               backdropFilter: 'blur(10px)',
             }}
           >
@@ -166,16 +166,18 @@ export default function StatsPanel({
           icon={MapPin}
           label="Total"
           value={totalInitiatives}
-          subtitle="initiatives"
-          gradient="linear-gradient(135deg, #10b981 0%, #059669 100%)"
+          subtitle="initiatives à proximité"
+          gradient="linear-gradient(135deg, #64748b 0%, #475569 100%)"
         />
-        
+
         <StatCard
           icon={CheckCircle}
           label="Vérifiées"
           value={verifiedCount}
-          subtitle={`${Math.round((verifiedCount / totalInitiatives) * 100)}% du total`}
-          gradient="linear-gradient(135deg, #34d399 0%, #10b981 100%)"
+          subtitle={`${Math.round(
+            (verifiedCount / totalInitiatives) * 100
+          )}% du total`}
+          gradient="linear-gradient(135deg, #10b981 0%, #059669 100%)"
         />
       </div>
 
@@ -184,16 +186,19 @@ export default function StatsPanel({
           icon={Activity}
           label="Filtrées"
           value={selectedCount}
-          subtitle={`${selectedTypes.length} type${selectedTypes.length > 1 ? 's' : ''} sélectionné${selectedTypes.length > 1 ? 's' : ''}`}
-          gradient="linear-gradient(135deg, #84cc16 0%, #65a30d 100%)"
+          subtitle={`${selectedTypes.length} type${
+            selectedTypes.length > 1 ? 's' : ''
+          } sélectionné${selectedTypes.length > 1 ? 's' : ''}`}
+          gradient="linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)"
         />
       )}
 
       {/* Top types with liquid glass effect */}
       {detailed && topTypes.length > 0 && (
-          <Card className="relative overflow-hidden rounded-2xl border-none bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl p-4">
-          {/* Animated gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-green-500/10 to-lime-500/10 animate-gradient" />          <div className="relative z-10">
+        <Card className="relative overflow-hidden rounded-2xl border-none bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl p-4">
+          {/* Animated gradient background - more neutral */}
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-500/10 via-blue-500/10 to-indigo-500/10 animate-gradient" />{' '}
+          <div className="relative z-10">
             <div className="flex items-center gap-2 mb-3">
               <TrendingUp className="h-4 w-4 text-white/70" />
               <h3 className="text-sm font-semibold text-white/90">
@@ -205,9 +210,9 @@ export default function StatsPanel({
               {topTypes.map(([type, count], index) => {
                 const percentage = Math.round((count / totalInitiatives) * 100);
                 const colors = [
-                  'from-emerald-500 to-green-500',
-                  'from-lime-500 to-green-600',
-                  'from-teal-500 to-emerald-500',
+                  'from-blue-500 to-indigo-500', // First most popular - blue
+                  'from-emerald-500 to-green-500', // Second - green
+                  'from-purple-500 to-violet-500', // Third - purple
                 ];
 
                 return (
@@ -241,7 +246,7 @@ export default function StatsPanel({
             width: 0%;
           }
         }
-        
+
         @keyframes gradient {
           0% {
             background-position: 0% 50%;
@@ -253,7 +258,7 @@ export default function StatsPanel({
             background-position: 0% 50%;
           }
         }
-        
+
         .animate-gradient {
           background-size: 200% 200%;
           animation: gradient 15s ease infinite;

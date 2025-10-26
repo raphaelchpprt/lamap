@@ -41,16 +41,18 @@ export default function MapView() {
   };
 
   return (
-    <div className="flex h-full w-full">
+    <div className="flex h-full w-full rounded-tl-[2rem] rounded-bl-[2rem]">
       {/* Modern Glassmorphism Sidebar */}
-      <aside className="flex w-96 flex-col gap-6 overflow-y-auto p-6 glass-strong border-r border-white/10">
+      <aside className="flex w-96 flex-col gap-6 overflow-y-auto p-6 glass-strong border-r border-white/10 ">
         {/* Header with gradient text */}
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold gradient-text">
-            LaMap ESS
-          </h1>
+          <h1 className="text-3xl font-bold gradient-text">LaMap</h1>
+          <h2 className="text-xl font-semibold text-white/90">
+            Engagez-vous près de chez vous !
+          </h2>
           <p className="text-sm text-white/70">
-            Cartographie collaborative de l&apos;économie circulaire
+            Plateforme collaborative des initiatives sociales, solidaires et
+            écologiques
           </p>
         </div>
 
@@ -61,13 +63,12 @@ export default function MapView() {
           detailed
         />
 
-        {/* Add Initiative Button with gradient */}
-        <Button 
-          onClick={() => setIsAddFormOpen(true)} 
-          className="w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 border-none shadow-lg shadow-emerald-500/50 transition-all duration-300 hover:scale-105"
-          size="lg"
+        {/* Add Initiative Button with gradient - taller with extra padding */}
+        <Button
+          onClick={() => setIsAddFormOpen(true)}
+          className="w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 border-none shadow-lg shadow-emerald-500/50 transition-all duration-300 hover:scale-105 py-6 text-base"
         >
-          <MapPlus strokeWidth={2.5} className="mr-2" />
+          <MapPlus strokeWidth={2.5} className="mr-2 h-5 w-5" />
           Ajouter une initiative
         </Button>
 

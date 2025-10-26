@@ -3,7 +3,7 @@
 /**
  * Initiative ESS Card Component
  *
- * Displays information about an initiative in a compact and attractive way.
+ * Displays information about an initiative with modern glassmorphism design.
  * Supports different display modes (card, popup, list).
  */
 
@@ -15,11 +15,12 @@ import {
   Mail,
   ExternalLink,
   Check,
+  Sparkles,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 
-import { INITIATIVE_COLORS } from '@/types/initiative';
+import { TYPE_GRADIENTS } from '@/types/initiative';
 
 import type { Initiative, OpeningHours } from '@/types/initiative';
 
@@ -131,40 +132,44 @@ function formatOpeningHours(openingHours: OpeningHours | undefined): string {
 // ================================
 
 /**
- * Initiative type badge
+ * Initiative type badge with gradient
  */
 function TypeBadge({ type }: { type: Initiative['type'] }) {
-  const color = INITIATIVE_COLORS[type];
+  const gradient = TYPE_GRADIENTS[type];
 
   return (
-    <span
-      className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-white"
-      style={{ backgroundColor: color }}
+    <div
+      className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold text-white shadow-lg backdrop-blur-sm"
+      style={{ background: gradient }}
     >
+      <Sparkles className="h-3 w-3" />
       {type}
-    </span>
+    </div>
   );
 }
 
 /**
- * Verification badge
+ * Verification badge with glassmorphism
  */
 function VerifiedBadge({ verified }: { verified: boolean }) {
   if (!verified) return null;
 
   return (
     <div
-      className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-md"
+      className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold text-white shadow-lg"
+      style={{
+        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+      }}
       title="Initiative vérifiée par l'équipe LaMap"
     >
-      <Check size={12} />
+      <Check className="h-3 w-3" />
       <span>Vérifiée</span>
     </div>
   );
 }
 
 /**
- * Quick contact information
+ * Quick contact information with glassmorphism
  */
 function QuickContact({ initiative }: { initiative: Initiative }) {
   const hasContact = initiative.phone || initiative.email || initiative.website;
@@ -172,24 +177,24 @@ function QuickContact({ initiative }: { initiative: Initiative }) {
   if (!hasContact) return null;
 
   return (
-    <div className="flex items-center gap-2 text-sm text-gray-600">
+    <div className="flex items-center gap-2">
       {initiative.phone && (
         <a
           href={`tel:${initiative.phone}`}
-          className="flex items-center gap-1 hover:text-primary-600 transition-colors"
+          className="p-2 glass rounded-lg hover:glass-strong transition-all duration-300 hover:scale-110"
           title="Appeler"
         >
-          <Phone size={14} />
+          <Phone size={16} className="text-emerald-400" />
         </a>
       )}
 
       {initiative.email && (
         <a
           href={`mailto:${initiative.email}`}
-          className="flex items-center gap-1 hover:text-primary-600 transition-colors"
+          className="p-2 glass rounded-lg hover:glass-strong transition-all duration-300 hover:scale-110"
           title="Envoyer un email"
         >
-          <Mail size={14} />
+          <Mail size={16} className="text-blue-400" />
         </a>
       )}
 
@@ -198,11 +203,11 @@ function QuickContact({ initiative }: { initiative: Initiative }) {
           href={initiative.website}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 hover:text-primary-600 transition-colors"
+          className="p-2 glass rounded-lg hover:glass-strong transition-all duration-300 hover:scale-110 flex items-center gap-1"
           title="Visiter le site web"
         >
-          <Globe size={14} />
-          <ExternalLink size={12} />
+          <Globe size={16} className="text-white/80" />
+          <ExternalLink size={12} className="text-white/60" />
         </a>
       )}
     </div>
@@ -226,15 +231,44 @@ export default function InitiativeCard({
   const [imageError, setImageError] = useState(false);
   const [showFullDescription, setShowFullDescription] = useState(false);
 
-  // CSS classes based on variant
+  // CSS classes based on variant with modern glassmorphism (white background)
   const variantClasses = {
-    card: 'bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden',
-    popup: 'bg-white rounded-lg shadow-lg overflow-hidden max-w-sm',
-    list: 'bg-white rounded-md border border-gray-200 hover:border-gray-300 transition-colors',
-    detailed: 'bg-white rounded-lg shadow-sm border border-gray-200',
+    card: 'rounded-2xl border border-white/50 overflow-hidden transition-all duration-300 hover:scale-[1.02]',
+    popup: 'rounded-2xl border border-white/60 overflow-hidden max-w-sm',
+    list: 'rounded-xl border border-white/50 hover:border-white/70 transition-all duration-300',
+    detailed: 'rounded-2xl border border-white/60',
+  };
+
+  // Shadow styles with green glow
+  const shadowStyles = {
+    card: {
+      boxShadow:
+        '0 8px 32px rgba(16, 185, 129, 0.2), 0 4px 16px rgba(16, 185, 129, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.6) inset',
+      background: 'rgba(255, 255, 255, 0.92)',
+      backdropFilter: 'blur(24px) saturate(180%)',
+    },
+    popup: {
+      boxShadow:
+        '0 12px 40px rgba(16, 185, 129, 0.25), 0 6px 20px rgba(16, 185, 129, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.7) inset',
+      background: 'rgba(255, 255, 255, 0.95)',
+      backdropFilter: 'blur(28px) saturate(180%)',
+    },
+    list: {
+      boxShadow:
+        '0 4px 16px rgba(16, 185, 129, 0.15), 0 2px 8px rgba(16, 185, 129, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.5) inset',
+      background: 'rgba(255, 255, 255, 0.88)',
+      backdropFilter: 'blur(20px) saturate(180%)',
+    },
+    detailed: {
+      boxShadow:
+        '0 12px 40px rgba(16, 185, 129, 0.25), 0 6px 20px rgba(16, 185, 129, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.7) inset',
+      background: 'rgba(255, 255, 255, 0.95)',
+      backdropFilter: 'blur(28px) saturate(180%)',
+    },
   };
 
   const containerClass = `${variantClasses[variant]} ${className}`;
+  const containerStyle = shadowStyles[variant];
 
   // Handle click
   const handleClick = () => {
@@ -260,28 +294,32 @@ export default function InitiativeCard({
     return (
       <div
         className={containerClass}
+        style={containerStyle}
         onClick={handleClick}
         role={onClick ? 'button' : undefined}
         tabIndex={onClick ? 0 : undefined}
       >
-        <div className="p-4">
+        <div className="p-5">
           <div className="flex items-start justify-between">
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2 mb-3">
                 <TypeBadge type={initiative.type} />
                 <VerifiedBadge verified={initiative.verified} />
               </div>
 
-              <h3 className="text-lg font-semibold text-gray-900 truncate">
+              <h3 className="text-lg font-bold text-gray-900 truncate mb-1">
                 {initiative.name}
               </h3>
 
               {initiative.address && (
-                <div className="flex items-center gap-1 mt-1 text-sm text-gray-600">
-                  <MapPin size={14} />
+                <div className="flex items-center gap-1.5 text-sm text-gray-700">
+                  <MapPin
+                    size={14}
+                    className="flex-shrink-0 text-emerald-600"
+                  />
                   <span className="truncate">{initiative.address}</span>
                   {distance && (
-                    <span className="ml-2 text-primary-600 font-medium">
+                    <span className="ml-2 text-emerald-600 font-semibold">
                       • {formatDistance(distance)}
                     </span>
                   )}
@@ -302,8 +340,8 @@ export default function InitiativeCard({
 
   if (variant === 'popup') {
     return (
-      <div className={containerClass}>
-        {/* Image */}
+      <div className={containerClass} style={containerStyle}>
+        {/* Image with gradient overlay */}
         {initiative.image_url && !imageError && (
           <div className="relative h-32 w-full">
             <Image
@@ -313,34 +351,47 @@ export default function InitiativeCard({
               className="object-cover"
               onError={() => setImageError(true)}
             />
+            {/* Gradient overlay for better badge visibility */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent" />
+
+            {/* Badges positioned on image */}
+            <div className="absolute top-3 left-3 flex gap-2">
+              <TypeBadge type={initiative.type} />
+              <VerifiedBadge verified={initiative.verified} />
+            </div>
           </div>
         )}
 
-        <div className="p-4">
-          <div className="flex items-start justify-between mb-2">
-            <TypeBadge type={initiative.type} />
-            <VerifiedBadge verified={initiative.verified} />
-          </div>
+        <div className="p-5">
+          {/* Badges if no image */}
+          {(!initiative.image_url || imageError) && (
+            <div className="flex items-center gap-2 mb-3">
+              <TypeBadge type={initiative.type} />
+              <VerifiedBadge verified={initiative.verified} />
+            </div>
+          )}
 
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg font-bold text-gray-900 mb-2">
             {initiative.name}
           </h3>
 
           {initiative.address && (
-            <div className="flex items-center gap-1 mb-2 text-sm text-gray-600">
-              <MapPin size={14} />
+            <div className="flex items-center gap-1.5 mb-2 text-sm text-gray-700">
+              <MapPin size={14} className="flex-shrink-0 text-emerald-600" />
               <span>{initiative.address}</span>
             </div>
           )}
 
           {distance && (
-            <div className="text-sm text-primary-600 font-medium mb-2">
+            <div className="text-sm text-emerald-600 font-semibold mb-3">
               À {formatDistance(distance)}
             </div>
           )}
 
           {description && (
-            <p className="text-sm text-gray-600 mb-3">{truncatedDescription}</p>
+            <p className="text-sm text-gray-700 leading-relaxed mb-4">
+              {truncatedDescription}
+            </p>
           )}
 
           <QuickContact initiative={initiative} />
@@ -356,13 +407,14 @@ export default function InitiativeCard({
   return (
     <div
       className={containerClass}
+      style={containerStyle}
       onClick={handleClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
     >
-      {/* Header image */}
+      {/* Header image with glassmorphism overlay */}
       {initiative.image_url && !imageError && (
-        <div className="relative h-48 w-full">
+        <div className="relative h-48 w-full overflow-hidden">
           <Image
             src={initiative.image_url}
             alt={initiative.name}
@@ -371,16 +423,19 @@ export default function InitiativeCard({
             onError={() => setImageError(true)}
           />
 
-          {/* Overlay with type badge only */}
-          <div className="absolute top-3 left-3 flex gap-2">
+          {/* Gradient overlay for better badge visibility */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent" />
+
+          {/* Badges positioned on image with glassmorphism */}
+          <div className="absolute top-4 left-4 flex gap-2">
             <TypeBadge type={initiative.type} />
             {initiative.verified && <VerifiedBadge verified={true} />}
           </div>
         </div>
       )}
 
-      {/* Main content */}
-      <div className="p-6 space-y-4">
+      {/* Main content with glassmorphism background */}
+      <div className="p-6 space-y-5">
         {/* Header: Type badge + Verified (if no image) */}
         {(!initiative.image_url || imageError) && (
           <div className="flex items-center gap-2">
@@ -389,22 +444,33 @@ export default function InitiativeCard({
           </div>
         )}
 
-        {/* Main title - larger and clearer */}
+        {/* Main title - modern dark text */}
         <div>
           <h2 className="text-2xl font-bold text-gray-900 leading-tight">
             {initiative.name}
           </h2>
         </div>
 
-        {/* Address and distance */}
+        {/* Address and distance with icons */}
         {initiative.address && (
-          <div className="flex items-start gap-2 text-gray-700">
-            <MapPin size={18} className="flex-shrink-0 mt-0.5 text-gray-500" />
+          <div
+            className="flex items-start gap-3 p-3.5 rounded-xl"
+            style={{
+              background: 'rgba(16, 185, 129, 0.08)',
+              border: '1px solid rgba(16, 185, 129, 0.2)',
+            }}
+          >
+            <MapPin
+              size={18}
+              className="flex-shrink-0 mt-0.5 text-emerald-600"
+            />
             <div className="flex-1">
-              <p className="text-sm leading-relaxed">{initiative.address}</p>
+              <p className="text-sm leading-relaxed text-gray-800 font-medium">
+                {initiative.address}
+              </p>
               {distance && (
-                <p className="text-sm font-semibold text-primary-600 mt-1">
-                  À {formatDistance(distance)}
+                <p className="text-sm font-bold text-emerald-600 mt-1.5">
+                  📍 À {formatDistance(distance)}
                 </p>
               )}
             </div>
@@ -413,8 +479,8 @@ export default function InitiativeCard({
 
         {/* Description */}
         {description && (
-          <div className="border-t border-gray-100 pt-4">
-            <p className="text-sm text-gray-600 leading-relaxed">
+          <div className="space-y-2">
+            <p className="text-sm text-gray-700 leading-relaxed">
               {truncatedDescription}
             </p>
             {description.length > 120 && (
@@ -423,7 +489,7 @@ export default function InitiativeCard({
                   e.stopPropagation();
                   setShowFullDescription(!showFullDescription);
                 }}
-                className="text-sm font-medium text-primary-600 hover:text-primary-700 mt-2 transition-colors"
+                className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors inline-flex items-center gap-1"
               >
                 {showFullDescription ? '− Voir moins' : '+ Voir plus'}
               </button>
@@ -433,52 +499,72 @@ export default function InitiativeCard({
 
         {/* Opening hours (only for detailed variant) */}
         {variant === 'detailed' && initiative.opening_hours && (
-          <div className="border-t border-gray-100 pt-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Clock size={18} className="text-primary-600" />
+          <div
+            className="p-4 rounded-xl space-y-3"
+            style={{
+              background: 'rgba(16, 185, 129, 0.06)',
+              border: '1px solid rgba(16, 185, 129, 0.15)',
+            }}
+          >
+            <div className="flex items-center gap-2">
+              <Clock size={18} className="text-emerald-600" />
               <span className="text-sm font-semibold text-gray-900">
                 Horaires d&apos;ouverture
               </span>
               {isOpen && (
-                <span className="text-xs bg-green-100 text-green-800 px-2.5 py-1 rounded-full font-medium">
-                  • Ouvert maintenant
+                <span
+                  className="text-xs px-2.5 py-1 rounded-full font-semibold text-white"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                  }}
+                >
+                  • Ouvert
                 </span>
               )}
             </div>
-            <pre className="text-xs text-gray-600 whitespace-pre-line leading-relaxed font-sans">
+            <pre className="text-xs text-gray-700 whitespace-pre-line leading-relaxed font-sans">
               {formatOpeningHours(initiative.opening_hours)}
             </pre>
           </div>
         )}
 
-        {/* Contact */}
+        {/* Contact with modern buttons */}
         {(initiative.website || initiative.phone || initiative.email) && (
-          <div className="border-t border-gray-100 pt-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Globe size={18} className="text-primary-600" />
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Globe size={18} className="text-emerald-600" />
               <span className="text-sm font-semibold text-gray-900">
                 Contact
               </span>
             </div>
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2">
               {initiative.website && (
                 <a
                   href={initiative.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-primary-50 text-primary-700 rounded-lg hover:bg-primary-100 transition-colors text-sm font-medium"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 text-sm font-medium text-gray-700 hover:scale-105 hover:text-gray-900"
+                  style={{
+                    background: 'rgba(148, 163, 184, 0.12)',
+                    border: '1px solid rgba(148, 163, 184, 0.2)',
+                  }}
                   onClick={(e) => e.stopPropagation()}
                 >
                   <Globe size={16} />
                   <span>Site web</span>
-                  <ExternalLink size={14} />
+                  <ExternalLink size={12} />
                 </a>
               )}
 
               {initiative.phone && (
                 <a
                   href={`tel:${initiative.phone}`}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors text-sm font-medium"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                  }}
                   onClick={(e) => e.stopPropagation()}
                 >
                   <Phone size={16} />
@@ -489,7 +575,11 @@ export default function InitiativeCard({
               {initiative.email && (
                 <a
                   href={`mailto:${initiative.email}`}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                  }}
                   onClick={(e) => e.stopPropagation()}
                 >
                   <Mail size={16} />
@@ -500,16 +590,24 @@ export default function InitiativeCard({
           </div>
         )}
 
-        {/* Admin actions */}
+        {/* Admin actions with modern styling */}
         {showActions && (onEdit || onDelete) && (
-          <div className="border-t border-gray-100 pt-4 flex items-center gap-2">
+          <div
+            className="pt-3 flex items-center gap-2 border-t"
+            style={{ borderColor: 'rgba(148, 163, 184, 0.2)' }}
+          >
             {onEdit && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   onEdit(initiative);
                 }}
-                className="px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"
+                className="px-4 py-2 rounded-xl transition-all duration-300 text-sm font-medium hover:scale-105"
+                style={{
+                  background: 'rgba(59, 130, 246, 0.12)',
+                  border: '1px solid rgba(59, 130, 246, 0.2)',
+                  color: '#1e40af',
+                }}
               >
                 ✏️ Éditer
               </button>
@@ -520,7 +618,11 @@ export default function InitiativeCard({
                   e.stopPropagation();
                   onDelete(initiative);
                 }}
-                className="px-4 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium"
+                className="px-4 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300"
+                style={{
+                  background:
+                    'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                }}
               >
                 🗑️ Supprimer
               </button>
@@ -530,8 +632,11 @@ export default function InitiativeCard({
 
         {/* Metadata (only for detailed variant) */}
         {variant === 'detailed' && (
-          <div className="border-t border-gray-100 pt-4">
-            <div className="flex items-center justify-between text-xs text-gray-500">
+          <div
+            className="pt-3 border-t"
+            style={{ borderColor: 'rgba(148, 163, 184, 0.2)' }}
+          >
+            <div className="flex items-center justify-between text-xs text-gray-600">
               <span className="flex items-center gap-1">
                 📅 Ajouté le{' '}
                 {new Date(initiative.created_at).toLocaleDateString('fr-FR', {
