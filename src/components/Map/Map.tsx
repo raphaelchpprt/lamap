@@ -58,6 +58,9 @@ interface MapProps {
   /** Callback when clicking on the map */
   onMapClick?: (coordinates: [number, number]) => void;
 
+  /** Callback when initiatives are loaded */
+  onInitiativesLoaded?: (initiatives: Initiative[]) => void;
+
   /** Enable/disable clustering */
   enableClustering?: boolean;
 
@@ -77,6 +80,7 @@ export default function Map({
   filters,
   onInitiativeClick,
   onMapClick,
+  onInitiativesLoaded,
   enableClustering = true,
   autoFit = false,
   initiatives: externalInitiatives,
@@ -264,6 +268,9 @@ export default function Map({
           databaseInitiativeToInitiative
         );
         setInitiatives(formattedInitiatives);
+        
+        // Notify parent component of loaded initiatives
+        onInitiativesLoaded?.(formattedInitiatives);
 
         // Store current bounds for next comparison
         if (map.current) {
@@ -276,7 +283,7 @@ export default function Map({
         setLoading(false);
       }
     }, 500); // 500ms debounce
-  }, [filters, externalInitiatives, isLoaded]);
+  }, [filters, externalInitiatives, isLoaded, onInitiativesLoaded]);
 
   // Load on mount and when filters change
   useEffect(() => {

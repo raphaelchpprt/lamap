@@ -6,6 +6,7 @@ import AddInitiativeForm from '@/components/AddInitiativeForm';
 import FilterPanel from '@/components/FilterPanel';
 import InitiativeCard from '@/components/Initiative/InitiativeCard';
 import Map from '@/components/Map/Map';
+import StatsPanel from '@/components/StatsPanel';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -23,6 +24,7 @@ export default function MapView() {
   const [selectedInitiative, setSelectedInitiative] =
     useState<Initiative | null>(null);
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
+  const [initiatives, setInitiatives] = useState<Initiative[]>([]);
 
   // Handlers
   const handleInitiativeClick = (initiative: Initiative) => {
@@ -34,22 +36,39 @@ export default function MapView() {
     // Map will auto-reload via viewport-based loading
   };
 
+  const handleInitiativesLoaded = (loadedInitiatives: Initiative[]) => {
+    setInitiatives(loadedInitiatives);
+  };
+
   return (
     <div className="flex h-full w-full">
-      {/* Sidebar - Controls */}
-      <aside className="flex w-80 flex-col gap-4 overflow-y-auto border-r bg-background p-4">
-        {/* Header */}
+      {/* Modern Glassmorphism Sidebar */}
+      <aside className="flex w-96 flex-col gap-6 overflow-y-auto p-6 glass-strong border-r border-white/10">
+        {/* Header with gradient text */}
         <div className="space-y-2">
-          <h1 className="text-2xl font-bold tracking-tight">LaMap</h1>
-          <p className="text-sm text-muted-foreground">
-            Carte collaborative des initiatives d&apos;Économie Sociale et
-            Solidaire
+          <h1 className="text-3xl font-bold gradient-text">
+            LaMap ESS
+          </h1>
+          <p className="text-sm text-white/70">
+            Cartographie collaborative de l&apos;économie circulaire
           </p>
         </div>
 
-        {/* Add Initiative Button */}
-        <Button onClick={() => setIsAddFormOpen(true)} className="w-full">
-          <MapPlus strokeWidth={2.5} /> Ajouter une initiative
+        {/* Statistics Panel */}
+        <StatsPanel
+          initiatives={initiatives}
+          selectedTypes={selectedTypes}
+          detailed
+        />
+
+        {/* Add Initiative Button with gradient */}
+        <Button 
+          onClick={() => setIsAddFormOpen(true)} 
+          className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 border-none shadow-lg shadow-purple-500/50 transition-all duration-300 hover:scale-105"
+          size="lg"
+        >
+          <MapPlus strokeWidth={2.5} className="mr-2" />
+          Ajouter une initiative
         </Button>
 
         {/* Filter Panel */}
@@ -67,17 +86,20 @@ export default function MapView() {
             verified_only: false,
           }}
           onInitiativeClick={handleInitiativeClick}
+          onInitiativesLoaded={handleInitiativesLoaded}
           enableClustering
           autoFit={false}
         />
       </main>
 
-      {/* Dialog - Add Initiative Form */}
+      {/* Dialog - Add Initiative Form with glassmorphism */}
       <Dialog open={isAddFormOpen} onOpenChange={setIsAddFormOpen}>
-        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
+        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto glass-strong border-white/20">
           <DialogHeader>
-            <DialogTitle>Ajouter une nouvelle initiative</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-2xl gradient-text">
+              Ajouter une nouvelle initiative
+            </DialogTitle>
+            <DialogDescription className="text-white/70">
               Remplissez le formulaire ci-dessous pour ajouter une initiative
               ESS à la carte
             </DialogDescription>
@@ -89,12 +111,12 @@ export default function MapView() {
         </DialogContent>
       </Dialog>
 
-      {/* Dialog - Initiative Details */}
+      {/* Dialog - Initiative Details with glassmorphism */}
       <Dialog
         open={!!selectedInitiative}
         onOpenChange={(open: boolean) => !open && setSelectedInitiative(null)}
       >
-        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-0">
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-0 glass-strong border-white/20">
           {selectedInitiative && (
             <>
               {/* Hidden title for screen readers (accessibility) */}
