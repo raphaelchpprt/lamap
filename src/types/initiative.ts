@@ -337,6 +337,47 @@ export const INITIATIVE_COLORS: Record<InitiativeType, string> = {
 } as const;
 
 /**
+ * Gradients for initiative type badges (glassmorphism compatible)
+ * Each type has a distinctive gradient for better visual distinction
+ */
+export const TYPE_GRADIENTS: Record<InitiativeType, string> = {
+  Ressourcerie: 'linear-gradient(135deg, #64748b 0%, #475569 100%)', // Slate gray - recycling/reuse
+  'Repair Café': 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', // Amber - repair/tools
+  AMAP: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', // Emerald - agriculture/food
+  "Entreprise d'insertion": 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', // Blue - social/employment
+  'Point de collecte': 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)', // Purple - collection
+  Recyclerie: 'linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)', // Teal - recycling center
+  'Épicerie sociale': 'linear-gradient(135deg, #ec4899 0%, #db2777 100%)', // Pink - social grocery
+  'Jardin partagé': 'linear-gradient(135deg, #84cc16 0%, #65a30d 100%)', // Lime - gardens/nature
+  'Fab Lab': 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)', // Violet - tech/making
+  Coopérative: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)', // Sky blue - cooperative
+  'Monnaie locale': 'linear-gradient(135deg, #eab308 0%, #ca8a04 100%)', // Yellow - currency/exchange
+  'Tiers-lieu': 'linear-gradient(135deg, #d946ef 0%, #c026d3 100%)', // Fuchsia - third place/coworking
+  Autre: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)', // Gray - other/misc
+} as const;
+
+/**
+ * Main colors for map markers - EXACT Tailwind colors from FilterPanel gradients
+ * Using the START color (-400) of each gradient for vibrant appearance
+ * These match EXACTLY what users see in the FilterPanel gradient dots
+ */
+export const TYPE_MARKER_COLORS: Record<InitiativeType, string> = {
+  Ressourcerie: '#94a3b8', // slate-400 (from-slate-400 to-gray-600)
+  'Repair Café': '#fbbf24', // amber-400 (from-amber-400 to-orange-600)
+  AMAP: '#34d399', // emerald-400 (from-emerald-400 to-green-600)
+  "Entreprise d'insertion": '#60a5fa', // blue-400 (from-blue-400 to-indigo-600)
+  'Point de collecte': '#c084fc', // purple-400 (from-purple-400 to-violet-600)
+  Recyclerie: '#2dd4bf', // teal-400 (from-teal-400 to-cyan-600)
+  'Épicerie sociale': '#fb7185', // rose-400 (from-rose-400 to-pink-600)
+  'Jardin partagé': '#a3e635', // lime-400 (from-lime-400 to-green-600)
+  'Fab Lab': '#a78bfa', // violet-400 (from-violet-400 to-purple-600)
+  Coopérative: '#38bdf8', // sky-400 (from-sky-400 to-blue-600)
+  'Monnaie locale': '#facc15', // yellow-400 (from-yellow-400 to-amber-600)
+  'Tiers-lieu': '#e879f9', // fuchsia-400 (from-fuchsia-400 to-pink-600)
+  Autre: '#9ca3af', // gray-400 (from-gray-400 to-slate-600)
+} as const;
+
+/**
  * Icônes associées aux types d'initiatives (classes Lucide React)
  */
 export const INITIATIVE_ICONS: Record<InitiativeType, string> = {
