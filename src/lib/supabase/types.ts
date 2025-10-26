@@ -63,10 +63,13 @@ export interface Database {
 
       get_initiatives_in_bounds: {
         Args: {
-          min_lat: number;
-          min_lng: number;
-          max_lat: number;
-          max_lng: number;
+          p_west: number;
+          p_south: number;
+          p_east: number;
+          p_north: number;
+          p_types?: string[] | null;
+          p_verified_only?: boolean;
+          p_limit?: number;
         };
         Returns: DatabaseInitiative[];
       };
@@ -177,7 +180,7 @@ export interface DatabaseInitiativeUpdate {
 // ================================
 
 /**
- * Initiative avec distance calculée (pour les recherches géographiques)
+ * Initiative with distance calculée (pour les recherches géographiques)
  */
 export interface InitiativeWithDistance extends DatabaseInitiative {
   /** Distance en mètres depuis le point de référence */
@@ -185,6 +188,14 @@ export interface InitiativeWithDistance extends DatabaseInitiative {
 
   /** Distance en kilomètres (calculée) */
   distance_km: number;
+}
+
+/**
+ * Database initiative with location as text (from RPC functions)
+ */
+export interface DatabaseInitiativeWithTextLocation
+  extends Omit<DatabaseInitiative, 'location'> {
+  location_text: string;
 }
 
 // ================================
@@ -298,10 +309,20 @@ function parsePostGISLocation(location: string): [number, number] {
  * Convert initiative from database format to frontend format
  */
 export function databaseInitiativeToInitiative(
-  dbInitiative: DatabaseInitiative
+  dbInitiative: DatabaseInitiative | DatabaseInitiativeWithTextLocation
 ): Initiative {
+  // Handle both location and location_text fields
+  const locationField =
+    'location_text' in dbInitiative
+      ? dbInitiative.location_text
+      : dbInitiative.location;
+
+  if (!locationField) {
+    throw new Error('Initiative missing location data');
+  }
+
   // Parse PostGIS point to GeoJSON
-  const [lng, lat] = parsePostGISLocation(dbInitiative.location);
+  const [lng, lat] = parsePostGISLocation(locationField);
 
   return {
     id: dbInitiative.id,
