@@ -1,9 +1,10 @@
 'use client';
 import { MapPlus } from 'lucide-react';
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 
 import AddInitiativeForm from '@/components/AddInitiativeForm';
 import FilterPanel from '@/components/FilterPanel';
+import InitiativeCard from '@/components/Initiative/InitiativeCard';
 import Map from '@/components/Map/Map';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,80 +14,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { createClient } from '@/lib/supabase/client';
-import { databaseInitiativeToInitiative } from '@/lib/supabase/types';
 
 import type { Initiative, InitiativeType } from '@/types/initiative';
 
 export default function MapView() {
   // State
-  const [initiatives, setInitiatives] = useState<Initiative[]>([]);
-  const [filteredInitiatives, setFilteredInitiatives] = useState<Initiative[]>(
-    []
-  );
   const [selectedTypes, setSelectedTypes] = useState<InitiativeType[]>([]);
   const [selectedInitiative, setSelectedInitiative] =
     useState<Initiative | null>(null);
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // Load initiatives from Supabase
-  const loadInitiatives = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const supabase = createClient();
-
-      // Fetch with PostGIS text format for location using ST_AsText()
-      const { data, error: dbError } = await supabase.rpc(
-        'get_all_initiatives_with_text_location'
-      );
-
-      if (dbError) {
-        throw new Error(`Supabase error: ${dbError.message}`);
-      }
-
-      const formattedInitiatives = (data || []).map(
-        databaseInitiativeToInitiative
-      );
-      setInitiatives(formattedInitiatives);
-
-      // Initialize with all types selected
-      const allTypes = Array.from(
-        new Set(formattedInitiatives.map((i) => i.type))
-      ) as InitiativeType[];
-      setSelectedTypes(allTypes);
-    } catch (err) {
-      console.error('Error loading initiatives:', err);
-      setError(err instanceof Error ? err.message : 'Unknown error');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  // Load on mount
-  useEffect(() => {
-    loadInitiatives();
-  }, [loadInitiatives]);
-
-  // Filter initiatives based on selected types
-  useEffect(() => {
-    if (selectedTypes.length === 0) {
-      setFilteredInitiatives([]);
-    } else {
-      setFilteredInitiatives(
-        initiatives.filter((i) => selectedTypes.includes(i.type))
-      );
-    }
-  }, [initiatives, selectedTypes]);
-
-  // Count initiatives by type
-  const initiativeCounts = initiatives.reduce((acc, initiative) => {
-    acc[initiative.type] = (acc[initiative.type] || 0) + 1;
-    return acc;
-  }, {} as Partial<Record<InitiativeType, number>>);
 
   // Handlers
   const handleInitiativeClick = (initiative: Initiative) => {
@@ -95,12 +31,12 @@ export default function MapView() {
 
   const handleAddSuccess = () => {
     setIsAddFormOpen(false);
-    loadInitiatives(); // Reload data
+    // Map will auto-reload via viewport-based loading
   };
 
   return (
     <div className="flex h-full w-full">
-      {/* Sidebar - Filter Panel */}
+      {/* Sidebar - Controls */}
       <aside className="flex w-80 flex-col gap-4 overflow-y-auto border-r bg-background p-4">
         {/* Header */}
         <div className="space-y-2">
@@ -116,59 +52,20 @@ export default function MapView() {
           <MapPlus strokeWidth={2.5} /> Ajouter une initiative
         </Button>
 
-        {/* Stats */}
-        {!loading && (
-          <div className="rounded-lg border bg-card p-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Total</span>
-              <span className="text-2xl font-bold text-primary">
-                {initiatives.length}
-              </span>
-            </div>
-            <div className="mt-1 text-xs text-muted-foreground">
-              initiatives référencées
-            </div>
-          </div>
-        )}
-
         {/* Filter Panel */}
-        {!loading && (
-          <FilterPanel
-            selectedTypes={selectedTypes}
-            onFilterChange={setSelectedTypes}
-            initiativeCounts={initiativeCounts}
-          />
-        )}
-
-        {/* Loading State */}
-        {loading && (
-          <div className="flex flex-col items-center justify-center py-8">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-            <p className="mt-2 text-sm text-muted-foreground">Chargement...</p>
-          </div>
-        )}
-
-        {/* Error State */}
-        {error && (
-          <div className="rounded-lg border border-destructive bg-destructive/10 p-4">
-            <p className="text-sm font-medium text-destructive">Erreur</p>
-            <p className="mt-1 text-xs text-destructive/80">{error}</p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={loadInitiatives}
-              className="mt-2"
-            >
-              Réessayer
-            </Button>
-          </div>
-        )}
+        <FilterPanel
+          selectedTypes={selectedTypes}
+          onFilterChange={setSelectedTypes}
+        />
       </aside>
 
       {/* Main - Map */}
       <main className="relative flex-1">
         <Map
-          initiatives={filteredInitiatives}
+          filters={{
+            types: selectedTypes,
+            verified_only: false,
+          }}
           onInitiativeClick={handleInitiativeClick}
           enableClustering
           autoFit={false}
@@ -197,63 +94,18 @@ export default function MapView() {
         open={!!selectedInitiative}
         onOpenChange={(open: boolean) => !open && setSelectedInitiative(null)}
       >
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-0">
           {selectedInitiative && (
             <>
-              <DialogHeader>
-                <DialogTitle>{selectedInitiative.name}</DialogTitle>
-                <DialogDescription>{selectedInitiative.type}</DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4">
-                {selectedInitiative.description && (
-                  <div>
-                    <h3 className="font-semibold">Description</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {selectedInitiative.description}
-                    </p>
-                  </div>
-                )}
-                {selectedInitiative.address && (
-                  <div>
-                    <h3 className="font-semibold">Adresse</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {selectedInitiative.address}
-                    </p>
-                  </div>
-                )}
-                <div>
-                  <h3 className="font-semibold">Contact</h3>
-                  <div className="mt-1 space-y-1 text-sm text-muted-foreground">
-                    {selectedInitiative.website && (
-                      <p>
-                        🌐{' '}
-                        <a
-                          href={selectedInitiative.website}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-primary hover:underline"
-                        >
-                          {selectedInitiative.website}
-                        </a>
-                      </p>
-                    )}
-                    {selectedInitiative.phone && (
-                      <p>📞 {selectedInitiative.phone}</p>
-                    )}
-                    {selectedInitiative.email && (
-                      <p>
-                        ✉️{' '}
-                        <a
-                          href={`mailto:${selectedInitiative.email}`}
-                          className="text-primary hover:underline"
-                        >
-                          {selectedInitiative.email}
-                        </a>
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
+              {/* Hidden title for screen readers (accessibility) */}
+              <DialogTitle className="sr-only">
+                {selectedInitiative.name}
+              </DialogTitle>
+              <InitiativeCard
+                initiative={selectedInitiative}
+                variant="detailed"
+                className="border-none shadow-none rounded-lg"
+              />
             </>
           )}
         </DialogContent>
