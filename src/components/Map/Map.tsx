@@ -16,7 +16,7 @@ import {
   databaseInitiativeToInitiative,
   type DatabaseInitiative,
 } from '@/lib/supabase/types';
-import { TYPE_GRADIENTS, TYPE_MARKER_COLORS } from '@/types/initiative';
+import { TYPE_GRADIENTS_CSS } from '@/types/initiative';
 
 import type { Initiative, InitiativeFilters } from '@/types/initiative';
 
@@ -27,8 +27,8 @@ import type { Initiative, InitiativeFilters } from '@/types/initiative';
 const DEFAULT_CONFIG = {
   style: 'mapbox://styles/mapbox/light-v11',
   center: [2.3522, 46.6034] as [number, number], // Center of France
-  zoom: 6,
-  minZoom: 6, // Can't zoom out to see other countries
+  zoom: 5.5,
+  minZoom: 4.5, // Can't zoom out to see other countries
   maxZoom: 18,
 } as const;
 
@@ -132,7 +132,10 @@ export default function Map({
       map.current.on('load', () => {
         setIsLoaded(true);
         if (map.current) {
-          addFranceMask();
+          // Force reset zoom to default
+          map.current.setZoom(DEFAULT_CONFIG.zoom);
+          map.current.setCenter(DEFAULT_CONFIG.center);
+          // addFranceMask(); // Removed: no longer graying out other countries
           setupMapSources();
           setupMapLayers();
           setupMapInteractions();
@@ -310,9 +313,10 @@ export default function Map({
   }, [isLoaded, loadInitiativesInViewport]);
 
   // ================================
-  // FRANCE MASK (Gray out other countries)
+  // FRANCE MASK (Gray out other countries) - DISABLED
   // ================================
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const addFranceMask = useCallback(() => {
     if (!map.current) return;
 
@@ -381,8 +385,158 @@ export default function Map({
           // Calculate sum of points in each cluster
           sum: ['+', ['get', 'point_count']],
         },
+        // ✨ CRITICAL: Tell Mapbox to use properties.id as feature ID
+        // This allows feature-state to work with string UUIDs
+        promoteId: 'id',
       });
     }
+
+    // ✨ Load gradient marker images for each initiative type
+    // Check if already loaded
+    if (map.current.hasImage('marker-Ressourcerie')) {
+      return; // Already loaded
+    }
+
+    // ✨ Load cluster gradient images (3 sizes: small, medium, large)
+    const clusterGradients = [
+      { name: 'small', from: '#10b981', to: '#059669', size: 48, radius: 20 }, // emerald-500 to emerald-600
+      { name: 'medium', from: '#06b6d4', to: '#0891b2', size: 68, radius: 28 }, // cyan-500 to cyan-600
+      { name: 'large', from: '#6366f1', to: '#4f46e5', size: 92, radius: 38 }, // indigo-500 to indigo-600
+    ];
+
+    clusterGradients.forEach((cluster) => {
+      const safeClusterName = `cluster-${cluster.name}`;
+
+      const svg = `
+        <svg width="${cluster.size}" height="${cluster.size}" viewBox="0 0 ${
+        cluster.size
+      } ${cluster.size}" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="grad-${safeClusterName}" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:${
+                cluster.from
+              };stop-opacity:0.85" />
+              <stop offset="100%" style="stop-color:${
+                cluster.to
+              };stop-opacity:0.85" />
+            </linearGradient>
+            <filter id="blur-${safeClusterName}">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="0.5"/>
+            </filter>
+          </defs>
+          <circle cx="${cluster.size / 2}" cy="${cluster.size / 2}" r="${
+        cluster.radius
+      }" fill="url(#grad-${safeClusterName})" filter="url(#blur-${safeClusterName})" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+        </svg>
+      `;
+
+      const img = new Image(cluster.size, cluster.size);
+      img.onload = () => {
+        if (map.current && !map.current.hasImage(safeClusterName)) {
+          map.current.addImage(safeClusterName, img, { sdf: false });
+        }
+      };
+      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    });
+
+    // Define gradient colors for each type EXACTLY matching FilterPanel badges
+    const typeGradients: Record<string, { from: string; to: string }> = {
+      Ressourcerie: { from: '#94a3b8', to: '#4b5563' }, // slate-400 to gray-600
+      'Repair Café': { from: '#fbbf24', to: '#ea580c' }, // amber-400 to orange-600
+      AMAP: { from: '#34d399', to: '#16a34a' }, // emerald-400 to green-600
+      "Entreprise d'insertion": { from: '#60a5fa', to: '#4f46e5' }, // blue-400 to indigo-600
+      'Point de collecte': { from: '#c084fc', to: '#7c3aed' }, // purple-400 to violet-600
+      Recyclerie: { from: '#2dd4bf', to: '#0891b2' }, // teal-400 to cyan-600
+      'Épicerie sociale': { from: '#fb7185', to: '#db2777' }, // rose-400 to pink-600
+      'Jardin partagé': { from: '#a3e635', to: '#16a34a' }, // lime-400 to green-600
+      'Fab Lab': { from: '#a78bfa', to: '#7c3aed' }, // violet-400 to purple-600
+      Coopérative: { from: '#38bdf8', to: '#2563eb' }, // sky-400 to blue-600
+      'Monnaie locale': { from: '#facc15', to: '#f59e0b' }, // yellow-400 to amber-600
+      'Tiers-lieu': { from: '#e879f9', to: '#db2777' }, // fuchsia-400 to pink-600
+      Autre: { from: '#9ca3af', to: '#64748b' }, // gray-400 to slate-600
+    };
+
+    // Create TWO versions: normal (no shadow) and hover (with shadow)
+    Object.entries(typeGradients).forEach(([type, gradient]) => {
+      const size = 32; // Further reduced size
+      const radius = 12; // Further reduced radius
+      const safeType = type.replace(/[^a-zA-Z0-9]/g, '-');
+
+      // NORMAL marker - Glassmorphism: transparent, blur, border
+      const normalSvg = `
+        <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="grad-${safeType}" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:${
+                gradient.from
+              };stop-opacity:0.85" />
+              <stop offset="100%" style="stop-color:${
+                gradient.to
+              };stop-opacity:0.85" />
+            </linearGradient>
+            <filter id="blur-${safeType}">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="0.5"/>
+            </filter>
+          </defs>
+          <circle cx="${size / 2}" cy="${
+        size / 2
+      }" r="${radius}" fill="url(#grad-${safeType})" filter="url(#blur-${safeType})" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+        </svg>
+      `;
+
+      const normalImg = new Image(size, size);
+      normalImg.onload = () => {
+        if (map.current && !map.current.hasImage(`marker-${type}`)) {
+          map.current.addImage(`marker-${type}`, normalImg, { sdf: false });
+        }
+      };
+      normalImg.src =
+        'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(normalSvg);
+
+      // HOVER marker - Glassmorphism WITH shadow
+      const hoverSvg = `
+        <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="grad-${safeType}-hover" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:${
+                gradient.from
+              };stop-opacity:0.85" />
+              <stop offset="100%" style="stop-color:${
+                gradient.to
+              };stop-opacity:0.85" />
+            </linearGradient>
+            <filter id="blur-${safeType}-hover">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="0.5"/>
+            </filter>
+            <filter id="shadow-${safeType}" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+              <feOffset dx="0" dy="2" result="offsetblur"/>
+              <feComponentTransfer>
+                <feFuncA type="linear" slope="0.45"/>
+              </feComponentTransfer>
+              <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          <circle cx="${size / 2}" cy="${
+        size / 2
+      }" r="${radius}" fill="url(#grad-${safeType}-hover)" filter="url(#blur-${safeType}-hover) url(#shadow-${safeType})" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+        </svg>
+      `;
+
+      const hoverImg = new Image(size, size);
+      hoverImg.onload = () => {
+        if (map.current && !map.current.hasImage(`marker-${type}-hover`)) {
+          map.current.addImage(`marker-${type}-hover`, hoverImg, {
+            sdf: false,
+          });
+        }
+      };
+      hoverImg.src =
+        'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(hoverSvg);
+    });
   }, [enableClustering]);
 
   // ================================
@@ -392,7 +546,7 @@ export default function Map({
   const setupMapLayers = useCallback(() => {
     if (!map.current) return;
 
-    // Heatmap layer (visible at low zoom levels) - Simple vibrant gradient
+    // Heatmap layer (visible at low zoom levels) - Simple vibrant gradient with pulsing animation
     // Clean emerald → cyan → indigo progression
     if (!map.current.getLayer('heatmap')) {
       map.current.addLayer({
@@ -427,7 +581,7 @@ export default function Map({
             1,
             'rgba(99, 102, 241, 1)', // Bright indigo hotspot
           ],
-          // Large radius for dramatic effect
+          // Animated radius with pulsing effect (will be animated)
           'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 0, 8, 9, 40],
           // High opacity for visibility
           'heatmap-opacity': [
@@ -443,82 +597,81 @@ export default function Map({
           ],
         },
       });
+
+      // ✨ Start pulsing animation for heatmap - Ultra smooth breathing effect
+      let pulseDirection = 1; // 1 = growing, -1 = shrinking
+      let currentRadiusMultiplier = 1.0;
+      const minRadius = 0.95; // Very subtle range (95% to 105%)
+      const maxRadius = 1.05;
+      const pulseSpeed = 0.002; // Much slower for gentle breathing
+
+      const animateHeatmap = () => {
+        if (!map.current || !map.current.getLayer('heatmap')) return;
+
+        // Update radius multiplier
+        currentRadiusMultiplier += pulseSpeed * pulseDirection;
+
+        // Reverse direction at bounds
+        if (currentRadiusMultiplier >= maxRadius) {
+          pulseDirection = -1;
+        } else if (currentRadiusMultiplier <= minRadius) {
+          pulseDirection = 1;
+        }
+
+        // Apply animated radius to ALL zoom levels (full interpolation range)
+        map.current.setPaintProperty('heatmap', 'heatmap-radius', [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          0,
+          8 * currentRadiusMultiplier,
+          3,
+          15 * currentRadiusMultiplier,
+          6,
+          25 * currentRadiusMultiplier,
+          9,
+          40 * currentRadiusMultiplier,
+        ]);
+
+        requestAnimationFrame(animateHeatmap);
+      };
+
+      // Start animation
+      animateHeatmap();
     }
 
-    // Clusters with simple vibrant gradient (matching heatmap)
+    // Clusters with MODERN GRADIENT style - Clean horizontal gradients with diffuse shadow ✨
     if (enableClustering) {
-      // Outer glow for clusters
-      if (!map.current.getLayer('clusters-glow')) {
-        map.current.addLayer({
-          id: 'clusters-glow',
-          type: 'circle',
-          source: 'initiatives',
-          filter: ['has', 'point_count'],
-          minzoom: 9,
-          maxzoom: 14,
-          paint: {
-            'circle-radius': [
-              'step',
-              ['get', 'point_count'],
-              26, // Small clusters
-              50,
-              38, // Medium clusters
-              200,
-              52, // Large clusters
-            ],
-            // Simple 3-color glow: Emerald → Cyan → Indigo
-            'circle-color': [
-              'step',
-              ['get', 'point_count'],
-              '#10b981', // Emerald (1-50)
-              50,
-              '#06b6d4', // Cyan (50-200)
-              200,
-              '#6366f1', // Indigo (200+)
-            ],
-            'circle-opacity': 0.45,
-            'circle-blur': 1.8,
-          },
-        });
-      }
-
-      // Main cluster circles - Simple emerald → cyan → indigo
+      // Modern cluster circles with gradient images
       if (!map.current.getLayer('clusters')) {
         map.current.addLayer({
           id: 'clusters',
-          type: 'circle',
+          type: 'symbol',
           source: 'initiatives',
           filter: ['has', 'point_count'],
           minzoom: 9,
           maxzoom: 14,
+          layout: {
+            'icon-image': [
+              'step',
+              ['get', 'point_count'],
+              'cluster-small', // 1-50
+              50,
+              'cluster-medium', // 50-200
+              200,
+              'cluster-large', // 200+
+            ],
+            'icon-size': 1.0,
+            'icon-allow-overlap': true,
+            'icon-ignore-placement': true,
+          },
           paint: {
-            // Simple 3-color gradient matching heatmap
-            'circle-color': [
-              'step',
-              ['get', 'point_count'],
-              '#10b981', // Emerald green (1-50)
-              50,
-              '#06b6d4', // Cyan (50-200)
-              200,
-              '#6366f1', // Indigo hotspot (200+)
-            ],
-            'circle-radius': [
-              'step',
-              ['get', 'point_count'],
-              22, // Small clusters
-              50,
-              34, // Medium clusters
-              200,
-              48, // Large clusters
-            ],
-            'circle-stroke-width': 4,
-            'circle-stroke-color': 'rgba(255, 255, 255, 1)',
-            'circle-opacity': 0.95,
+            'icon-opacity': 1,
           },
         });
       }
 
-      // Numbers on clusters with better contrast
+      // Cluster numbers - Clean white text
       if (!map.current.getLayer('cluster-count')) {
         map.current.addLayer({
           id: 'cluster-count',
@@ -530,110 +683,53 @@ export default function Map({
           layout: {
             'text-field': ['get', 'point_count_abbreviated'],
             'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
-            'text-size': 15,
+            'text-size': [
+              'step',
+              ['get', 'point_count'],
+              16, // Small clusters
+              50,
+              20, // Medium clusters
+              200,
+              26, // Large clusters
+            ],
+            'text-letter-spacing': 0.05,
           },
           paint: {
             'text-color': '#ffffff',
-            'text-halo-color': 'rgba(0, 0, 0, 0.3)',
-            'text-halo-width': 1.5,
-            'text-halo-blur': 0.5,
+            'text-halo-color': 'rgba(0, 0, 0, 0)', // Transparent - NO shadow
+            'text-halo-width': 0, // NO shadow
+            'text-halo-blur': 0,
           },
         });
       }
     }
 
-    // Shadow effect matching FilterPanel's shadow-lg (main shadow)
-    if (!map.current.getLayer('unclustered-point-glow')) {
-      map.current.addLayer({
-        id: 'unclustered-point-glow',
-        type: 'circle',
-        source: 'initiatives',
-        filter: enableClustering
-          ? (['!', ['has', 'point_count']] as mapboxgl.FilterSpecification)
-          : undefined,
-        minzoom: 9,
-        paint: {
-          'circle-radius': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            8,
-            16,
-            12,
-            24,
-            16,
-            34,
-          ],
-          'circle-color': [
-            'match',
-            ['get', 'type'],
-            'Ressourcerie',
-            TYPE_MARKER_COLORS['Ressourcerie'],
-            'Repair Café',
-            TYPE_MARKER_COLORS['Repair Café'],
-            'AMAP',
-            TYPE_MARKER_COLORS['AMAP'],
-            "Entreprise d'insertion",
-            TYPE_MARKER_COLORS["Entreprise d'insertion"],
-            'Point de collecte',
-            TYPE_MARKER_COLORS['Point de collecte'],
-            'Recyclerie',
-            TYPE_MARKER_COLORS['Recyclerie'],
-            'Épicerie sociale',
-            TYPE_MARKER_COLORS['Épicerie sociale'],
-            'Jardin partagé',
-            TYPE_MARKER_COLORS['Jardin partagé'],
-            'Fab Lab',
-            TYPE_MARKER_COLORS['Fab Lab'],
-            'Coopérative',
-            TYPE_MARKER_COLORS['Coopérative'],
-            'Monnaie locale',
-            TYPE_MARKER_COLORS['Monnaie locale'],
-            'Tiers-lieu',
-            TYPE_MARKER_COLORS['Tiers-lieu'],
-            TYPE_MARKER_COLORS['Autre'],
-          ],
-          'circle-opacity': 0.6,
-          'circle-blur': 0.5,
-        },
-      });
-    }
-
-    // Darker shadow offset (simulating shadow-lg bottom-right offset)
-    if (!map.current.getLayer('unclustered-point-shadow')) {
-      map.current.addLayer({
-        id: 'unclustered-point-shadow',
-        type: 'circle',
-        source: 'initiatives',
-        filter: enableClustering
-          ? (['!', ['has', 'point_count']] as mapboxgl.FilterSpecification)
-          : undefined,
-        minzoom: 9,
-        paint: {
-          'circle-radius': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            8,
-            10,
-            12,
-            15,
-            16,
-            22,
-          ],
-          'circle-color': '#000000', // Dark shadow
-          'circle-opacity': 0.15, // Subtle dark shadow
-          'circle-blur': 0.3,
-          // Offset shadow to bottom-right
-          'circle-translate': [2, 2], // X, Y offset in pixels
-        },
-      });
-    }
-
-    // Individual points - EXACT FilterPanel gradient colors (-400)
+    // Individual points with gradient images - TRUE GRADIENT like FilterPanel badges!
     if (!map.current.getLayer('unclustered-point')) {
       map.current.addLayer({
         id: 'unclustered-point',
+        type: 'symbol',
+        source: 'initiatives',
+        filter: enableClustering
+          ? (['!', ['has', 'point_count']] as mapboxgl.FilterSpecification)
+          : undefined,
+        minzoom: 9,
+        layout: {
+          'icon-image': ['concat', 'marker-', ['get', 'type']],
+          'icon-size': 1.0,
+          'icon-allow-overlap': true,
+          'icon-ignore-placement': true,
+        },
+        paint: {
+          'icon-opacity': 1,
+        },
+      });
+    }
+
+    // Hover glow effect - animated colored circle
+    if (!map.current.getLayer('unclustered-point-hover-glow')) {
+      map.current.addLayer({
+        id: 'unclustered-point-hover-glow',
         type: 'circle',
         source: 'initiatives',
         filter: enableClustering
@@ -641,49 +737,85 @@ export default function Map({
           : undefined,
         minzoom: 9,
         paint: {
+          // Animated radius on hover
           'circle-radius': [
             'interpolate',
             ['linear'],
-            ['zoom'],
-            8,
-            8,
-            12,
-            14,
-            16,
-            20,
+            ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0],
+            0,
+            0,
+            1,
+            28,
           ],
-          // EXACT Tailwind -400 colors from FilterPanel gradients
+          // Match gradient start color for glow
           'circle-color': [
             'match',
             ['get', 'type'],
             'Ressourcerie',
-            TYPE_MARKER_COLORS['Ressourcerie'], // slate-400
+            '#94a3b8',
             'Repair Café',
-            TYPE_MARKER_COLORS['Repair Café'], // amber-400
+            '#fbbf24',
             'AMAP',
-            TYPE_MARKER_COLORS['AMAP'], // emerald-400
+            '#34d399',
             "Entreprise d'insertion",
-            TYPE_MARKER_COLORS["Entreprise d'insertion"], // blue-400
+            '#60a5fa',
             'Point de collecte',
-            TYPE_MARKER_COLORS['Point de collecte'], // purple-400
+            '#c084fc',
             'Recyclerie',
-            TYPE_MARKER_COLORS['Recyclerie'], // teal-400
+            '#2dd4bf',
             'Épicerie sociale',
-            TYPE_MARKER_COLORS['Épicerie sociale'], // rose-400
+            '#fb7185',
             'Jardin partagé',
-            TYPE_MARKER_COLORS['Jardin partagé'], // lime-400
+            '#a3e635',
             'Fab Lab',
-            TYPE_MARKER_COLORS['Fab Lab'], // violet-400
+            '#a78bfa',
             'Coopérative',
-            TYPE_MARKER_COLORS['Coopérative'], // sky-400
+            '#38bdf8',
             'Monnaie locale',
-            TYPE_MARKER_COLORS['Monnaie locale'], // yellow-400
+            '#facc15',
             'Tiers-lieu',
-            TYPE_MARKER_COLORS['Tiers-lieu'], // fuchsia-400
-            TYPE_MARKER_COLORS['Autre'], // gray-400
+            '#e879f9',
+            '#9ca3af',
           ],
-          'circle-stroke-width': 0, // NO border - flat design
-          'circle-opacity': 1, // Full opacity for vibrant colors
+          'circle-opacity': [
+            'interpolate',
+            ['linear'],
+            ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0],
+            0,
+            0,
+            1,
+            0.4,
+          ],
+          'circle-blur': 1.0,
+        },
+      });
+    }
+
+    // Scale effect - duplicate marker that appears larger on hover WITH shadow
+    if (!map.current.getLayer('unclustered-point-hover-scale')) {
+      map.current.addLayer({
+        id: 'unclustered-point-hover-scale',
+        type: 'symbol',
+        source: 'initiatives',
+        filter: enableClustering
+          ? (['!', ['has', 'point_count']] as mapboxgl.FilterSpecification)
+          : undefined,
+        minzoom: 9,
+        layout: {
+          // Use hover version with shadow
+          'icon-image': ['concat', 'marker-', ['get', 'type'], '-hover'],
+          'icon-size': 1.25, // 25% larger
+          'icon-allow-overlap': true,
+          'icon-ignore-placement': true,
+        },
+        paint: {
+          // Only visible on hover
+          'icon-opacity': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            1,
+            0,
+          ],
         },
       });
     }
@@ -720,36 +852,78 @@ export default function Map({
   // MAP INTERACTIONS
   // ================================
 
+  // ✨ Track hovered marker (MUST be outside setupMapInteractions to persist)
+  const hoveredMarkerIdRef = useRef<string | number | null>(null);
+
   const setupMapInteractions = useCallback(() => {
     if (!map.current) return;
 
-    // Create a popup for hover interactions
+    // Create a popup for hover interactions (can be interacted with)
     const hoverPopup = new mapboxgl.Popup({
       closeButton: false,
       closeOnClick: false,
-      className: 'hover-popup',
+      className: 'hover-popup interactive-popup',
+      closeOnMove: false, // Don't close when map moves slightly
     });
 
-    // Pointer cursor on interactive elements
+    // Track if mouse is over popup or marker
+    let isOverMarker = false;
+    let isOverPopup = false;
+    let currentInitiative: Initiative | null = null;
+
+    // Function to remove popup only if not hovering marker or popup
+    const tryRemovePopup = () => {
+      setTimeout(() => {
+        if (!isOverMarker && !isOverPopup) {
+          hoverPopup.remove();
+          currentInitiative = null;
+        }
+      }, 100); // Small delay to allow mouse to move to popup
+    };
+
+    // ✨ Clusters cursor pointer (hover animations via CSS transitions)
     map.current.on('mouseenter', 'clusters', () => {
-      if (map.current) map.current.getCanvas().style.cursor = 'pointer';
-    });
-    map.current.on('mouseleave', 'clusters', () => {
-      if (map.current) map.current.getCanvas().style.cursor = '';
+      if (map.current) {
+        map.current.getCanvas().style.cursor = 'pointer';
+      }
     });
 
-    // Hover on unclustered point: show modern happy popup
+    map.current.on('mouseleave', 'clusters', () => {
+      if (map.current) {
+        map.current.getCanvas().style.cursor = '';
+      }
+    });
+
+    // ✨ MODERN HOVER ANIMATIONS - Individual markers with gradient (scale + colored glow)
+
     map.current.on('mouseenter', 'unclustered-point', (e) => {
       if (!map.current) return;
       map.current.getCanvas().style.cursor = 'pointer';
+      isOverMarker = true;
+
+      const feature = e.features?.[0];
+      if (feature) {
+        const featureId = feature.id || feature.properties?.id;
+
+        if (featureId !== undefined && featureId !== null) {
+          hoveredMarkerIdRef.current = featureId;
+
+          // Set hover state for both glow and scale layers
+          map.current.setFeatureState(
+            { source: 'initiatives', id: featureId },
+            { hover: true }
+          );
+        }
+      }
 
       const features = e.features?.[0];
       if (features?.properties) {
         const initiative = JSON.parse(
           features.properties.initiative
         ) as Initiative;
+        currentInitiative = initiative;
 
-        const gradient = TYPE_GRADIENTS[initiative.type];
+        const gradient = TYPE_GRADIENTS_CSS[initiative.type];
         const verifiedBadge = initiative.verified
           ? `<div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold text-white ml-2 shadow-md" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
@@ -761,43 +935,50 @@ export default function Map({
 
         // Create modern glassmorphism popup HTML with blurred background
         const html = `
-          <div class="p-5 min-w-[280px]">
-            <div class="flex items-start gap-2 mb-3">
-              <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white shadow-lg" style="background: ${gradient};">
+          <div style="width: 280px; padding: 20px; box-sizing: border-box;">
+            <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px; margin-bottom: 12px;">
+              <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white shadow-lg" style="background: ${gradient}; flex-shrink: 0;">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                 </svg>
-                ${initiative.type}
+                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px;">${
+                  initiative.type
+                }</span>
               </div>
               ${verifiedBadge}
             </div>
             
-            <h2 class="font-bold text-lg mb-2" style="color: #0f2419; line-height: 1.3;">${
+            <h2 class="font-bold text-lg mb-2" style="color: #0f2419; line-height: 1.3; word-wrap: break-word; overflow-wrap: break-word; hyphens: auto;">${
               initiative.name
             }</h2>
             
             ${
               initiative.address
-                ? `<div class="flex items-start gap-2 mb-2 p-2.5 rounded-xl" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.2);">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" class="flex-shrink-0 mt-0.5">
+                ? `<div style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; padding: 12px 14px; border-radius: 12px; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.2); overflow: hidden;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
                       <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                       <circle cx="12" cy="10" r="3"></circle>
                     </svg>
-                    <span style="color: #064e3b; font-size: 13px; line-height: 1.4; font-weight: 500;">${initiative.address}</span>
+                    <span style="color: #064e3b; font-size: 13px; line-height: 1.4; font-weight: 500; word-wrap: break-word; overflow-wrap: break-word; hyphens: auto; flex: 1; min-width: 0;">${initiative.address}</span>
                   </div>`
                 : ''
             }
             
             ${
               initiative.description
-                ? `<p style="color: #1f2937; font-size: 13px; line-height: 1.6; margin-top: 10px; font-weight: 400;">${initiative.description.substring(
+                ? `<p style="color: #1f2937; font-size: 13px; line-height: 1.6; margin-top: 10px; font-weight: 400; word-wrap: break-word; overflow-wrap: break-word; hyphens: auto;">${initiative.description.substring(
                     0,
                     120
                   )}${initiative.description.length > 120 ? '...' : ''}</p>`
                 : ''
             }
             
-            <div class="mt-4 pt-3 flex items-center justify-between" style="border-top: 1px solid rgba(148, 163, 184, 0.25);">
+            <button 
+              class="popup-detail-btn mt-4 pt-3 flex items-center justify-between w-full" 
+              style="border-top: 1px solid rgba(148, 163, 184, 0.25); cursor: pointer; background: none; border-left: none; border-right: none; border-bottom: none; padding-left: 0; padding-right: 0; transition: all 0.2s;"
+              onmouseover="this.style.transform='translateX(4px)'"
+              onmouseout="this.style.transform='translateX(0)'"
+            >
               <span style="color: #10b981; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 4px;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M9 11l3 3L22 4"></path>
@@ -808,7 +989,7 @@ export default function Map({
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
                 <polyline points="9 18 15 12 9 6"></polyline>
               </svg>
-            </div>
+            </button>
           </div>
         `;
 
@@ -818,13 +999,65 @@ export default function Map({
           )
           .setHTML(html)
           .addTo(map.current);
+
+        // Add event listeners to popup after it's added to DOM
+        setTimeout(() => {
+          const popupElement = document.querySelector('.interactive-popup');
+          if (popupElement) {
+            popupElement.addEventListener('mouseenter', () => {
+              isOverPopup = true;
+            });
+            popupElement.addEventListener('mouseleave', () => {
+              isOverPopup = false;
+              tryRemovePopup();
+            });
+
+            // Add click handler for detail button
+            const detailBtn = popupElement.querySelector('.popup-detail-btn');
+            if (detailBtn && currentInitiative) {
+              detailBtn.addEventListener('click', () => {
+                if (currentInitiative && onInitiativeClick) {
+                  onInitiativeClick(currentInitiative);
+                  hoverPopup.remove();
+                }
+              });
+            }
+          }
+        }, 50);
       }
     });
 
     map.current.on('mouseleave', 'unclustered-point', () => {
       if (map.current) {
         map.current.getCanvas().style.cursor = '';
-        hoverPopup.remove();
+        isOverMarker = false;
+        tryRemovePopup();
+
+        if (
+          hoveredMarkerIdRef.current !== null &&
+          hoveredMarkerIdRef.current !== undefined
+        ) {
+          // Remove hover state
+          map.current.setFeatureState(
+            { source: 'initiatives', id: hoveredMarkerIdRef.current },
+            { hover: false }
+          );
+
+          hoveredMarkerIdRef.current = null;
+        }
+      }
+    });
+
+    // ✨ Heatmap cursor pointer
+    map.current.on('mouseenter', 'heatmap', () => {
+      if (map.current) {
+        map.current.getCanvas().style.cursor = 'pointer';
+      }
+    });
+
+    map.current.on('mouseleave', 'heatmap', () => {
+      if (map.current) {
+        map.current.getCanvas().style.cursor = '';
       }
     });
 
@@ -856,6 +1089,18 @@ export default function Map({
       }
     });
 
+    // Click on heatmap: zoom in to that location
+    map.current.on('click', 'heatmap', (e) => {
+      if (!map.current) return;
+
+      // Zoom in by 2 levels to the clicked location
+      map.current.easeTo({
+        center: [e.lngLat.lng, e.lngLat.lat],
+        zoom: map.current.getZoom() + 2,
+        duration: 500,
+      });
+    });
+
     // Click on point: show details
     map.current.on('click', 'unclustered-point', (e) => {
       const features = e.features?.[0];
@@ -876,10 +1121,10 @@ export default function Map({
     // Click on map
     map.current.on('click', (e) => {
       const features = map.current?.queryRenderedFeatures(e.point, {
-        layers: ['clusters', 'unclustered-point'],
+        layers: ['heatmap', 'clusters', 'unclustered-point'],
       });
 
-      // If we didn't click on a marker/cluster
+      // If we didn't click on a heatmap/marker/cluster
       if (!features?.length && onMapClick) {
         onMapClick([e.lngLat.lng, e.lngLat.lat]);
       }
@@ -903,6 +1148,7 @@ export default function Map({
       type: 'FeatureCollection' as const,
       features: initiatives.map((initiative) => ({
         type: 'Feature' as const,
+        id: initiative.id, // ✨ Add ID for feature-state to work
         geometry: initiative.location,
         properties: {
           id: initiative.id,
@@ -1004,11 +1250,28 @@ export default function Map({
       )}
 
       {/* Informations sur les données */}
-      <div className="absolute bottom-4 left-4 z-10 flex items-center gap-2">
+      <div className="absolute bottom-4 left-[8rem] z-10 flex items-center gap-2">
         <div className="bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm">
           <span className="text-xs text-gray-600">
-            {initiatives.length} initiative{initiatives.length > 1 ? 's' : ''}{' '}
-            affichée{initiatives.length > 1 ? 's' : ''}
+            {initiatives.length >= 1000 ? (
+              <>
+                <span
+                  className="font-black text-emerald-500 animate-pulse"
+                  style={{
+                    textShadow:
+                      '0 0 10px rgba(16, 185, 129, 0.6), 0 0 20px rgba(16, 185, 129, 0.4)',
+                    fontSize: '0.9rem',
+                  }}
+                >
+                  +
+                </span>
+                <span className="font-semibold">1000</span>
+              </>
+            ) : (
+              initiatives.length.toLocaleString('fr-FR')
+            )}{' '}
+            initiative{initiatives.length > 1 ? 's' : ''} affichée
+            {initiatives.length > 1 ? 's' : ''}
           </span>
         </div>
 

@@ -39,7 +39,7 @@ interface AnimatedCounterProps {
 // ================================
 
 /**
- * Animated counter with easing
+ * Animated counter with easing and tech style for 1000+
  */
 function AnimatedCounter({ value, duration = 1000 }: AnimatedCounterProps) {
   const [count, setCount] = useState(0);
@@ -65,6 +65,24 @@ function AnimatedCounter({ value, duration = 1000 }: AnimatedCounterProps) {
 
     return () => cancelAnimationFrame(animationFrame);
   }, [value, duration]);
+
+  // Display +1000 with tech style when >= 1000
+  if (value >= 1000) {
+    return (
+      <span>
+        <span
+          className="font-black text-emerald-300 animate-pulse"
+          style={{
+            textShadow:
+              '0 0 10px rgba(16, 185, 129, 0.6), 0 0 20px rgba(16, 185, 129, 0.4)',
+          }}
+        >
+          +
+        </span>
+        <span>1000</span>
+      </span>
+    );
+  }
 
   return <span>{count.toLocaleString('fr-FR')}</span>;
 }
@@ -147,13 +165,13 @@ export default function StatsPanel({
       ? initiatives.filter((i) => selectedTypes.includes(i.type)).length
       : totalInitiatives;
 
-  // Count by type
+  // Count by type - ALWAYS use ALL initiatives for diversity display
   const typeCounts = initiatives.reduce((acc, initiative) => {
     acc[initiative.type] = (acc[initiative.type] || 0) + 1;
     return acc;
   }, {} as Record<InitiativeType, number>);
 
-  // Get top 3 types
+  // Get top 3 types from ALL initiatives (not just filtered ones)
   const topTypes = Object.entries(typeCounts)
     .sort(([, a], [, b]) => b - a)
     .slice(0, 3);
@@ -174,10 +192,12 @@ export default function StatsPanel({
           icon={CheckCircle}
           label="Vérifiées"
           value={verifiedCount}
-          subtitle={`${Math.round(
-            (verifiedCount / totalInitiatives) * 100
-          )}% du total`}
-          gradient="linear-gradient(135deg, #10b981 0%, #059669 100%)"
+          subtitle={`${
+            totalInitiatives > 0
+              ? Math.round((verifiedCount / totalInitiatives) * 100)
+              : 0
+          }% du total`}
+          gradient="linear-gradient(135deg, #4ade80 0%, #22c55e 50%, #16a34a 100%)"
         />
       </div>
 
@@ -193,7 +213,7 @@ export default function StatsPanel({
         />
       )}
 
-      {/* Top types with liquid glass effect */}
+      {/* Top types with liquid glass effect - SHOW GLOBAL DIVERSITY */}
       {detailed && topTypes.length > 0 && (
         <Card className="relative overflow-hidden rounded-2xl border-none bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl p-4">
           {/* Animated gradient background - more neutral */}
@@ -202,7 +222,7 @@ export default function StatsPanel({
             <div className="flex items-center gap-2 mb-3">
               <TrendingUp className="h-4 w-4 text-white/70" />
               <h3 className="text-sm font-semibold text-white/90">
-                Types populaires
+                Initiatives populaires près de chez vous
               </h3>
             </div>
 

@@ -132,15 +132,14 @@ function formatOpeningHours(openingHours: OpeningHours | undefined): string {
 // ================================
 
 /**
- * Initiative type badge with gradient
+ * Initiative type badge with gradient matching FilterPanel
  */
 function TypeBadge({ type }: { type: Initiative['type'] }) {
   const gradient = TYPE_GRADIENTS[type];
 
   return (
     <div
-      className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold text-white shadow-lg backdrop-blur-sm"
-      style={{ background: gradient }}
+      className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold text-white shadow-lg backdrop-blur-sm bg-gradient-to-r ${gradient}`}
     >
       <Sparkles className="h-3 w-3" />
       {type}

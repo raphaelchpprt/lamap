@@ -122,32 +122,45 @@ body {
   animation: gradientShift 15s ease infinite;
 }
 
-/* Mapbox popup glassmorphism styles - Modern glassmorphism with accessibility */
+/* Mapbox popup glassmorphism styles - Modern glassmorphism with HEAVY blur */
 .mapboxgl-popup-content {
-  background: rgba(255, 255, 255, 0.92) !important;
-  backdrop-filter: blur(24px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(40px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
   border-radius: 20px !important;
-  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
   padding: 0 !important;
-  box-shadow: 0 8px 32px rgba(16, 185, 129, 0.25),
-    0 4px 16px rgba(16, 185, 129, 0.15),
-    0 0 0 1px rgba(255, 255, 255, 0.6) inset !important;
-  max-width: 320px !important;
+  box-shadow: 0 8px 32px rgba(16, 185, 129, 0.3),
+    0 4px 16px rgba(16, 185, 129, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.7) inset !important;
+  width: 280px !important;
+  max-width: 280px !important;
   transition: all 0.3s ease !important;
+  /* Prevent any overflow */
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+/* Ensure all text elements inside popup respect boundaries */
+.mapboxgl-popup-content * {
+  box-sizing: border-box !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+  max-width: 100% !important;
 }
 
 .mapboxgl-popup-content:hover {
-  box-shadow: 0 12px 48px rgba(16, 185, 129, 0.35),
-    0 6px 24px rgba(16, 185, 129, 0.2),
-    0 0 0 1px rgba(255, 255, 255, 0.7) inset !important;
+  box-shadow: 0 12px 48px rgba(16, 185, 129, 0.4),
+    0 6px 24px rgba(16, 185, 129, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.8) inset !important;
   transform: translateY(-2px) !important;
 }
 
 .mapboxgl-popup-tip {
-  border-top-color: rgba(255, 255, 255, 0.92) !important;
-  border-bottom-color: rgba(255, 255, 255, 0.92) !important;
-  filter: drop-shadow(0 4px 8px rgba(16, 185, 129, 0.2)) !important;
+  border-top-color: rgba(255, 255, 255, 0.95) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.95) !important;
+  filter: drop-shadow(0 4px 12px rgba(16, 185, 129, 0.3)) !important;
 }
 
 /* Close button with glassmorphism */
@@ -169,7 +182,12 @@ body {
 
 /* Hover popup specific styles */
 .hover-popup .mapboxgl-popup-content {
-  pointer-events: none;
+  pointer-events: auto !important;
+}
+
+.hover-popup.interactive-popup .mapboxgl-popup-content {
+  pointer-events: auto !important;
+  cursor: default !important;
 }
 
 .hover-popup .mapboxgl-popup-close-button {

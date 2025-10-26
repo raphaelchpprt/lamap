@@ -337,23 +337,43 @@ export const INITIATIVE_COLORS: Record<InitiativeType, string> = {
 } as const;
 
 /**
- * Gradients for initiative type badges (glassmorphism compatible)
- * Each type has a distinctive gradient for better visual distinction
+ * Gradients Tailwind for initiative type badges
+ * Used in React components (FilterPanel, InitiativeCard)
  */
 export const TYPE_GRADIENTS: Record<InitiativeType, string> = {
-  Ressourcerie: 'linear-gradient(135deg, #64748b 0%, #475569 100%)', // Slate gray - recycling/reuse
-  'Repair Café': 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', // Amber - repair/tools
-  AMAP: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', // Emerald - agriculture/food
-  "Entreprise d'insertion": 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', // Blue - social/employment
-  'Point de collecte': 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)', // Purple - collection
-  Recyclerie: 'linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)', // Teal - recycling center
-  'Épicerie sociale': 'linear-gradient(135deg, #ec4899 0%, #db2777 100%)', // Pink - social grocery
-  'Jardin partagé': 'linear-gradient(135deg, #84cc16 0%, #65a30d 100%)', // Lime - gardens/nature
-  'Fab Lab': 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)', // Violet - tech/making
-  Coopérative: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)', // Sky blue - cooperative
-  'Monnaie locale': 'linear-gradient(135deg, #eab308 0%, #ca8a04 100%)', // Yellow - currency/exchange
-  'Tiers-lieu': 'linear-gradient(135deg, #d946ef 0%, #c026d3 100%)', // Fuchsia - third place/coworking
-  Autre: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)', // Gray - other/misc
+  Ressourcerie: 'from-slate-400 to-gray-600', // Gray - Recycling
+  'Repair Café': 'from-amber-400 to-orange-600', // Orange - Repair/Fix
+  AMAP: 'from-emerald-400 to-green-600', // Green - Food/Agriculture
+  "Entreprise d'insertion": 'from-blue-400 to-indigo-600', // Blue - Social
+  'Point de collecte': 'from-purple-400 to-violet-600', // Purple - Collection
+  Recyclerie: 'from-teal-400 to-cyan-600', // Cyan - Recycling center
+  'Épicerie sociale': 'from-rose-400 to-pink-600', // Pink - Social grocery
+  'Jardin partagé': 'from-lime-400 to-green-600', // Lime - Gardens
+  'Fab Lab': 'from-violet-400 to-purple-600', // Violet - Tech/Making
+  Coopérative: 'from-sky-400 to-blue-600', // Sky blue - Cooperative
+  'Monnaie locale': 'from-yellow-400 to-amber-600', // Yellow - Currency
+  'Tiers-lieu': 'from-fuchsia-400 to-pink-600', // Fuchsia - Third place
+  Autre: 'from-gray-400 to-slate-600', // Gray - Other
+} as const;
+
+/**
+ * CSS Gradients for HTML inline styles (Map popups)
+ * MUST match the Tailwind gradients above
+ */
+export const TYPE_GRADIENTS_CSS: Record<InitiativeType, string> = {
+  Ressourcerie: 'linear-gradient(135deg, #94a3b8 0%, #4b5563 100%)', // slate-400 to gray-600
+  'Repair Café': 'linear-gradient(135deg, #fbbf24 0%, #ea580c 100%)', // amber-400 to orange-600
+  AMAP: 'linear-gradient(135deg, #34d399 0%, #16a34a 100%)', // emerald-400 to green-600
+  "Entreprise d'insertion": 'linear-gradient(135deg, #60a5fa 0%, #4f46e5 100%)', // blue-400 to indigo-600
+  'Point de collecte': 'linear-gradient(135deg, #c084fc 0%, #7c3aed 100%)', // purple-400 to violet-600
+  Recyclerie: 'linear-gradient(135deg, #2dd4bf 0%, #0891b2 100%)', // teal-400 to cyan-600
+  'Épicerie sociale': 'linear-gradient(135deg, #fb7185 0%, #db2777 100%)', // rose-400 to pink-600
+  'Jardin partagé': 'linear-gradient(135deg, #a3e635 0%, #16a34a 100%)', // lime-400 to green-600
+  'Fab Lab': 'linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)', // violet-400 to purple-600
+  Coopérative: 'linear-gradient(135deg, #38bdf8 0%, #2563eb 100%)', // sky-400 to blue-600
+  'Monnaie locale': 'linear-gradient(135deg, #facc15 0%, #f59e0b 100%)', // yellow-400 to amber-600
+  'Tiers-lieu': 'linear-gradient(135deg, #e879f9 0%, #db2777 100%)', // fuchsia-400 to pink-600
+  Autre: 'linear-gradient(135deg, #9ca3af 0%, #64748b 100%)', // gray-400 to slate-600
 } as const;
 
 /**

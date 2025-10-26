@@ -42,13 +42,23 @@ export default function MapView() {
 
   return (
     <div className="flex h-full w-full rounded-tl-[2rem] rounded-bl-[2rem]">
-      {/* Modern Glassmorphism Sidebar */}
-      <aside className="flex w-96 flex-col gap-6 overflow-y-auto p-6 glass-strong border-r border-white/10 ">
+      {/* Modern ESS-style Sidebar with warm, natural tones */}
+      <aside
+        className="flex w-96 flex-col gap-6 overflow-y-auto p-6 bg-gradient-to-br from-emerald-950 via-teal-900 to-green-950 border-r border-emerald-400/30 rounded-tr-[3rem] rounded-br-[3rem] relative z-10"
+        style={{
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          boxShadow:
+            '8px 0 24px -8px rgba(16, 185, 129, 0.3), 12px 0 48px -12px rgba(6, 78, 59, 0.4)',
+        }}
+      >
         {/* Header with gradient text */}
         <div className="space-y-2">
           <h1 className="text-3xl font-bold gradient-text">LaMap</h1>
           <h2 className="text-xl font-semibold text-white/90">
-            Engagez-vous près de chez vous !
+            S'engager facilement,
+            <br />
+            près de chez soi.
           </h2>
           <p className="text-sm text-white/70">
             Plateforme collaborative des initiatives sociales, solidaires et
@@ -63,12 +73,21 @@ export default function MapView() {
           detailed
         />
 
-        {/* Add Initiative Button with gradient - taller with extra padding */}
+        {/* Add Initiative Button with emerald gradient - taller with extra padding */}
         <Button
           onClick={() => setIsAddFormOpen(true)}
-          className="w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 border-none shadow-lg shadow-emerald-500/50 transition-all duration-300 hover:scale-105 py-6 text-base"
+          className="w-full bg-gradient-to-r from-emerald-400 to-emerald-600 hover:from-emerald-500 hover:to-emerald-700 border-none shadow-lg shadow-emerald-500/50 transition-all duration-300 hover:scale-105 py-6 text-base font-semibold"
         >
-          <MapPlus strokeWidth={2.5} className="mr-2 h-5 w-5" />
+          <MapPlus
+            style={{
+              width: '24px',
+              height: '24px',
+              minWidth: '24px',
+              minHeight: '24px',
+            }}
+            className="mr-1"
+            strokeWidth={2.5}
+          />
           Ajouter une initiative
         </Button>
 
@@ -79,8 +98,8 @@ export default function MapView() {
         />
       </aside>
 
-      {/* Main - Map */}
-      <main className="relative flex-1">
+      {/* Main - Map extended to overlap behind sidebar */}
+      <main className="relative flex-1 -ml-24">
         <Map
           filters={{
             types: selectedTypes,
