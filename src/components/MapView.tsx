@@ -56,7 +56,7 @@ export default function MapView() {
         <div className="space-y-2">
           <h1 className="text-3xl font-bold gradient-text">LaMap</h1>
           <h2 className="text-xl font-semibold text-white/90">
-            S'engager facilement,
+            S&apos;engager facilement,
             <br />
             près de chez soi.
           </h2>
