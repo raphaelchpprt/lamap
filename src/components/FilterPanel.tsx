@@ -35,20 +35,20 @@ const INITIATIVE_TYPES: InitiativeType[] = [
   'Autre',
 ];
 
-// Modern gradient colors for each type
+// Modern gradient colors for each type - Eco-tech green theme
 const TYPE_GRADIENTS: Record<InitiativeType, string> = {
-  Ressourcerie: 'from-gray-400 to-gray-600',
-  'Repair Café': 'from-orange-400 to-red-600',
+  Ressourcerie: 'from-emerald-400 to-green-600',
+  'Repair Café': 'from-lime-400 to-green-600',
   AMAP: 'from-green-400 to-emerald-600',
-  "Entreprise d'insertion": 'from-blue-400 to-indigo-600',
-  'Point de collecte': 'from-purple-400 to-violet-600',
-  Recyclerie: 'from-teal-400 to-cyan-600',
-  'Épicerie sociale': 'from-red-400 to-pink-600',
-  'Jardin partagé': 'from-lime-400 to-green-600',
-  'Fab Lab': 'from-violet-400 to-purple-600',
-  Coopérative: 'from-cyan-400 to-blue-600',
-  'Monnaie locale': 'from-yellow-400 to-orange-600',
-  'Tiers-lieu': 'from-fuchsia-400 to-pink-600',
+  "Entreprise d'insertion": 'from-teal-400 to-cyan-600',
+  'Point de collecte': 'from-emerald-300 to-teal-600',
+  Recyclerie: 'from-green-500 to-emerald-700',
+  'Épicerie sociale': 'from-lime-400 to-yellow-600',
+  'Jardin partagé': 'from-green-400 to-lime-600',
+  'Fab Lab': 'from-cyan-400 to-teal-600',
+  Coopérative: 'from-emerald-400 to-green-700',
+  'Monnaie locale': 'from-yellow-400 to-lime-600',
+  'Tiers-lieu': 'from-teal-400 to-emerald-600',
   Autre: 'from-gray-400 to-slate-600',
 };
 
@@ -90,8 +90,8 @@ export default function FilterPanel({
       {/* Header with gradient */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-sm">
-            <Sparkles className="h-5 w-5 text-purple-300" />
+          <div className="p-2 rounded-xl bg-gradient-to-br from-emerald-500/20 to-green-500/20 backdrop-blur-sm">
+            <Sparkles className="h-5 w-5 text-emerald-300" />
           </div>
           <div>
             <h3 className="text-lg font-bold text-white">Filtres</h3>
@@ -124,7 +124,7 @@ export default function FilterPanel({
             variant="ghost"
             size="sm"
             onClick={handleSelectAll}
-            className="h-auto p-2 text-xs text-cyan-300 hover:text-cyan-200 hover:bg-white/10"
+            className="h-auto p-2 text-xs text-emerald-300 hover:text-emerald-200 hover:bg-white/10"
           >
             Tout sélectionner
           </Button>
@@ -175,7 +175,7 @@ export default function FilterPanel({
                         id={`filter-${type}`}
                         checked={isSelected}
                         onCheckedChange={() => handleTypeToggle(type)}
-                        className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-purple-500 data-[state=checked]:to-pink-500 border-white/30"
+                        className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-emerald-500 data-[state=checked]:to-green-500 border-white/30"
                       />
                       <Label
                         htmlFor={`filter-${type}`}
@@ -196,7 +196,7 @@ export default function FilterPanel({
                           relative z-10
                           ${
                             isSelected
-                              ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white border-none'
+                              ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white border-none'
                               : 'bg-white/10 text-white/80 border-white/20'
                           }
                         `}
@@ -213,8 +213,8 @@ export default function FilterPanel({
           {/* Info tooltip with glassmorphism */}
           {totalCount > 0 && (
             <div className="pt-4 border-t border-white/10 mt-4">
-              <div className="flex items-start gap-2 p-3 rounded-xl bg-gradient-to-br from-cyan-500/10 to-blue-500/10 backdrop-blur-sm">
-                <Lightbulb className="h-4 w-4 flex-shrink-0 mt-0.5 text-cyan-300" />
+              <div className="flex items-start gap-2 p-3 rounded-xl bg-gradient-to-br from-emerald-500/10 to-green-500/10 backdrop-blur-sm">
+                <Lightbulb className="h-4 w-4 flex-shrink-0 mt-0.5 text-emerald-300" />
                 <p className="text-xs text-white/70">
                   Cliquez sur un type pour afficher/masquer les initiatives
                   correspondantes sur la carte

@@ -167,7 +167,7 @@ export default function StatsPanel({
           label="Total"
           value={totalInitiatives}
           subtitle="initiatives"
-          gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+          gradient="linear-gradient(135deg, #10b981 0%, #059669 100%)"
         />
         
         <StatCard
@@ -175,7 +175,7 @@ export default function StatsPanel({
           label="Vérifiées"
           value={verifiedCount}
           subtitle={`${Math.round((verifiedCount / totalInitiatives) * 100)}% du total`}
-          gradient="linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"
+          gradient="linear-gradient(135deg, #34d399 0%, #10b981 100%)"
         />
       </div>
 
@@ -185,17 +185,15 @@ export default function StatsPanel({
           label="Filtrées"
           value={selectedCount}
           subtitle={`${selectedTypes.length} type${selectedTypes.length > 1 ? 's' : ''} sélectionné${selectedTypes.length > 1 ? 's' : ''}`}
-          gradient="linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"
+          gradient="linear-gradient(135deg, #84cc16 0%, #65a30d 100%)"
         />
       )}
 
       {/* Top types with liquid glass effect */}
       {detailed && topTypes.length > 0 && (
-        <Card className="relative overflow-hidden rounded-2xl border-none bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl p-4">
+          <Card className="relative overflow-hidden rounded-2xl border-none bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-xl p-4">
           {/* Animated gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-blue-500/10 animate-gradient" />
-          
-          <div className="relative z-10">
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-green-500/10 to-lime-500/10 animate-gradient" />          <div className="relative z-10">
             <div className="flex items-center gap-2 mb-3">
               <TrendingUp className="h-4 w-4 text-white/70" />
               <h3 className="text-sm font-semibold text-white/90">
@@ -207,9 +205,9 @@ export default function StatsPanel({
               {topTypes.map(([type, count], index) => {
                 const percentage = Math.round((count / totalInitiatives) * 100);
                 const colors = [
-                  'from-purple-500 to-pink-500',
-                  'from-blue-500 to-cyan-500',
-                  'from-green-500 to-emerald-500',
+                  'from-emerald-500 to-green-500',
+                  'from-lime-500 to-green-600',
+                  'from-teal-500 to-emerald-500',
                 ];
 
                 return (
