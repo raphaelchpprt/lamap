@@ -196,21 +196,19 @@ describe('FilterPanel', () => {
   });
 
   it('highlights selected type checkboxes', () => {
-    const { container } = render(
+    render(
       <FilterPanel
         selectedTypes={['Ressourcerie']}
         onFilterChange={mockOnFilterChange}
       />
     );
 
-    // 🎨 Find Ressourcerie container (div now, not label) and verify selection class
+    // 🎨 Verify Ressourcerie checkbox is checked
     const ressourcerieCheckbox = screen.getByLabelText('Ressourcerie');
     expect(ressourcerieCheckbox).toBeChecked();
 
-    // Verify the parent container has selection styles
-    const ressourcerieContainer = container.querySelector(
-      '.bg-primary\\/5.border-primary'
-    );
+    // Verify the parent container has the selected background (bg-white/20)
+    const ressourcerieContainer = ressourcerieCheckbox.closest('div[class*="bg-white/20"]');
     expect(ressourcerieContainer).toBeInTheDocument();
   });
 

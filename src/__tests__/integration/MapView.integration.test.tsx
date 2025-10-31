@@ -13,39 +13,9 @@ import { act } from 'react';
 
 import MapView from '@/components/MapView';
 
-// 🎓 Mock Mapbox GL - Essential pour tester sans vraie API
-jest.mock('mapbox-gl', () => ({
-  Map: jest.fn(() => ({
-    on: jest.fn((event, callback) => {
-      // Simulate 'load' event immediately
-      if (event === 'load') {
-        setTimeout(() => callback(), 0);
-      }
-    }),
-    addControl: jest.fn(),
-    addSource: jest.fn(),
-    addLayer: jest.fn(),
-    setFilter: jest.fn(),
-    getSource: jest.fn(() => ({
-      setData: jest.fn(),
-    })),
-    getLayer: jest.fn(() => null), // 🎓 Retourne null = layer n'existe pas encore
-    remove: jest.fn(),
-    getCanvas: jest.fn(() => ({
-      style: { cursor: '' },
-    })),
-    resize: jest.fn(),
-  })),
-  NavigationControl: jest.fn(),
-  GeolocateControl: jest.fn(),
-  FullscreenControl: jest.fn(),
-  Marker: jest.fn(() => ({
-    setLngLat: jest.fn().mockReturnThis(),
-    addTo: jest.fn().mockReturnThis(),
-    remove: jest.fn(),
-    getElement: jest.fn(() => document.createElement('div')),
-  })),
-}));
+// 🎓 Mock Mapbox GL - Use global mock from __mocks__/mapbox-gl.js
+// This provides a complete mock with all necessary methods
+jest.mock('mapbox-gl');
 
 // 🎓 Mock Supabase client
 jest.mock('@/lib/supabase/client', () => ({
@@ -138,9 +108,9 @@ describe('MapView Integration Tests', () => {
 
       await waitFor(
         () => {
-          // 🎓 Vérifie que le texte "initiatives référencées" apparaît (= chargement terminé)
+          // 🎓 Check that initiative counter text appears (= loading complete)
           expect(
-            screen.getByText('initiatives référencées')
+            screen.getByText(/initiative.*affichée/i)
           ).toBeInTheDocument();
         },
         { timeout: 3000 }
@@ -151,7 +121,7 @@ describe('MapView Integration Tests', () => {
       render(<MapView />);
 
       await waitFor(() => {
-        expect(screen.getByText('initiatives référencées')).toBeInTheDocument();
+        expect(screen.getByText(/initiative.*affichée/i)).toBeInTheDocument();
       });
     });
   });
@@ -208,7 +178,9 @@ describe('MapView Integration Tests', () => {
 
       expect(screen.getByText('LaMap')).toBeInTheDocument();
       expect(
-        screen.getByText(/Carte collaborative des initiatives/i)
+        screen.getByText(
+          /Plateforme collaborative des initiatives sociales, solidaires et écologiques/i
+        )
       ).toBeInTheDocument();
     });
   });

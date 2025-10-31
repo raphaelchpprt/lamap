@@ -88,11 +88,13 @@ describe('InitiativeCard', () => {
   it('displays phone and email as accessible links', () => {
     render(<InitiativeCard initiative={mockInitiative} />);
 
-    // Phone and email are displayed as icon links with title attributes
-    const phoneLink = screen.getByTitle('Appeler');
+    // Phone and email are displayed as links with text content
+    const phoneLink = screen.getByRole('link', { name: /01 23 45 67 89/i });
     expect(phoneLink).toHaveAttribute('href', 'tel:01 23 45 67 89');
 
-    const emailLink = screen.getByTitle('Envoyer un email');
+    const emailLink = screen.getByRole('link', {
+      name: /contact@ressourcerie-belleville\.fr/i,
+    });
     expect(emailLink).toHaveAttribute(
       'href',
       'mailto:contact@ressourcerie-belleville.fr'

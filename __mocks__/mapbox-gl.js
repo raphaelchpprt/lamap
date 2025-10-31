@@ -3,7 +3,14 @@
 
 const mockMapboxGl = {
   Map: jest.fn().mockImplementation(() => ({
-    on: jest.fn(),
+    on: jest.fn((event, callback) => {
+      // 🎓 Auto-trigger 'load' event for tests
+      // This simulates the map being ready immediately
+      if (event === 'load') {
+        setTimeout(() => callback(), 0);
+      }
+      return undefined;
+    }),
     off: jest.fn(),
     remove: jest.fn(),
     addSource: jest.fn(),
@@ -20,8 +27,11 @@ const mockMapboxGl = {
     getBounds: jest.fn(() => ({
       getNorthEast: () => ({ lng: 3, lat: 49 }),
       getSouthWest: () => ({ lng: 1, lat: 48 }),
+      getCenter: () => ({ lng: 2.3522, lat: 48.8566 }),
     })),
     fitBounds: jest.fn(),
+    easeTo: jest.fn(),
+    flyTo: jest.fn(),
     project: jest.fn(() => ({ x: 100, y: 100 })),
     unproject: jest.fn(() => ({ lng: 2.3522, lat: 48.8566 })),
     queryRenderedFeatures: jest.fn(() => []),
@@ -33,6 +43,26 @@ const mockMapboxGl = {
     resize: jest.fn(),
     loaded: jest.fn(() => true),
     fire: jest.fn(),
+    getLayer: jest.fn(() => null),
+    getSource: jest.fn(() => ({
+      setData: jest.fn(),
+    })),
+    setFilter: jest.fn(),
+    setPaintProperty: jest.fn(),
+    setLayoutProperty: jest.fn(),
+    setFeatureState: jest.fn(),
+    removeFeatureState: jest.fn(),
+    getFeatureState: jest.fn(() => ({})),
+    hasImage: jest.fn(() => false),
+    addImage: jest.fn(),
+    removeImage: jest.fn(),
+    loadImage: jest.fn((url, callback) => {
+      callback(null, { width: 32, height: 32 });
+    }),
+    // Control methods (for NavigationControl, GeolocateControl, etc.)
+    addControl: jest.fn(),
+    removeControl: jest.fn(),
+    hasControl: jest.fn(() => false),
     // Navigation methods
     scrollZoom: {
       enable: jest.fn(),
