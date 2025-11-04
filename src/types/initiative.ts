@@ -458,6 +458,53 @@ export const INITIATIVE_ICONS: Record<InitiativeType, string> = {
   Autre: 'MapPin',
 } as const;
 
+/**
+ * Descriptions détaillées de chaque type d'initiative
+ * Utilisées pour les tooltips et pages d'information
+ */
+export const INITIATIVE_DESCRIPTIONS: Record<InitiativeType, string> = {
+  Ressourcerie:
+    'Lieu de collecte, tri, valorisation et revente d\'objets de seconde main. Favorise le réemploi et évite le gaspillage en donnant une seconde vie aux objets.',
+  Recyclerie:
+    'Centre de recyclage et de valorisation des déchets. Transforme les matériaux usagés en nouvelles ressources pour l\'économie circulaire.',
+  'Repair Café':
+    'Atelier participatif où l\'on apprend à réparer ses objets (électroménager, vêtements, vélos...). Lutter contre l\'obsolescence programmée et créer du lien social.',
+  'Atelier vélo':
+    'Atelier associatif d\'auto-réparation de vélos. Apprendre à entretenir et réparer son vélo, avec outils et conseils de bénévoles. Favorise la mobilité douce.',
+  'Point de collecte':
+    'Point de collecte pour déchets spécifiques (textiles, piles, électronique, etc.). Permet un recyclage approprié et évite la pollution.',
+  'Composteur collectif':
+    'Composteur de quartier où habitants déposent leurs déchets organiques. Produit du compost gratuit et réduit les ordures ménagères de 30%.',
+  AMAP:
+    'Association pour le Maintien d\'une Agriculture Paysanne. Circuit court entre producteurs et consommateurs avec engagement réciproque. Produits locaux, de saison et bio.',
+  'Jardin partagé':
+    'Espace de jardinage collectif géré par les habitants. Cultiver ses légumes, apprendre le jardinage écologique et créer du lien social dans le quartier.',
+  Grainothèque:
+    'Lieu d\'échange gratuit de graines et de savoir-faire. Préserver la biodiversité végétale et partager les semences libres entre jardiniers amateurs.',
+  Friperie:
+    'Magasin de vêtements et accessoires de seconde main. Alternative durable à la fast-fashion, favorise le réemploi textile et l\'économie circulaire.',
+  Donnerie:
+    'Lieu de don et de récupération d\'objets gratuits. Principe du "gratuit" pour éviter le gaspillage et permettre l\'accès à tous aux biens de consommation.',
+  'Épicerie sociale':
+    'Magasin solidaire proposant des produits alimentaires à prix réduits. Aide les personnes en difficulté tout en préservant leur dignité et leur pouvoir d\'achat.',
+  'Épicerie vrac':
+    'Épicerie zéro déchet vendant en vrac (sans emballage). Réduire les déchets plastiques, acheter la quantité souhaitée et privilégier le local et le bio.',
+  "Bibliothèque d'objets":
+    'Lieu de prêt d\'outils et d\'objets du quotidien (perceuse, échelle, appareil à raclette...). Usage plutôt que propriété, économie de partage.',
+  SEL:
+    'Système d\'Échange Local basé sur l\'échange de services, savoirs et biens sans argent. Monnaie locale virtuelle et création de lien social dans le territoire.',
+  Accorderie:
+    'Réseau d\'échange de services et de temps entre membres. Une heure donnée = une heure reçue, quelle que soit la nature du service. Égalité et solidarité.',
+  'Fab Lab':
+    'Laboratoire de fabrication numérique ouvert à tous. Machines (imprimante 3D, découpe laser...), partage de connaissances et prototypage de projets.',
+  Coopérative:
+    'Entreprise collective où les membres sont propriétaires et décisionnaires. Gouvernance démocratique, partage des bénéfices et ancrage territorial.',
+  'Tiers-lieu':
+    'Espace hybride entre domicile et travail. Coworking, fablab, café associatif... Favorise innovation sociale, collaboration et convivialité.',
+  Autre:
+    'Autre initiative d\'économie sociale, solidaire et circulaire ne correspondant pas aux catégories existantes.',
+} as const;
+
 // ================================
 // TYPES POUR LES ERREURS
 // ================================
