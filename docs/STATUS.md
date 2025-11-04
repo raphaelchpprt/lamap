@@ -1,7 +1,7 @@
 # 📦 LaMap Configuration Summary
 
-**Date:** October 13, 2025  
-**Session:** shadcn/ui Migration & Documentation Translation
+**Date:** November 4, 2025  
+**Session:** UX Enhancement - Initiative Type Descriptions & Tooltips
 
 ## ✅ What Has Been Created and Configured
 
@@ -22,25 +22,56 @@
 |-----------|------|-------------|--------|
 | `InitiativeCard.tsx` | Client | Initiative display card | ✅ Created |
 | `AddInitiativeForm.tsx` | Client | Initiative add form | ✅ Created + shadcn/ui |
-| `FilterPanel.tsx` | Client | Type filtering panel | ✅ Created + shadcn/ui |
+| `FilterPanel.tsx` | Client | Type filtering panel with tooltips | ✅ Created + shadcn/ui + Tooltips |
 | `Map.tsx` | Client | Interactive Mapbox map | ✅ Created |
+| `MapView.tsx` | Client | Complete map view with state | ✅ Created |
+| `StatsPanel.tsx` | Client | Statistics display panel | ✅ Created |
+
+### 🎨 shadcn/ui Components
+
+| Component | Purpose | Status |
+|-----------|---------|--------|
+| `Button` | Interactive buttons | ✅ Installed |
+| `Card` | Content containers | ✅ Installed |
+| `Badge` | Labels and tags | ✅ Installed |
+| `Input` | Form inputs | ✅ Installed |
+| `Label` | Form labels | ✅ Installed |
+| `Checkbox` | Boolean selections | ✅ Installed |
+| `Dialog` | Modal dialogs | ✅ Installed |
+| `ScrollArea` | Scrollable containers | ✅ Installed |
+| `Tooltip` | Contextual information | ✅ Installed (Nov 4, 2025) |
 
 ### 🧪 Jest Tests
 
 | Test | Tested Component | Status |
 |------|------------------|--------|
-| `InitiativeCard.test.tsx` | InitiativeCard | ✅ Created |
-| `FilterPanel.test.tsx` | FilterPanel | ✅ Created |
+| `InitiativeCard.test.tsx` | InitiativeCard | ✅ Passing |
+| `FilterPanel.test.tsx` | FilterPanel | ✅ Passing |
+| `AddInitiativeForm.test.tsx` | AddInitiativeForm | ✅ Passing |
+| `Map.test.tsx` | Map component | ✅ Passing |
+| `MapView.integration.test.tsx` | MapView integration | ✅ Passing |
+| `actions.test.ts` | Server Actions | ✅ Passing |
+| `utils.test.ts` | Utility functions | ✅ Passing |
 | `jest.d.ts` | TypeScript types for Jest | ✅ Created |
+
+**Total: 112/112 tests passing (100%)** ✅
 
 ### 🛠️ Utilities & Lib
 
 | File | Description | Status |
 |------|-------------|--------|
 | `lib/utils.ts` | Utility functions (distance, dates, etc.) | ✅ Created |
-| `lib/supabase/client.ts` | Supabase browser client | ✅ Existed |
-| `lib/supabase/server.ts` | Supabase server client | ✅ Existed |
-| `types/initiative.ts` | Complete TypeScript types | ✅ Existed |
+| `lib/supabase/client.ts` | Supabase browser client | ✅ Created |
+| `lib/supabase/server.ts` | Supabase server client | ✅ Created |
+| `types/initiative.ts` | Complete TypeScript types + descriptions | ✅ Created + Enhanced |
+
+### 📜 Scripts
+
+| File | Description | Status |
+|------|-------------|--------|
+| `scripts/import-from-osm.ts` | Import data from OpenStreetMap | ✅ Created |
+| `scripts/clean-old-types.ts` | Cleanup deprecated initiatives | ✅ Created + Executed |
+| `scripts/test-supabase-function.ts` | Test Supabase functions | ✅ Created |
 
 ### ⚙️ Configuration
 
@@ -54,15 +85,44 @@
 
 ---
 
-## ✅ Recent Updates (October 13, 2025)
+## ✅ Recent Updates (November 4, 2025)
 
-### Documentation Translation
+### Initiative Types Enhancement
+- ✅ Added 9 new ESS/circular economy initiative types (Atelier vélo, Composteur collectif, Grainothèque, Friperie, Donnerie, Épicerie vrac, Bibliothèque d'objets, SEL, Accorderie)
+- ✅ Removed 2 less relevant types (Entreprise d'insertion, Monnaie locale)
+- ✅ Total: 20 initiative types focused on circular economy and social solidarity
+- ✅ Updated all components to reflect new types (FilterPanel, AddInitiativeForm, InitiativeCard)
+
+### Database Cleanup
+- ✅ Created `scripts/clean-old-types.ts` cleanup script
+- ✅ Removed 1000 deprecated initiatives (EHPAD, nursing homes incorrectly categorized)
+- ✅ Database now contains only ESS/circular economy initiatives
+
+### UX Enhancement - Tooltips with Descriptions
+- ✅ Added `INITIATIVE_DESCRIPTIONS` constant with detailed explanations for all 20 types
+- ✅ Each type has 2-3 sentence description explaining purpose and impact
+- ✅ Installed shadcn/ui Tooltip component (@radix-ui/react-tooltip)
+- ✅ Integrated Info icons (ℹ️) next to each type in FilterPanel
+- ✅ Tooltips display on hover with glassmorphism styling
+- ✅ Fixed tooltip clipping with Portal rendering and responsive width (max 90vw)
+- ✅ Improved accessibility with aria-labels and keyboard navigation
+
+### Test Suite Maintenance
+- ✅ Fixed 12 failing tests after production deployment
+- ✅ Enhanced Mapbox GL mock with 15+ methods (addControl, removeControl, getBounds, etc.)
+- ✅ Updated text assertions to reflect new initiative types
+- ✅ Achieved 100% test pass rate: **112/112 tests passing** ✅
+- ✅ Build successful with no errors
+
+### Previous Updates (October 13, 2025)
+
+#### Documentation Translation
 - ✅ All source code comments translated to English
 - ✅ All test descriptions translated to English
 - ✅ Technical documentation translated (CONTEXT_ENGINEERING, QUICKSTART, BEST_PRACTICES, DEPENDENCIES, STATUS, SHADCN_CONFIG)
 - ✅ README.md kept in French (user-facing content)
 
-### shadcn/ui Migration
+#### shadcn/ui Migration
 - ✅ `AddInitiativeForm.tsx` migrated to use shadcn/ui components (Button, Input, Label, Card)
 - ✅ `FilterPanel.tsx` migrated to use shadcn/ui components (Button, Badge, Card)
 - ✅ `Dialog` component added for forms and modals
@@ -189,17 +249,22 @@ interface MapProps {
 Project configuration:    ████████████████████ 100%
 Documentation:            ████████████████████ 100%
 TypeScript types:         ████████████████████ 100%
-Base components:          ████████████████████ 100% ← shadcn/ui migration done
-UI/UX Layout:             ████████████████████ 100% ← Homepage with Map + Filters
-Server Actions:           ████████████████████ 100% ← CRUD + UI Integration
-Unit tests:               ████████████████░░░░  80% ← 4 test suites added
-Supabase integration:     ████████████████████ 100% ← Configured
-Mapbox map:               ████████████████████ 100% ← Map.tsx + MapView.tsx
+Base components:          ████████████████████ 100%
+shadcn/ui components:     ████████████████████ 100% ← 9 components installed
+UI/UX Layout:             ████████████████████ 100%
+Initiative types:         ████████████████████ 100% ← 20 types with descriptions
+Tooltips & UX:            ████████████████████ 100% ← Info tooltips implemented
+Server Actions:           ████████████████████ 100%
+Unit tests:               ████████████████████ 100% ← 112/112 passing (100%)
+Supabase integration:     ████████████████████ 100%
+Mapbox map:               ████████████████████ 100%
+Database cleanup:         ████████████████████ 100% ← 1000 deprecated removed
 Authentication:           ░░░░░░░░░░░░░░░░░░░░   0%
-Translation:              ████████████████████ 100% ← All docs in English
+Translation:              ████████████████████ 100%
+Production deploy:        ████████████████████ 100% ← Vercel
 ```
 
-**Overall progress: 90%**
+**Overall progress: 95%**
 
 ---
 
@@ -211,11 +276,15 @@ Translation:              ██████████████████
 4. ~~**[PRIORITY 1]** Migrate to shadcn/ui~~ ✅ Done
 5. ~~**[PRIORITY 2]** Update page.tsx with complete layout~~ ✅ Done
 6. ~~**[PRIORITY 2]** Create Server Actions~~ ✅ Done
-7. ~~**[PRIORITY 2]** Integrate Server Actions with UI (AddInitiativeForm)~~ ✅ Done
-8. ~~**[PRIORITY 3]** Add test suites~~ ✅ Done (4 suites, 1 passing)
-9. **[PRIORITY 3]** Implement authentication
-10. **[PRIORITY 3]** Fix remaining test mocking issues
-11. **[PRIORITY 4]** Optimizations and advanced features
+7. ~~**[PRIORITY 2]** Integrate Server Actions with UI~~ ✅ Done
+8. ~~**[PRIORITY 3]** Add test suites~~ ✅ Done (112/112 passing)
+9. ~~**[PRIORITY 3]** Fix Mapbox mocks and test failures~~ ✅ Done
+10. ~~**[PRIORITY 3]** Add initiative type descriptions~~ ✅ Done (Nov 4, 2025)
+11. ~~**[PRIORITY 3]** Implement tooltips for UX~~ ✅ Done (Nov 4, 2025)
+12. ~~**[PRIORITY 3]** Database cleanup (remove deprecated data)~~ ✅ Done (Nov 4, 2025)
+13. **[PRIORITY 4]** Implement authentication (login/signup pages)
+14. **[PRIORITY 4]** Add middleware for route protection
+15. **[PRIORITY 5]** Optimizations and advanced features (lazy loading, SEO, etc.)
 
 ---
 
@@ -238,23 +307,27 @@ npm run format           # Format code (to add)
 
 ---
 
-## 📦 Current Dependencies
+### Current Dependencies
 
 ### Installed ✅
 
-- next (15.x)
+- next (15.5.4)
 - react (19.x)
 - react-dom (19.x)
 - @supabase/ssr
 - @supabase/supabase-js
-- mapbox-gl
+- mapbox-gl (3.8.0)
 - @types/mapbox-gl
-- jest
+- jest (29.x)
 - @testing-library/react
 - @testing-library/jest-dom
-- tailwindcss
+- tailwindcss (4.x)
 - @tailwindcss/forms
 - @tailwindcss/typography
+- lucide-react (0.545.0)
+- clsx (2.1.1)
+- tailwind-merge (3.3.1)
+- @radix-ui/react-tooltip (1.1.8) ← Added Nov 4, 2025
 
 ### Essential (installed) ✅
 
@@ -304,6 +377,6 @@ Start by installing the dependencies, then follow the `QUICKSTART.md` for the co
 
 ---
 
-**Last updated:** October 13, 2025
+**Last updated:** November 4, 2025
 
 ````
