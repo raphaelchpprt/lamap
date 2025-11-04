@@ -148,21 +148,59 @@ function TypeBadge({ type }: { type: Initiative['type'] }) {
 }
 
 /**
- * Verification badge with glassmorphism
+ * Verification badge with glassmorphism and pulse animation
  */
 function VerifiedBadge({ verified }: { verified: boolean }) {
   if (!verified) return null;
 
   return (
     <div
-      className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold text-white shadow-lg"
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white shadow-lg animate-pulse-subtle"
       style={{
         background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+        boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)',
       }}
       title="Initiative vérifiée par l'équipe LaMap"
     >
-      <Check className="h-3 w-3" />
+      <Check className="h-3.5 w-3.5" />
       <span>Vérifiée</span>
+    </div>
+  );
+}
+
+/**
+ * Open/Closed status badge with animation
+ */
+function OpenStatusBadge({
+  openingHours,
+}: {
+  openingHours: OpeningHours | undefined;
+}) {
+  const isOpen = isOpenNow(openingHours);
+
+  if (!openingHours) return null;
+
+  return (
+    <div
+      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white shadow-lg ${
+        isOpen ? 'animate-pulse-subtle' : ''
+      }`}
+      style={{
+        background: isOpen
+          ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+          : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+        boxShadow: isOpen
+          ? '0 4px 12px rgba(16, 185, 129, 0.4)'
+          : '0 4px 12px rgba(239, 68, 68, 0.4)',
+      }}
+      title={
+        isOpen
+          ? "Actuellement ouvert selon les horaires d'ouverture"
+          : "Actuellement fermé selon les horaires d'ouverture"
+      }
+    >
+      <Clock className="h-3.5 w-3.5" />
+      <span>{isOpen ? 'Ouvert' : 'Fermé'}</span>
     </div>
   );
 }
@@ -301,9 +339,10 @@ export default function InitiativeCard({
         <div className="p-5">
           <div className="flex items-start justify-between">
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center gap-2 mb-3 flex-wrap">
                 <TypeBadge type={initiative.type} />
                 <VerifiedBadge verified={initiative.verified} />
+                <OpenStatusBadge openingHours={initiative.opening_hours} />
               </div>
 
               <h3 className="text-lg font-bold text-gray-900 truncate mb-1">
@@ -354,9 +393,10 @@ export default function InitiativeCard({
             <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent" />
 
             {/* Badges positioned on image */}
-            <div className="absolute top-3 left-3 flex gap-2">
+            <div className="absolute top-3 left-3 flex flex-wrap gap-2">
               <TypeBadge type={initiative.type} />
               <VerifiedBadge verified={initiative.verified} />
+              <OpenStatusBadge openingHours={initiative.opening_hours} />
             </div>
           </div>
         )}
@@ -364,9 +404,10 @@ export default function InitiativeCard({
         <div className="p-5">
           {/* Badges if no image */}
           {(!initiative.image_url || imageError) && (
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-2 mb-3 flex-wrap">
               <TypeBadge type={initiative.type} />
               <VerifiedBadge verified={initiative.verified} />
+              <OpenStatusBadge openingHours={initiative.opening_hours} />
             </div>
           )}
 
@@ -426,9 +467,10 @@ export default function InitiativeCard({
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent" />
 
           {/* Badges positioned on image with glassmorphism */}
-          <div className="absolute top-4 left-4 flex gap-2">
+          <div className="absolute top-4 left-4 flex flex-wrap gap-2">
             <TypeBadge type={initiative.type} />
-            {initiative.verified && <VerifiedBadge verified={true} />}
+            <VerifiedBadge verified={initiative.verified} />
+            <OpenStatusBadge openingHours={initiative.opening_hours} />
           </div>
         </div>
       )}
@@ -437,9 +479,10 @@ export default function InitiativeCard({
       <div className="p-6 space-y-5">
         {/* Header: Type badge + Verified (if no image) */}
         {(!initiative.image_url || imageError) && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <TypeBadge type={initiative.type} />
-            {initiative.verified && <VerifiedBadge verified={true} />}
+            <VerifiedBadge verified={initiative.verified} />
+            <OpenStatusBadge openingHours={initiative.opening_hours} />
           </div>
         )}
 
@@ -505,20 +548,32 @@ export default function InitiativeCard({
               border: '1px solid rgba(16, 185, 129, 0.15)',
             }}
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <Clock size={18} className="text-emerald-600" />
               <span className="text-sm font-semibold text-gray-900">
                 Horaires d&apos;ouverture
               </span>
-              {isOpen && (
+              {isOpen ? (
                 <span
-                  className="text-xs px-2.5 py-1 rounded-full font-semibold text-white"
+                  className="text-xs px-2.5 py-1 rounded-full font-bold text-white animate-pulse-subtle"
                   style={{
                     background:
                       'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                    boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)',
                   }}
                 >
-                  • Ouvert
+                  • Ouvert maintenant
+                </span>
+              ) : (
+                <span
+                  className="text-xs px-2.5 py-1 rounded-full font-bold text-white"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                    boxShadow: '0 4px 12px rgba(239, 68, 68, 0.4)',
+                  }}
+                >
+                  • Fermé
                 </span>
               )}
             </div>
