@@ -108,7 +108,8 @@ describe('InitiativeCard', () => {
     );
 
     // Card with onClick becomes a button role for accessibility
-    const card = screen.getByRole('button');
+    // Get the card container, not the action buttons
+    const card = screen.getAllByRole('button')[0]; // First button is the card itself
     fireEvent.click(card);
 
     expect(onClickMock).toHaveBeenCalledTimes(1);
@@ -140,7 +141,8 @@ describe('InitiativeCard', () => {
     render(<InitiativeCard initiative={minimalInitiative} />);
 
     expect(screen.getByText('Initiative minimale')).toBeInTheDocument();
-    expect(screen.getByText('Autre')).toBeInTheDocument();
+    // Type badge appears twice: in placeholder overlay and in header
+    expect(screen.getAllByText('Autre').length).toBeGreaterThan(0);
     expect(screen.queryByText(/http/)).not.toBeInTheDocument();
   });
 
