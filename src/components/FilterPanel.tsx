@@ -1,16 +1,16 @@
 'use client';
 
-import { ChevronDown, Lightbulb, Sparkles } from 'lucide-react';
+import { ChevronDown, Info, Lightbulb, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 
-// shadcn/ui components
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { INITIATIVE_DESCRIPTIONS } from '@/types/initiative';
 
-// 4. Types
 import type { InitiativeType } from '@/types/initiative';
 
 interface FilterPanelProps {
@@ -159,70 +159,101 @@ export default function FilterPanel({
       {isExpanded && (
         <div className="space-y-2">
           <ScrollArea className="h-[400px] pr-2">
-            <div className="space-y-2">
-              {INITIATIVE_TYPES.map((type) => {
-                const count = initiativeCounts[type] || 0;
-                const isSelected = selectedTypes.includes(type);
+            <TooltipProvider delayDuration={300}>
+              <div className="space-y-2">
+                {INITIATIVE_TYPES.map((type) => {
+                  const count = initiativeCounts[type] || 0;
+                  const isSelected = selectedTypes.includes(type);
 
-                return (
-                  <div
-                    key={type}
-                    onClick={() => handleTypeToggle(type)}
-                    className={`
-                      relative group flex items-center justify-between p-3 rounded-xl
-                      cursor-pointer transition-all duration-300
-                      ${
-                        isSelected
-                          ? 'bg-white/20 backdrop-blur-md shadow-lg scale-[1.02]'
-                          : 'bg-white/5 hover:bg-white/10'
-                      }
-                    `}
-                  >
-                    {/* Gradient border effect */}
-                    {isSelected && (
-                      <div
-                        className={`absolute inset-0 rounded-xl bg-gradient-to-r ${TYPE_GRADIENTS[type]} opacity-20 blur-sm`}
-                      />
-                    )}
-
-                    <div className="relative flex items-center gap-3">
-                      <Checkbox
-                        id={`filter-${type}`}
-                        checked={isSelected}
-                        onCheckedChange={() => handleTypeToggle(type)}
-                        className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-emerald-500 data-[state=checked]:to-green-500 border-white/30"
-                      />
-                      <Label
-                        htmlFor={`filter-${type}`}
-                        className="flex items-center gap-2 cursor-pointer"
-                      >
-                        <span
-                          className={`w-3 h-3 rounded-full bg-gradient-to-r ${TYPE_GRADIENTS[type]} shadow-lg`}
+                  return (
+                    <div
+                      key={type}
+                      className={`
+                        relative group flex items-center justify-between p-3 rounded-xl
+                        cursor-pointer transition-all duration-300
+                        ${
+                          isSelected
+                            ? 'bg-white/20 backdrop-blur-md shadow-lg scale-[1.02]'
+                            : 'bg-white/5 hover:bg-white/10'
+                        }
+                      `}
+                    >
+                      {/* Gradient border effect */}
+                      {isSelected && (
+                        <div
+                          className={`absolute inset-0 rounded-xl bg-gradient-to-r ${TYPE_GRADIENTS[type]} opacity-20 blur-sm`}
                         />
-                        <span className="text-sm font-medium text-white">
-                          {type}
-                        </span>
-                      </Label>
-                    </div>
+                      )}
 
-                    {count > 0 && (
-                      <Badge
-                        className={`
-                          relative z-10
-                          ${
-                            isSelected
-                              ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white border-none'
-                              : 'bg-white/10 text-white/80 border-white/20'
-                          }
-                        `}
+                      <div
+                        onClick={() => handleTypeToggle(type)}
+                        className="relative flex items-center gap-3 flex-1"
                       >
-                        {count}
-                      </Badge>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+                        <Checkbox
+                          id={`filter-${type}`}
+                          checked={isSelected}
+                          onCheckedChange={() => handleTypeToggle(type)}
+                          className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-emerald-500 data-[state=checked]:to-green-500 border-white/30"
+                        />
+                        <Label
+                          htmlFor={`filter-${type}`}
+                          className="flex items-center gap-2 cursor-pointer"
+                        >
+                          <span
+                            className={`w-3 h-3 rounded-full bg-gradient-to-r ${TYPE_GRADIENTS[type]} shadow-lg`}
+                          />
+                          <span className="text-sm font-medium text-white">
+                            {type}
+                          </span>
+                        </Label>
+                      </div>
+
+                      <div className="relative z-10 flex items-center gap-2">
+                        {/* Info tooltip */}
+                        <Tooltip delayDuration={200}>
+                          <TooltipTrigger asChild>
+                            <button
+                              type="button"
+                              className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+                              onClick={(e) => e.stopPropagation()}
+                              aria-label={`Information sur ${type}`}
+                            >
+                              <Info className="h-3.5 w-3.5 text-white/70" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent
+                            side="top"
+                            align="center"
+                            sideOffset={8}
+                            collisionPadding={16}
+                            className="max-w-[min(320px,90vw)] bg-gradient-to-br from-slate-900/98 to-slate-800/98 backdrop-blur-xl border border-white/20 text-white shadow-2xl"
+                          >
+                            <p className="text-xs leading-relaxed whitespace-normal break-words">
+                              {INITIATIVE_DESCRIPTIONS[type]}
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+
+                        {/* Count badge */}
+                        {count > 0 && (
+                          <Badge
+                            className={`
+                              ${
+                                isSelected
+                                  ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white border-none'
+                                  : 'bg-white/10 text-white/80 border-white/20'
+                              }
+                            `}
+                          >
+                            {count}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </TooltipProvider>
           </ScrollArea>
 
           {/* Info tooltip with glassmorphism */}
