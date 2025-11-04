@@ -21,16 +21,23 @@ interface FilterPanelProps {
 
 const INITIATIVE_TYPES: InitiativeType[] = [
   'Ressourcerie',
-  'Repair Café',
-  'AMAP',
-  "Entreprise d'insertion",
-  'Point de collecte',
   'Recyclerie',
-  'Épicerie sociale',
+  'Repair Café',
+  'Atelier vélo',
+  'Point de collecte',
+  'Composteur collectif',
+  'AMAP',
   'Jardin partagé',
+  'Grainothèque',
+  'Friperie',
+  'Donnerie',
+  'Épicerie sociale',
+  'Épicerie vrac',
+  "Bibliothèque d'objets",
+  'SEL',
+  'Accorderie',
   'Fab Lab',
   'Coopérative',
-  'Monnaie locale',
   'Tiers-lieu',
   'Autre',
 ];
@@ -39,16 +46,23 @@ const INITIATIVE_TYPES: InitiativeType[] = [
 // Balanced between green eco-theme and modern grays/blues
 const TYPE_GRADIENTS: Record<InitiativeType, string> = {
   Ressourcerie: 'from-slate-400 to-gray-600', // Gray - Recycling
-  'Repair Café': 'from-amber-400 to-orange-600', // Orange - Repair/Fix
-  AMAP: 'from-emerald-400 to-green-600', // Green - Food/Agriculture
-  "Entreprise d'insertion": 'from-blue-400 to-indigo-600', // Blue - Social
-  'Point de collecte': 'from-purple-400 to-violet-600', // Purple - Collection
   Recyclerie: 'from-teal-400 to-cyan-600', // Cyan - Recycling center
-  'Épicerie sociale': 'from-rose-400 to-pink-600', // Pink - Social grocery
-  'Jardin partagé': 'from-lime-400 to-green-600', // Lime - Gardens
+  'Repair Café': 'from-amber-400 to-orange-600', // Orange - Repair/Fix
+  'Atelier vélo': 'from-cyan-400 to-sky-600', // Cyan - Bike
+  'Point de collecte': 'from-purple-400 to-violet-600', // Purple - Collection
+  'Composteur collectif': 'from-lime-600 to-green-700', // Dark green - Compost
+  AMAP: 'from-emerald-400 to-green-600', // Green - Food/Agriculture
+  'Jardin partagé': 'from-green-400 to-emerald-600', // Green - Gardens
+  Grainothèque: 'from-lime-400 to-green-500', // Lime - Seeds
+  Friperie: 'from-pink-400 to-rose-600', // Pink - Fashion
+  Donnerie: 'from-rose-300 to-pink-500', // Light pink - Giving
+  'Épicerie sociale': 'from-rose-400 to-red-600', // Red - Social grocery
+  'Épicerie vrac': 'from-yellow-400 to-amber-600', // Yellow - Bulk
+  "Bibliothèque d'objets": 'from-indigo-400 to-blue-600', // Indigo - Library
+  SEL: 'from-amber-400 to-yellow-600', // Yellow/Amber - Exchange
+  Accorderie: 'from-sky-400 to-cyan-600', // Sky - Services
   'Fab Lab': 'from-violet-400 to-purple-600', // Violet - Tech/Making
-  Coopérative: 'from-sky-400 to-blue-600', // Sky blue - Cooperative
-  'Monnaie locale': 'from-yellow-400 to-amber-600', // Yellow - Currency
+  Coopérative: 'from-blue-400 to-indigo-600', // Blue - Cooperative
   'Tiers-lieu': 'from-fuchsia-400 to-pink-600', // Fuchsia - Third place
   Autre: 'from-gray-400 to-slate-600', // Gray - Other
 };

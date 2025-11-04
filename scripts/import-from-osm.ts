@@ -65,7 +65,7 @@ const OSM_TAG_MAPPING: Record<
     query: 'node["shop"="organic"]',
   },
   social_facility: {
-    type: "Entreprise d'insertion",
+    type: 'Coopérative',
     query: 'node["amenity"="social_facility"]',
   },
   repair_cafe: {

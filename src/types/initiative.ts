@@ -61,20 +61,27 @@ export interface Initiative {
 
 /**
  * Types d'initiatives supportées par LaMap
- * Basé sur l'écosystème ESS français
+ * Basé sur l'écosystème ESS français et l'économie circulaire
  */
 export type InitiativeType =
   | 'Ressourcerie' // Collecte, tri, remise en état et vente d'objets
-  | 'Repair Café' // Ateliers de réparation collaboratifs
-  | 'AMAP' // Association pour le Maintien d'une Agriculture Paysanne
-  | "Entreprise d'insertion" // Structures d'insertion par l'activité économique
-  | 'Point de collecte' // Points de collecte de déchets spécialisés
   | 'Recyclerie' // Centres de recyclage et valorisation
-  | 'Épicerie sociale' // Magasins solidaires à prix réduits
+  | 'Repair Café' // Ateliers de réparation collaboratifs
+  | 'Atelier vélo' // Ateliers vélo participatifs et vélo-écoles
+  | 'Point de collecte' // Points de collecte de déchets spécialisés
+  | 'Composteur collectif' // Composteurs de quartier et compostage partagé
+  | 'AMAP' // Association pour le Maintien d'une Agriculture Paysanne
   | 'Jardin partagé' // Espaces de jardinage collectif
+  | 'Grainothèque' // Échange et partage de graines
+  | 'Friperie' // Vêtements de seconde main
+  | 'Donnerie' // Don et récupération d'objets
+  | 'Épicerie sociale' // Magasins solidaires à prix réduits
+  | 'Épicerie vrac' // Épiceries en vrac et zéro déchet
+  | "Bibliothèque d'objets" // Prêt d'outils et objets
+  | 'SEL' // Système d'Échange Local
+  | 'Accorderie' // Échange de services et de temps
   | 'Fab Lab' // Laboratoires de fabrication numérique
   | 'Coopérative' // Structures coopératives diverses
-  | 'Monnaie locale' // Systèmes d'échange locaux
   | 'Tiers-lieu' // Espaces de coworking et innovation sociale
   | 'Autre'; // Autres initiatives ESS
 
@@ -322,16 +329,23 @@ export interface MapClickEvent {
  */
 export const INITIATIVE_COLORS: Record<InitiativeType, string> = {
   Ressourcerie: '#10b981', // Vert primary
-  'Repair Café': '#f59e0b', // Orange accent
-  AMAP: '#84cc16', // Vert lime
-  "Entreprise d'insertion": '#3b82f6', // Bleu secondary
-  'Point de collecte': '#8b5cf6', // Violet
   Recyclerie: '#059669', // Vert foncé
+  'Repair Café': '#f59e0b', // Orange accent
+  'Atelier vélo': '#0891b2', // Cyan - vélo
+  'Point de collecte': '#8b5cf6', // Violet
+  'Composteur collectif': '#65a30d', // Vert compost
+  AMAP: '#84cc16', // Vert lime
+  'Jardin partagé': '#22c55e', // Vert nature
+  Grainothèque: '#a3e635', // Vert lime clair
+  Friperie: '#ec4899', // Rose - mode
+  Donnerie: '#f472b6', // Rose clair
   'Épicerie sociale': '#dc2626', // Rouge
-  'Jardin partagé': '#65a30d', // Vert nature
+  'Épicerie vrac': '#eab308', // Jaune
+  "Bibliothèque d'objets": '#6366f1', // Indigo - prêt
+  SEL: '#ca8a04', // Jaune doré - échange
+  Accorderie: '#06b6d4', // Cyan - services
   'Fab Lab': '#7c3aed', // Violet tech
-  Coopérative: '#0891b2', // Bleu cyan
-  'Monnaie locale': '#ca8a04', // Jaune doré
+  Coopérative: '#3b82f6', // Bleu
   'Tiers-lieu': '#9333ea', // Violet moderne
   Autre: '#6b7280', // Gris neutre
 } as const;
@@ -342,16 +356,23 @@ export const INITIATIVE_COLORS: Record<InitiativeType, string> = {
  */
 export const TYPE_GRADIENTS: Record<InitiativeType, string> = {
   Ressourcerie: 'from-slate-400 to-gray-600', // Gray - Recycling
-  'Repair Café': 'from-amber-400 to-orange-600', // Orange - Repair/Fix
-  AMAP: 'from-emerald-400 to-green-600', // Green - Food/Agriculture
-  "Entreprise d'insertion": 'from-blue-400 to-indigo-600', // Blue - Social
-  'Point de collecte': 'from-purple-400 to-violet-600', // Purple - Collection
   Recyclerie: 'from-teal-400 to-cyan-600', // Cyan - Recycling center
-  'Épicerie sociale': 'from-rose-400 to-pink-600', // Pink - Social grocery
-  'Jardin partagé': 'from-lime-400 to-green-600', // Lime - Gardens
+  'Repair Café': 'from-amber-400 to-orange-600', // Orange - Repair/Fix
+  'Atelier vélo': 'from-cyan-400 to-sky-600', // Cyan - Bike
+  'Point de collecte': 'from-purple-400 to-violet-600', // Purple - Collection
+  'Composteur collectif': 'from-lime-600 to-green-700', // Dark green - Compost
+  AMAP: 'from-emerald-400 to-green-600', // Green - Food/Agriculture
+  'Jardin partagé': 'from-green-400 to-emerald-600', // Green - Gardens
+  Grainothèque: 'from-lime-400 to-green-500', // Lime - Seeds
+  Friperie: 'from-pink-400 to-rose-600', // Pink - Fashion
+  Donnerie: 'from-rose-300 to-pink-500', // Light pink - Giving
+  'Épicerie sociale': 'from-rose-400 to-red-600', // Red - Social grocery
+  'Épicerie vrac': 'from-yellow-400 to-amber-600', // Yellow - Bulk
+  "Bibliothèque d'objets": 'from-indigo-400 to-blue-600', // Indigo - Library
+  SEL: 'from-amber-400 to-yellow-600', // Yellow/Amber - Exchange
+  Accorderie: 'from-sky-400 to-cyan-600', // Sky - Services
   'Fab Lab': 'from-violet-400 to-purple-600', // Violet - Tech/Making
-  Coopérative: 'from-sky-400 to-blue-600', // Sky blue - Cooperative
-  'Monnaie locale': 'from-yellow-400 to-amber-600', // Yellow - Currency
+  Coopérative: 'from-blue-400 to-indigo-600', // Blue - Cooperative
   'Tiers-lieu': 'from-fuchsia-400 to-pink-600', // Fuchsia - Third place
   Autre: 'from-gray-400 to-slate-600', // Gray - Other
 } as const;
@@ -362,16 +383,23 @@ export const TYPE_GRADIENTS: Record<InitiativeType, string> = {
  */
 export const TYPE_GRADIENTS_CSS: Record<InitiativeType, string> = {
   Ressourcerie: 'linear-gradient(135deg, #94a3b8 0%, #4b5563 100%)', // slate-400 to gray-600
-  'Repair Café': 'linear-gradient(135deg, #fbbf24 0%, #ea580c 100%)', // amber-400 to orange-600
-  AMAP: 'linear-gradient(135deg, #34d399 0%, #16a34a 100%)', // emerald-400 to green-600
-  "Entreprise d'insertion": 'linear-gradient(135deg, #60a5fa 0%, #4f46e5 100%)', // blue-400 to indigo-600
-  'Point de collecte': 'linear-gradient(135deg, #c084fc 0%, #7c3aed 100%)', // purple-400 to violet-600
   Recyclerie: 'linear-gradient(135deg, #2dd4bf 0%, #0891b2 100%)', // teal-400 to cyan-600
-  'Épicerie sociale': 'linear-gradient(135deg, #fb7185 0%, #db2777 100%)', // rose-400 to pink-600
-  'Jardin partagé': 'linear-gradient(135deg, #a3e635 0%, #16a34a 100%)', // lime-400 to green-600
+  'Repair Café': 'linear-gradient(135deg, #fbbf24 0%, #ea580c 100%)', // amber-400 to orange-600
+  'Atelier vélo': 'linear-gradient(135deg, #22d3ee 0%, #0284c7 100%)', // cyan-400 to sky-600
+  'Point de collecte': 'linear-gradient(135deg, #c084fc 0%, #7c3aed 100%)', // purple-400 to violet-600
+  'Composteur collectif': 'linear-gradient(135deg, #65a30d 0%, #15803d 100%)', // lime-600 to green-700
+  AMAP: 'linear-gradient(135deg, #34d399 0%, #16a34a 100%)', // emerald-400 to green-600
+  'Jardin partagé': 'linear-gradient(135deg, #4ade80 0%, #059669 100%)', // green-400 to emerald-600
+  Grainothèque: 'linear-gradient(135deg, #a3e635 0%, #22c55e 100%)', // lime-400 to green-500
+  Friperie: 'linear-gradient(135deg, #f472b6 0%, #e11d48 100%)', // pink-400 to rose-600
+  Donnerie: 'linear-gradient(135deg, #fda4af 0%, #ec4899 100%)', // rose-300 to pink-500
+  'Épicerie sociale': 'linear-gradient(135deg, #fb7185 0%, #dc2626 100%)', // rose-400 to red-600
+  'Épicerie vrac': 'linear-gradient(135deg, #facc15 0%, #f59e0b 100%)', // yellow-400 to amber-600
+  "Bibliothèque d'objets": 'linear-gradient(135deg, #818cf8 0%, #2563eb 100%)', // indigo-400 to blue-600
+  SEL: 'linear-gradient(135deg, #fbbf24 0%, #ca8a04 100%)', // amber-400 to yellow-600
+  Accorderie: 'linear-gradient(135deg, #38bdf8 0%, #0891b2 100%)', // sky-400 to cyan-600
   'Fab Lab': 'linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)', // violet-400 to purple-600
-  Coopérative: 'linear-gradient(135deg, #38bdf8 0%, #2563eb 100%)', // sky-400 to blue-600
-  'Monnaie locale': 'linear-gradient(135deg, #facc15 0%, #f59e0b 100%)', // yellow-400 to amber-600
+  Coopérative: 'linear-gradient(135deg, #60a5fa 0%, #4f46e5 100%)', // blue-400 to indigo-600
   'Tiers-lieu': 'linear-gradient(135deg, #e879f9 0%, #db2777 100%)', // fuchsia-400 to pink-600
   Autre: 'linear-gradient(135deg, #9ca3af 0%, #64748b 100%)', // gray-400 to slate-600
 } as const;
@@ -383,16 +411,23 @@ export const TYPE_GRADIENTS_CSS: Record<InitiativeType, string> = {
  */
 export const TYPE_MARKER_COLORS: Record<InitiativeType, string> = {
   Ressourcerie: '#94a3b8', // slate-400 (from-slate-400 to-gray-600)
-  'Repair Café': '#fbbf24', // amber-400 (from-amber-400 to-orange-600)
-  AMAP: '#34d399', // emerald-400 (from-emerald-400 to-green-600)
-  "Entreprise d'insertion": '#60a5fa', // blue-400 (from-blue-400 to-indigo-600)
-  'Point de collecte': '#c084fc', // purple-400 (from-purple-400 to-violet-600)
   Recyclerie: '#2dd4bf', // teal-400 (from-teal-400 to-cyan-600)
-  'Épicerie sociale': '#fb7185', // rose-400 (from-rose-400 to-pink-600)
-  'Jardin partagé': '#a3e635', // lime-400 (from-lime-400 to-green-600)
+  'Repair Café': '#fbbf24', // amber-400 (from-amber-400 to-orange-600)
+  'Atelier vélo': '#22d3ee', // cyan-400 (from-cyan-400 to-sky-600)
+  'Point de collecte': '#c084fc', // purple-400 (from-purple-400 to-violet-600)
+  'Composteur collectif': '#65a30d', // lime-600 (from-lime-600 to-green-700)
+  AMAP: '#34d399', // emerald-400 (from-emerald-400 to-green-600)
+  'Jardin partagé': '#4ade80', // green-400 (from-green-400 to-emerald-600)
+  Grainothèque: '#a3e635', // lime-400 (from-lime-400 to-green-500)
+  Friperie: '#f472b6', // pink-400 (from-pink-400 to-rose-600)
+  Donnerie: '#fda4af', // rose-300 (from-rose-300 to-pink-500)
+  'Épicerie sociale': '#fb7185', // rose-400 (from-rose-400 to-red-600)
+  'Épicerie vrac': '#facc15', // yellow-400 (from-yellow-400 to-amber-600)
+  "Bibliothèque d'objets": '#818cf8', // indigo-400 (from-indigo-400 to-blue-600)
+  SEL: '#fbbf24', // amber-400 (from-amber-400 to-yellow-600)
+  Accorderie: '#38bdf8', // sky-400 (from-sky-400 to-cyan-600)
   'Fab Lab': '#a78bfa', // violet-400 (from-violet-400 to-purple-600)
-  Coopérative: '#38bdf8', // sky-400 (from-sky-400 to-blue-600)
-  'Monnaie locale': '#facc15', // yellow-400 (from-yellow-400 to-amber-600)
+  Coopérative: '#60a5fa', // blue-400 (from-blue-400 to-indigo-600)
   'Tiers-lieu': '#e879f9', // fuchsia-400 (from-fuchsia-400 to-pink-600)
   Autre: '#9ca3af', // gray-400 (from-gray-400 to-slate-600)
 } as const;
@@ -402,16 +437,23 @@ export const TYPE_MARKER_COLORS: Record<InitiativeType, string> = {
  */
 export const INITIATIVE_ICONS: Record<InitiativeType, string> = {
   Ressourcerie: 'Recycle',
-  'Repair Café': 'Wrench',
-  AMAP: 'Wheat',
-  "Entreprise d'insertion": 'Building2',
-  'Point de collecte': 'Trash2',
   Recyclerie: 'RefreshCw',
-  'Épicerie sociale': 'ShoppingCart',
+  'Repair Café': 'Wrench',
+  'Atelier vélo': 'Bike',
+  'Point de collecte': 'Trash2',
+  'Composteur collectif': 'Leaf',
+  AMAP: 'Wheat',
   'Jardin partagé': 'Flower2',
+  Grainothèque: 'Sprout',
+  Friperie: 'Shirt',
+  Donnerie: 'Gift',
+  'Épicerie sociale': 'ShoppingCart',
+  'Épicerie vrac': 'ShoppingBag',
+  "Bibliothèque d'objets": 'LibraryBig',
+  SEL: 'Handshake',
+  Accorderie: 'Users',
   'Fab Lab': 'Cpu',
-  Coopérative: 'Users',
-  'Monnaie locale': 'Coins',
+  Coopérative: 'Building2',
   'Tiers-lieu': 'Coffee',
   Autre: 'MapPin',
 } as const;
