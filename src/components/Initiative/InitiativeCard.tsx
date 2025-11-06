@@ -235,13 +235,15 @@ function TypeBadge({
   const color = TYPE_MARKER_COLORS[type];
   const description = INITIATIVE_DESCRIPTIONS[type];
 
-  // Style uniforme pour tous les badges (comme dans le popup map)
-  const badgeClasses = onDarkBackground
-    ? 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold text-white shadow-lg backdrop-blur-sm border border-white/20'
-    : 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold shadow-lg backdrop-blur-sm border';
+  // Style uniforme pour tous les badges (même style que popup)
+  const badgeClasses = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm border';
 
   const badgeStyle = onDarkBackground
-    ? { background: 'rgba(0, 0, 0, 0.4)' }
+    ? {
+        background: 'rgba(0, 0, 0, 0.4)',
+        color: 'white',
+        borderColor: 'rgba(255, 255, 255, 0.2)',
+      }
     : {
         background: `${color}20`,
         borderColor: `${color}40`,
@@ -249,37 +251,37 @@ function TypeBadge({
       };
 
   return (
-    <TooltipProvider delayDuration={300}>
-      <div className={badgeClasses} style={badgeStyle}>
-        <Sparkles className="h-3 w-3" />
-        <span>{type}</span>
-        <Tooltip defaultOpen={false}>
+    <div className={badgeClasses} style={badgeStyle}>
+      <Sparkles className="h-3.5 w-3.5" />
+      <span>{type}</span>
+      <TooltipProvider delayDuration={300} skipDelayDuration={0}>
+        <Tooltip>
           <TooltipTrigger asChild>
             <button
               type="button"
               className={
                 onDarkBackground
-                  ? 'p-0.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors ml-0.5'
-                  : 'p-0.5 rounded-full hover:bg-black/10 transition-colors ml-0.5'
+                  ? 'p-1 rounded-full bg-white/20 hover:bg-white/30 transition-colors ml-1'
+                  : 'p-1 rounded-full hover:bg-black/10 transition-colors ml-1'
               }
               onClick={(e) => e.stopPropagation()}
               aria-label={`Information sur ${type}`}
               style={onDarkBackground ? {} : { color }}
             >
-              <Info className="h-3 w-3" />
+              <Info className="h-3.5 w-3.5" />
             </button>
           </TooltipTrigger>
           <TooltipContent
             side="top"
             align="center"
             sideOffset={8}
-            className="max-w-xs bg-gradient-to-br from-slate-900/98 to-slate-800/98 backdrop-blur-xl border border-white/20 text-white shadow-2xl"
+            className="max-w-xs bg-gradient-to-br from-slate-900/98 to-slate-800/98 backdrop-blur-xl border border-white/20 text-white shadow-2xl z-[100000]"
           >
             <p className="text-xs leading-relaxed">{description}</p>
           </TooltipContent>
         </Tooltip>
-      </div>
-    </TooltipProvider>
+      </TooltipProvider>
+    </div>
   );
 }
 
