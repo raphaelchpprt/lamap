@@ -19,7 +19,7 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-  console.error('❌ Variables d\'environnement manquantes:');
+  console.error("❌ Variables d'environnement manquantes:");
   console.error('   - NEXT_PUBLIC_SUPABASE_URL');
   console.error('   - SUPABASE_SERVICE_ROLE_KEY');
   process.exit(1);
@@ -48,7 +48,7 @@ const INITIATIVES_DATA: Array<{
     name: 'La Petite Rockette',
     type: 'Ressourcerie',
     description:
-      'Ressourcerie associative du 11ème arrondissement. Collecte, réparation et vente d\'objets de seconde main. Ateliers DIY et sensibilisation au réemploi.',
+      "Ressourcerie associative du 11ème arrondissement. Collecte, réparation et vente d'objets de seconde main. Ateliers DIY et sensibilisation au réemploi.",
     address: '125 Rue du Chemin Vert, 75011 Paris',
     coordinates: [2.3846, 48.8586],
     website: 'https://www.lapetiterockette.org',
@@ -62,7 +62,7 @@ const INITIATIVES_DATA: Array<{
     name: 'La Recyclerie',
     type: 'Recyclerie',
     description:
-      'Tiers-lieu dédié à l\'écologie urbaine installé dans une ancienne gare. Café-cantine, ateliers de réparation, ferme urbaine et événements éco-responsables.',
+      "Tiers-lieu dédié à l'écologie urbaine installé dans une ancienne gare. Café-cantine, ateliers de réparation, ferme urbaine et événements éco-responsables.",
     address: '83 Boulevard Ornano, 75018 Paris',
     coordinates: [2.3468, 48.8989],
     website: 'https://www.larecyclerie.com',
@@ -75,7 +75,7 @@ const INITIATIVES_DATA: Array<{
     name: 'Repair Café Belleville',
     type: 'Repair Café',
     description:
-      'Atelier participatif de réparation d\'objets. Tous les 2ème samedis du mois. Apportez vos objets cassés et réparez-les avec l\'aide de bénévoles.',
+      "Atelier participatif de réparation d'objets. Tous les 2ème samedis du mois. Apportez vos objets cassés et réparez-les avec l'aide de bénévoles.",
     address: '32 Rue des Envierges, 75020 Paris',
     coordinates: [2.3886, 48.8726],
     email: 'repaircafe.belleville@gmail.com',
@@ -87,7 +87,7 @@ const INITIATIVES_DATA: Array<{
     name: 'La Cyclofficine du 18ème',
     type: 'Atelier vélo',
     description:
-      'Atelier vélo associatif et participatif. Auto-réparation accompagnée, vente de pièces détachées et vélos d\'occasion. Ouvert mercredi et samedi.',
+      "Atelier vélo associatif et participatif. Auto-réparation accompagnée, vente de pièces détachées et vélos d'occasion. Ouvert mercredi et samedi.",
     address: '10 Rue des Fillettes, 75018 Paris',
     coordinates: [2.3598, 48.8929],
     website: 'https://www.heureux-cyclage.org',
@@ -124,7 +124,7 @@ const INITIATIVES_DATA: Array<{
     name: 'AMAP des Batignolles',
     type: 'AMAP',
     description:
-      'Association pour le Maintien d\'une Agriculture Paysanne. Paniers de légumes bio et locaux chaque mardi soir. Engagement par semestre.',
+      "Association pour le Maintien d'une Agriculture Paysanne. Paniers de légumes bio et locaux chaque mardi soir. Engagement par semestre.",
     address: '17 Rue des Moines, 75017 Paris',
     coordinates: [2.3206, 48.8898],
     website: 'https://amap-idf.org',
@@ -174,7 +174,7 @@ const INITIATIVES_DATA: Array<{
     type: 'Donnerie',
     description:
       'Marché gratuit mensuel où tout se donne. Apportez ce que vous ne voulez plus, prenez ce dont vous avez besoin. Partage et convivialité.',
-    address: 'Parvis de l\'Hôtel de Ville, 75004 Paris',
+    address: "Parvis de l'Hôtel de Ville, 75004 Paris",
     coordinates: [2.3522, 48.8566],
     email: 'gratiferia.paris@gmail.com',
     verified: false,
@@ -210,7 +210,7 @@ const INITIATIVES_DATA: Array<{
     name: 'La Bricothèque',
     type: "Bibliothèque d'objets",
     description:
-      'Prêt gratuit d\'outils et d\'objets du quotidien entre voisins. Perceuse, échelle, karcher, appareil à raclette... Usage plutôt que propriété !',
+      "Prêt gratuit d'outils et d'objets du quotidien entre voisins. Perceuse, échelle, karcher, appareil à raclette... Usage plutôt que propriété !",
     address: '28 Rue de la Fontaine au Roi, 75011 Paris',
     coordinates: [2.3715, 48.8685],
     email: 'bricotheque.paris@gmail.com',
@@ -235,7 +235,7 @@ const INITIATIVES_DATA: Array<{
     name: 'Accorderie de Paris 20ème',
     type: 'Accorderie',
     description:
-      'Réseau d\'échange de services et de temps. 1h donnée = 1h reçue, quel que soit le service. Plomberie, garde d\'enfants, cours de langue... Égalité et entraide.',
+      "Réseau d'échange de services et de temps. 1h donnée = 1h reçue, quel que soit le service. Plomberie, garde d'enfants, cours de langue... Égalité et entraide.",
     address: '18 Rue Pixérécourt, 75020 Paris',
     coordinates: [2.3936, 48.8686],
     website: 'https://accorderie.fr',
@@ -274,7 +274,7 @@ const INITIATIVES_DATA: Array<{
     name: 'La Station - Gare des Mines',
     type: 'Tiers-lieu',
     description:
-      'Tiers-lieu d\'innovation sociale et environnementale. Coworking, fablab, café solidaire, résidences d\'artistes, événements culturels et projets citoyens.',
+      "Tiers-lieu d'innovation sociale et environnementale. Coworking, fablab, café solidaire, résidences d'artistes, événements culturels et projets citoyens.",
     address: '55 Rue Archereau, 75019 Paris',
     coordinates: [2.3692, 48.8925],
     website: 'https://www.lastation.paris',
@@ -287,7 +287,7 @@ const INITIATIVES_DATA: Array<{
     name: 'Les Petites Cantines',
     type: 'Autre',
     description:
-      'Restaurant participatif où les voisins cuisinent et mangent ensemble. Cantines de quartier pour créer du lien social et lutter contre l\'isolement.',
+      "Restaurant participatif où les voisins cuisinent et mangent ensemble. Cantines de quartier pour créer du lien social et lutter contre l'isolement.",
     address: '15 Rue de Belleville, 75019 Paris',
     coordinates: [2.3789, 48.8724],
     website: 'https://lespetitescantines.fr',
@@ -359,10 +359,16 @@ async function seedInitiatives() {
   console.log('🌱 Début du seed des initiatives...\n');
 
   // Vérifier la connexion Supabase
-  const { error: connectionError } = await supabase.from('initiatives').select('count').limit(1);
+  const { error: connectionError } = await supabase
+    .from('initiatives')
+    .select('count')
+    .limit(1);
 
   if (connectionError) {
-    console.error('❌ Erreur de connexion à Supabase:', connectionError.message);
+    console.error(
+      '❌ Erreur de connexion à Supabase:',
+      connectionError.message
+    );
     process.exit(1);
   }
 
@@ -378,7 +384,9 @@ async function seedInitiatives() {
   // Demander confirmation si des données existent déjà
   if (existingCount && existingCount > 0) {
     console.log('⚠️  Des initiatives existent déjà dans la base de données.');
-    console.log('   Ce script va AJOUTER de nouvelles initiatives (pas de suppression).\n');
+    console.log(
+      '   Ce script va AJOUTER de nouvelles initiatives (pas de suppression).\n'
+    );
   }
 
   let insertedCount = 0;
@@ -386,8 +394,17 @@ async function seedInitiatives() {
 
   // Insérer chaque initiative
   for (const initiative of INITIATIVES_DATA) {
-    const { name, type, description, address, coordinates, website, phone, email, verified } =
-      initiative;
+    const {
+      name,
+      type,
+      description,
+      address,
+      coordinates,
+      website,
+      phone,
+      email,
+      verified,
+    } = initiative;
 
     // Créer le WKT (Well-Known Text) format pour PostGIS
     // Format: POINT(longitude latitude)
@@ -407,7 +424,10 @@ async function seedInitiatives() {
     });
 
     if (error) {
-      console.error(`❌ Erreur lors de l'insertion de "${name}":`, error.message);
+      console.error(
+        `❌ Erreur lors de l'insertion de "${name}":`,
+        error.message
+      );
       errorCount++;
     } else {
       console.log(`✅ ${name} (${type})`);

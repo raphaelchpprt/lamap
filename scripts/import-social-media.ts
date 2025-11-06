@@ -3,12 +3,12 @@
 
 /**
  * Script to import social media links for existing initiatives
- * 
+ *
  * Sources:
  * - OpenStreetMap (contact:facebook, contact:instagram, etc.)
  * - Website scraping (looking for social media links in HTML)
  * - Manual enrichment from known databases
- * 
+ *
  * Usage:
  *   npm run import:social-media
  *   npm run import:social-media -- --dry-run  # Preview changes without saving
@@ -69,12 +69,12 @@ interface OSMNode {
     'contact:linkedin'?: string;
     'contact:youtube'?: string;
     'contact:tiktok'?: string;
-    'facebook'?: string;
-    'instagram'?: string;
-    'twitter'?: string;
-    'linkedin'?: string;
-    'youtube'?: string;
-    'tiktok'?: string;
+    facebook?: string;
+    instagram?: string;
+    twitter?: string;
+    linkedin?: string;
+    youtube?: string;
+    tiktok?: string;
   };
 }
 
@@ -85,7 +85,10 @@ interface OSMNode {
 /**
  * Normalize social media URL
  */
-function normalizeSocialUrl(platform: string, value: string | undefined): string | null {
+function normalizeSocialUrl(
+  platform: string,
+  value: string | undefined
+): string | null {
   if (!value) return null;
 
   // Already a full URL
@@ -112,7 +115,11 @@ function normalizeSocialUrl(platform: string, value: string | undefined): string
       return `https://www.linkedin.com/in/${cleanValue}`;
     case 'youtube':
       // Could be channel or user
-      if (cleanValue.startsWith('@') || cleanValue.startsWith('c/') || cleanValue.startsWith('user/')) {
+      if (
+        cleanValue.startsWith('@') ||
+        cleanValue.startsWith('c/') ||
+        cleanValue.startsWith('user/')
+      ) {
         return `https://www.youtube.com/${cleanValue}`;
       }
       return `https://www.youtube.com/@${cleanValue}`;
@@ -137,11 +144,16 @@ function extractSocialMediaFromOSM(tags: OSMNode['tags']): SocialMediaLinks {
   const youtube = tags['contact:youtube'] || tags['youtube'];
   const tiktok = tags['contact:tiktok'] || tags['tiktok'];
 
-  if (facebook) social.facebook = normalizeSocialUrl('facebook', facebook) || undefined;
-  if (instagram) social.instagram = normalizeSocialUrl('instagram', instagram) || undefined;
-  if (twitter) social.twitter = normalizeSocialUrl('twitter', twitter) || undefined;
-  if (linkedin) social.linkedin = normalizeSocialUrl('linkedin', linkedin) || undefined;
-  if (youtube) social.youtube = normalizeSocialUrl('youtube', youtube) || undefined;
+  if (facebook)
+    social.facebook = normalizeSocialUrl('facebook', facebook) || undefined;
+  if (instagram)
+    social.instagram = normalizeSocialUrl('instagram', instagram) || undefined;
+  if (twitter)
+    social.twitter = normalizeSocialUrl('twitter', twitter) || undefined;
+  if (linkedin)
+    social.linkedin = normalizeSocialUrl('linkedin', linkedin) || undefined;
+  if (youtube)
+    social.youtube = normalizeSocialUrl('youtube', youtube) || undefined;
   if (tiktok) social.tiktok = normalizeSocialUrl('tiktok', tiktok) || undefined;
 
   return social;
@@ -150,7 +162,11 @@ function extractSocialMediaFromOSM(tags: OSMNode['tags']): SocialMediaLinks {
 /**
  * Fetch OSM data for a location
  */
-async function fetchOSMDataForLocation(lat: number, lon: number, name: string): Promise<SocialMediaLinks | null> {
+async function fetchOSMDataForLocation(
+  lat: number,
+  lon: number,
+  name: string
+): Promise<SocialMediaLinks | null> {
   try {
     // Search in 100m radius
     const radius = 100;
@@ -195,15 +211,17 @@ async function fetchOSMDataForLocation(lat: number, lon: number, name: string): 
 /**
  * Extract social media links from website HTML
  */
-async function scrapeSocialMediaFromWebsite(url: string): Promise<SocialMediaLinks> {
+async function scrapeSocialMediaFromWebsite(
+  url: string
+): Promise<SocialMediaLinks> {
   const social: SocialMediaLinks = {};
 
   try {
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; LaMap/1.0; +https://lamap.fr)'
+        'User-Agent': 'Mozilla/5.0 (compatible; LaMap/1.0; +https://lamap.fr)',
       },
-      signal: AbortSignal.timeout(5000) // 5s timeout
+      signal: AbortSignal.timeout(5000), // 5s timeout
     });
 
     if (!response.ok) {
@@ -217,8 +235,10 @@ async function scrapeSocialMediaFromWebsite(url: string): Promise<SocialMediaLin
       facebook: /(?:https?:\/\/)?(?:www\.)?facebook\.com\/[a-zA-Z0-9._-]+/gi,
       instagram: /(?:https?:\/\/)?(?:www\.)?instagram\.com\/[a-zA-Z0-9._]+/gi,
       twitter: /(?:https?:\/\/)?(?:www\.)?(?:twitter|x)\.com\/[a-zA-Z0-9_]+/gi,
-      linkedin: /(?:https?:\/\/)?(?:www\.)?linkedin\.com\/(?:company|in)\/[a-zA-Z0-9_-]+/gi,
-      youtube: /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:@|c\/|channel\/|user\/)[a-zA-Z0-9_-]+/gi,
+      linkedin:
+        /(?:https?:\/\/)?(?:www\.)?linkedin\.com\/(?:company|in)\/[a-zA-Z0-9_-]+/gi,
+      youtube:
+        /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:@|c\/|channel\/|user\/)[a-zA-Z0-9_-]+/gi,
       tiktok: /(?:https?:\/\/)?(?:www\.)?tiktok\.com\/@[a-zA-Z0-9._]+/gi,
     };
 
@@ -247,16 +267,24 @@ async function scrapeSocialMediaFromWebsite(url: string): Promise<SocialMediaLin
 /**
  * Enrich a single initiative with social media links
  */
-async function enrichInitiative(initiative: Initiative, dryRun: boolean): Promise<boolean> {
+async function enrichInitiative(
+  initiative: Initiative,
+  dryRun: boolean
+): Promise<boolean> {
   let updated = false;
   const socialMedia: SocialMediaLinks = {};
 
   console.log(`\n📍 Processing: ${initiative.name} (${initiative.type})`);
 
   // Skip if already has social media
-  const hasSocialMedia = initiative.facebook || initiative.instagram || initiative.twitter || 
-                         initiative.linkedin || initiative.youtube || initiative.tiktok;
-  
+  const hasSocialMedia =
+    initiative.facebook ||
+    initiative.instagram ||
+    initiative.twitter ||
+    initiative.linkedin ||
+    initiative.youtube ||
+    initiative.tiktok;
+
   if (hasSocialMedia) {
     console.log('  ⏭️  Already has social media links, skipping...');
     return false;
@@ -265,18 +293,22 @@ async function enrichInitiative(initiative: Initiative, dryRun: boolean): Promis
   // 1. Try to scrape from website
   if (initiative.website) {
     console.log(`  🌐 Scraping website: ${initiative.website}`);
-    const websiteSocial = await scrapeSocialMediaFromWebsite(initiative.website);
+    const websiteSocial = await scrapeSocialMediaFromWebsite(
+      initiative.website
+    );
     Object.assign(socialMedia, websiteSocial);
 
     if (Object.keys(websiteSocial).length > 0) {
-      console.log(`  ✅ Found ${Object.keys(websiteSocial).length} social media links from website`);
+      console.log(
+        `  ✅ Found ${Object.keys(websiteSocial).length} social media links from website`
+      );
       Object.entries(websiteSocial).forEach(([platform, url]) => {
         console.log(`     - ${platform}: ${url}`);
       });
     }
 
     // Small delay to avoid rate limiting
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
 
   // 2. Try OSM (only if we have address/location)
@@ -296,7 +328,9 @@ async function enrichInitiative(initiative: Initiative, dryRun: boolean): Promis
       if (error) {
         console.error(`  ❌ Error updating initiative: ${error.message}`);
       } else {
-        console.log(`  ✅ Updated with ${Object.keys(socialMedia).length} social media links`);
+        console.log(
+          `  ✅ Updated with ${Object.keys(socialMedia).length} social media links`
+        );
         updated = true;
       }
     }
@@ -312,10 +346,16 @@ async function enrichInitiative(initiative: Initiative, dryRun: boolean): Promis
  */
 async function main() {
   const dryRun = process.argv.includes('--dry-run');
-  
-  console.log('╔═══════════════════════════════════════════════════════════════╗');
-  console.log('║         🌐 LaMap - Import Social Media Links                 ║');
-  console.log('╚═══════════════════════════════════════════════════════════════╝\n');
+
+  console.log(
+    '╔═══════════════════════════════════════════════════════════════╗'
+  );
+  console.log(
+    '║         🌐 LaMap - Import Social Media Links                 ║'
+  );
+  console.log(
+    '╚═══════════════════════════════════════════════════════════════╝\n'
+  );
 
   if (dryRun) {
     console.log('🔍 DRY RUN MODE - No changes will be saved\n');
@@ -326,8 +366,12 @@ async function main() {
 
   const { data: initiatives, error } = await supabase
     .from('initiatives')
-    .select('id, name, type, address, website, facebook, instagram, twitter, linkedin, youtube, tiktok')
-    .or('facebook.is.null,instagram.is.null,twitter.is.null,linkedin.is.null,youtube.is.null,tiktok.is.null')
+    .select(
+      'id, name, type, address, website, facebook, instagram, twitter, linkedin, youtube, tiktok'
+    )
+    .or(
+      'facebook.is.null,instagram.is.null,twitter.is.null,linkedin.is.null,youtube.is.null,tiktok.is.null'
+    )
     .not('website', 'is', null) // Only initiatives with websites
     .limit(100); // Process in batches
 
@@ -337,7 +381,9 @@ async function main() {
   }
 
   if (!initiatives || initiatives.length === 0) {
-    console.log('✅ No initiatives to process (all have social media or no website)');
+    console.log(
+      '✅ No initiatives to process (all have social media or no website)'
+    );
     return;
   }
 
@@ -349,13 +395,18 @@ async function main() {
 
   for (const initiative of initiatives) {
     try {
-      const wasUpdated = await enrichInitiative(initiative as Initiative, dryRun);
+      const wasUpdated = await enrichInitiative(
+        initiative as Initiative,
+        dryRun
+      );
       processed++;
       if (wasUpdated) updated++;
 
       // Progress indicator
       if (processed % 10 === 0) {
-        console.log(`\n⏳ Progress: ${processed}/${initiatives.length} processed, ${updated} updated\n`);
+        console.log(
+          `\n⏳ Progress: ${processed}/${initiatives.length} processed, ${updated} updated\n`
+        );
       }
     } catch (error) {
       console.error(`❌ Error processing ${initiative.name}:`, error);
@@ -363,9 +414,15 @@ async function main() {
     }
   }
 
-  console.log('\n╔═══════════════════════════════════════════════════════════════╗');
-  console.log('║                        📊 SUMMARY                             ║');
-  console.log('╚═══════════════════════════════════════════════════════════════╝\n');
+  console.log(
+    '\n╔═══════════════════════════════════════════════════════════════╗'
+  );
+  console.log(
+    '║                        📊 SUMMARY                             ║'
+  );
+  console.log(
+    '╚═══════════════════════════════════════════════════════════════╝\n'
+  );
   console.log(`✅ Processed: ${processed} initiatives`);
   console.log(`📝 Updated:   ${updated} initiatives`);
   console.log(`❌ Failed:    ${failed} initiatives\n`);

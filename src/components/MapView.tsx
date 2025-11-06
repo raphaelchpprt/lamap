@@ -41,16 +41,22 @@ export default function MapView() {
   };
 
   // Calculate initiative counts by type for FilterPanel badges
-  const initiativeCounts = initiatives.reduce((acc, initiative) => {
-    acc[initiative.type] = (acc[initiative.type] || 0) + 1;
-    return acc;
-  }, {} as Partial<Record<InitiativeType, number>>);
+  const initiativeCounts = initiatives.reduce(
+    (acc, initiative) => {
+      acc[initiative.type] = (acc[initiative.type] || 0) + 1;
+      return acc;
+    },
+    {} as Partial<Record<InitiativeType, number>>
+  );
 
   // Memoize filters object to prevent unnecessary re-renders
-  const mapFilters = useMemo(() => ({
-    types: selectedTypes,
-    verified_only: false,
-  }), [selectedTypes]);
+  const mapFilters = useMemo(
+    () => ({
+      types: selectedTypes,
+      verified_only: false,
+    }),
+    [selectedTypes]
+  );
 
   return (
     <div className="flex h-full w-full rounded-tl-[2rem] rounded-bl-[2rem]">

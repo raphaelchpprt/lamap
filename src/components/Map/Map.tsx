@@ -16,7 +16,10 @@ import {
   databaseInitiativeToInitiative,
   type DatabaseInitiativeWithTextLocation,
 } from '@/lib/supabase/types';
-import { TYPE_GRADIENTS_CSS } from '@/types/initiative';
+import {
+  TYPE_GRADIENTS_CSS,
+  INITIATIVE_DESCRIPTIONS,
+} from '@/types/initiative';
 
 import type { Initiative, InitiativeFilters } from '@/types/initiative';
 
@@ -201,10 +204,11 @@ export default function Map({
 
     // Check if bounds changed significantly (avoid reload on tiny movements)
     // BUT always reload if filters changed
-    const filtersChanged = 
-      JSON.stringify(lastFiltersRef.current?.types) !== JSON.stringify(filters?.types) ||
+    const filtersChanged =
+      JSON.stringify(lastFiltersRef.current?.types) !==
+        JSON.stringify(filters?.types) ||
       lastFiltersRef.current?.verified_only !== filters?.verified_only;
-    
+
     const currentBounds = map.current.getBounds();
     if (lastBoundsRef.current && currentBounds && !filtersChanged) {
       const lastCenter = lastBoundsRef.current.getCenter();
@@ -221,7 +225,7 @@ export default function Map({
         return;
       }
     }
-    
+
     // Update last filters
     lastFiltersRef.current = filters;
 
@@ -279,10 +283,10 @@ export default function Map({
           throw new Error(`Erreur Supabase: ${dbError.message}`);
         }
 
-        const formattedInitiatives = ((data as DatabaseInitiativeWithTextLocation[]) || []).map(
-          databaseInitiativeToInitiative
-        );
-        
+        const formattedInitiatives = (
+          (data as DatabaseInitiativeWithTextLocation[]) || []
+        ).map(databaseInitiativeToInitiative);
+
         setInitiatives(formattedInitiatives);
 
         // Notify parent component of loaded initiatives
@@ -442,8 +446,8 @@ export default function Map({
             </filter>
           </defs>
           <circle cx="${cluster.size / 2}" cy="${cluster.size / 2}" r="${
-          cluster.radius
-        }" fill="url(#grad-${safeClusterName})" filter="url(#blur-${safeClusterName})" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+            cluster.radius
+          }" fill="url(#grad-${safeClusterName})" filter="url(#blur-${safeClusterName})" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
         </svg>
       `;
 
@@ -583,7 +587,7 @@ export default function Map({
   }, [enableClustering]);
 
   // ================================
-  // LAYERS CONFIGURATION  
+  // LAYERS CONFIGURATION
   // ================================
 
   const setupMapLayers = useCallback(() => {
@@ -981,17 +985,40 @@ export default function Map({
             </div>`
           : '';
 
+        // Get initiative description for tooltip
+        const typeDescription =
+          INITIATIVE_DESCRIPTIONS[initiative.type] || initiative.type;
+
         // Create modern glassmorphism popup HTML with blurred background
         const html = `
           <div style="width: 280px; padding: 20px; box-sizing: border-box;">
             <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px; margin-bottom: 12px;">
-              <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white shadow-lg" style="background: ${gradient}; flex-shrink: 0;">
+              <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white shadow-lg" style="background: ${gradient}; flex-shrink: 0; position: relative;">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                 </svg>
-                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px;">${
+                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;">${
                   initiative.type
                 }</span>
+                <button 
+                  class="type-info-btn"
+                  style="display: inline-flex; align-items: center; justify-content: center; padding: 2px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: none; cursor: help; margin-left: 2px; transition: background 0.2s;"
+                  onmouseover="this.style.background='rgba(255, 255, 255, 0.3)'; document.getElementById('type-tooltip-${initiative.id}').style.display='block';"
+                  onmouseout="this.style.background='rgba(255, 255, 255, 0.2)'; document.getElementById('type-tooltip-${initiative.id}').style.display='none';"
+                  aria-label="Information sur ${initiative.type}"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 16v-4"></path>
+                    <path d="M12 8h.01"></path>
+                  </svg>
+                </button>
+                <div 
+                  id="type-tooltip-${initiative.id}"
+                  style="display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); max-width: 240px; padding: 8px 12px; background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98)); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); color: white; border-radius: 8px; font-size: 11px; line-height: 1.5; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4); z-index: 10000; pointer-events: none;"
+                >
+                  ${typeDescription}
+                </div>
               </div>
               ${verifiedBadge}
             </div>
@@ -1129,7 +1156,7 @@ export default function Map({
           map.current.easeTo({
             center: (features[0].geometry as GeoJSON.Point).coordinates as [
               number,
-              number
+              number,
             ],
             zoom,
           });

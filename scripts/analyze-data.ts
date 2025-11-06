@@ -1,12 +1,12 @@
 /**
  * Analyze Current Database Data
- * 
+ *
  * Shows statistics about initiatives in the database:
  * - Total count
  * - Breakdown by type
  * - Data quality metrics
  * - Geographic distribution
- * 
+ *
  * Usage: npm run analyze
  */
 
@@ -29,9 +29,15 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 async function main() {
-  console.log('╔═══════════════════════════════════════════════════════════════╗');
-  console.log('║           ANALYSE DES DONNÉES LAMAP                         ║');
-  console.log('╚═══════════════════════════════════════════════════════════════╝');
+  console.log(
+    '╔═══════════════════════════════════════════════════════════════╗'
+  );
+  console.log(
+    '║           ANALYSE DES DONNÉES LAMAP                         ║'
+  );
+  console.log(
+    '╚═══════════════════════════════════════════════════════════════╝'
+  );
   console.log();
 
   // Get total count
@@ -49,20 +55,25 @@ async function main() {
     .order('type');
 
   if (byType) {
-    const typeCounts = byType.reduce((acc, item) => {
-      acc[item.type] = (acc[item.type] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const typeCounts = byType.reduce(
+      (acc, item) => {
+        acc[item.type] = (acc[item.type] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     console.log('📈 RÉPARTITION PAR TYPE:');
     console.log('─'.repeat(50));
-    
+
     const sortedTypes = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]);
-    
+
     for (const [type, count] of sortedTypes) {
       const percentage = ((count / (totalCount || 1)) * 100).toFixed(1);
       const bar = '█'.repeat(Math.min(30, Math.floor(count / 100)));
-      console.log(`${type.padEnd(30)} ${count.toString().padStart(5)} (${percentage.padStart(5)}%) ${bar}`);
+      console.log(
+        `${type.padEnd(30)} ${count.toString().padStart(5)} (${percentage.padStart(5)}%) ${bar}`
+      );
     }
     console.log();
   }
@@ -70,26 +81,42 @@ async function main() {
   // Data quality metrics
   const { data: qualityData } = await supabase
     .from('initiatives')
-    .select('description, address, website, phone, email, verified, opening_hours');
+    .select(
+      'description, address, website, phone, email, verified, opening_hours'
+    );
 
   if (qualityData) {
-    const withDescription = qualityData.filter(i => i.description).length;
-    const withAddress = qualityData.filter(i => i.address).length;
-    const withWebsite = qualityData.filter(i => i.website).length;
-    const withPhone = qualityData.filter(i => i.phone).length;
-    const withEmail = qualityData.filter(i => i.email).length;
-    const verified = qualityData.filter(i => i.verified).length;
-    const withHours = qualityData.filter(i => i.opening_hours).length;
+    const withDescription = qualityData.filter((i) => i.description).length;
+    const withAddress = qualityData.filter((i) => i.address).length;
+    const withWebsite = qualityData.filter((i) => i.website).length;
+    const withPhone = qualityData.filter((i) => i.phone).length;
+    const withEmail = qualityData.filter((i) => i.email).length;
+    const verified = qualityData.filter((i) => i.verified).length;
+    const withHours = qualityData.filter((i) => i.opening_hours).length;
 
     console.log('✅ QUALITÉ DES DONNÉES:');
     console.log('─'.repeat(50));
-    console.log(`Description:        ${withDescription.toString().padStart(5)} / ${totalCount} (${((withDescription / (totalCount || 1)) * 100).toFixed(1)}%)`);
-    console.log(`Adresse:            ${withAddress.toString().padStart(5)} / ${totalCount} (${((withAddress / (totalCount || 1)) * 100).toFixed(1)}%)`);
-    console.log(`Site web:           ${withWebsite.toString().padStart(5)} / ${totalCount} (${((withWebsite / (totalCount || 1)) * 100).toFixed(1)}%)`);
-    console.log(`Téléphone:          ${withPhone.toString().padStart(5)} / ${totalCount} (${((withPhone / (totalCount || 1)) * 100).toFixed(1)}%)`);
-    console.log(`Email:              ${withEmail.toString().padStart(5)} / ${totalCount} (${((withEmail / (totalCount || 1)) * 100).toFixed(1)}%)`);
-    console.log(`Horaires:           ${withHours.toString().padStart(5)} / ${totalCount} (${((withHours / (totalCount || 1)) * 100).toFixed(1)}%)`);
-    console.log(`Vérifiées:          ${verified.toString().padStart(5)} / ${totalCount} (${((verified / (totalCount || 1)) * 100).toFixed(1)}%)`);
+    console.log(
+      `Description:        ${withDescription.toString().padStart(5)} / ${totalCount} (${((withDescription / (totalCount || 1)) * 100).toFixed(1)}%)`
+    );
+    console.log(
+      `Adresse:            ${withAddress.toString().padStart(5)} / ${totalCount} (${((withAddress / (totalCount || 1)) * 100).toFixed(1)}%)`
+    );
+    console.log(
+      `Site web:           ${withWebsite.toString().padStart(5)} / ${totalCount} (${((withWebsite / (totalCount || 1)) * 100).toFixed(1)}%)`
+    );
+    console.log(
+      `Téléphone:          ${withPhone.toString().padStart(5)} / ${totalCount} (${((withPhone / (totalCount || 1)) * 100).toFixed(1)}%)`
+    );
+    console.log(
+      `Email:              ${withEmail.toString().padStart(5)} / ${totalCount} (${((withEmail / (totalCount || 1)) * 100).toFixed(1)}%)`
+    );
+    console.log(
+      `Horaires:           ${withHours.toString().padStart(5)} / ${totalCount} (${((withHours / (totalCount || 1)) * 100).toFixed(1)}%)`
+    );
+    console.log(
+      `Vérifiées:          ${verified.toString().padStart(5)} / ${totalCount} (${((verified / (totalCount || 1)) * 100).toFixed(1)}%)`
+    );
     console.log();
   }
 
@@ -99,9 +126,11 @@ async function main() {
     .select('location');
 
   if (geoData) {
-    const validGeoData = geoData.filter(i => i.location?.coordinates?.length === 2);
-    const latitudes = validGeoData.map(i => i.location.coordinates[1]);
-    const longitudes = validGeoData.map(i => i.location.coordinates[0]);
+    const validGeoData = geoData.filter(
+      (i) => i.location?.coordinates?.length === 2
+    );
+    const latitudes = validGeoData.map((i) => i.location.coordinates[1]);
+    const longitudes = validGeoData.map((i) => i.location.coordinates[0]);
 
     const minLat = Math.min(...latitudes);
     const maxLat = Math.max(...latitudes);
@@ -115,17 +144,17 @@ async function main() {
     console.log();
 
     // Rough region detection (France)
-    const paris = geoData.filter(i => {
+    const paris = geoData.filter((i) => {
       const [lng, lat] = i.location.coordinates;
       return lat >= 48.8 && lat <= 48.9 && lng >= 2.2 && lng <= 2.5;
     }).length;
 
-    const lyon = geoData.filter(i => {
+    const lyon = geoData.filter((i) => {
       const [lng, lat] = i.location.coordinates;
       return lat >= 45.7 && lat <= 45.8 && lng >= 4.8 && lng <= 4.9;
     }).length;
 
-    const marseille = geoData.filter(i => {
+    const marseille = geoData.filter((i) => {
       const [lng, lat] = i.location.coordinates;
       return lat >= 43.2 && lat <= 43.4 && lng >= 5.3 && lng <= 5.5;
     }).length;

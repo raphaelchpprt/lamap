@@ -1,11 +1,11 @@
 /**
  * Import Real ESS Data from Multiple Sources
- * 
+ *
  * This script imports real-world initiative data from:
  * 1. Repair Café official API
  * 2. Data.gouv.fr datasets (when available)
  * 3. Other specialized APIs
- * 
+ *
  * Usage:
  *   npm run import:real repair-cafe
  *   npm run import:real all
@@ -59,7 +59,9 @@ const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   console.error('❌ Missing Supabase environment variables');
-  console.error('   Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local');
+  console.error(
+    '   Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local'
+  );
   process.exit(1);
 }
 
@@ -81,21 +83,25 @@ async function importRepairCafes(): Promise<number> {
     // Try the official Repair Café API
     // Note: This is a placeholder - the actual API endpoint may vary
     const apiUrl = 'https://repaircafe.org/api/v1/locations?country=FR';
-    
+
     console.log('🔍 Fetching from Repair Café API...');
     console.log(`URL: ${apiUrl}`);
-    
+
     const response = await fetch(apiUrl, {
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'User-Agent': 'LaMap/1.0 (ESS mapping platform)',
       },
     });
 
     if (!response.ok) {
-      console.log(`⚠️  API returned ${response.status}: ${response.statusText}`);
+      console.log(
+        `⚠️  API returned ${response.status}: ${response.statusText}`
+      );
       console.log('   The API might require authentication or have changed.');
-      console.log('   Alternative: Manually download data from https://repaircafe.org/fr/visiter/');
+      console.log(
+        '   Alternative: Manually download data from https://repaircafe.org/fr/visiter/'
+      );
       return 0;
     }
 
@@ -118,7 +124,12 @@ async function importRepairCafes(): Promise<number> {
       }
 
       // Skip if not in France (rough bounding box)
-      if (cafe.latitude < 41 || cafe.latitude > 51.5 || cafe.longitude < -5.5 || cafe.longitude > 10) {
+      if (
+        cafe.latitude < 41 ||
+        cafe.latitude > 51.5 ||
+        cafe.longitude < -5.5 ||
+        cafe.longitude > 10
+      ) {
         continue;
       }
 
@@ -129,7 +140,8 @@ async function importRepairCafes(): Promise<number> {
       initiatives.push({
         name: cafe.name,
         type: 'Repair Café',
-        description: 'Atelier de réparation collaboratif où des bénévoles aident à réparer objets et appareils.',
+        description:
+          'Atelier de réparation collaboratif où des bénévoles aident à réparer objets et appareils.',
         address: address || undefined,
         location: {
           type: 'Point',
@@ -143,9 +155,7 @@ async function importRepairCafes(): Promise<number> {
 
     // Batch insert
     if (initiatives.length > 0) {
-      const { error } = await supabase
-        .from('initiatives')
-        .insert(initiatives);
+      const { error } = await supabase.from('initiatives').insert(initiatives);
 
       if (error) {
         console.error('❌ Error inserting repair cafés:', error.message);
@@ -173,12 +183,12 @@ async function importRepairCafes(): Promise<number> {
 async function importReseauCocagne(): Promise<number> {
   console.log('\n🌱 Importing from Réseau Cocagne...');
   console.log('─'.repeat(50));
-  
+
   console.log('ℹ️  Réseau Cocagne data requires:');
   console.log('   1. Visit https://www.reseaucocagne.asso.fr/');
   console.log('   2. Manual extraction or API access');
   console.log('   3. Contact them for data sharing');
-  
+
   return 0;
 }
 
@@ -195,12 +205,12 @@ async function importReseauCocagne(): Promise<number> {
 async function importAMAP(): Promise<number> {
   console.log('\n🥕 Importing AMAP data...');
   console.log('─'.repeat(50));
-  
+
   console.log('ℹ️  AMAP data sources:');
   console.log('   1. MIRAMAP: https://miramap.org/-Carte-des-AMAP-.html');
   console.log('   2. Regional AMAP networks');
   console.log('   3. Manual aggregation needed');
-  
+
   return 0;
 }
 
@@ -213,14 +223,14 @@ async function importAMAP(): Promise<number> {
  * Source: Data.gouv.fr or specialized databases
  */
 async function importEntreprisesInsertion(): Promise<number> {
-  console.log('\n🤝 Importing entreprises d\'insertion...');
+  console.log("\n🤝 Importing entreprises d'insertion...");
   console.log('─'.repeat(50));
-  
-  console.log('ℹ️  Entreprises d\'insertion sources:');
+
+  console.log("ℹ️  Entreprises d'insertion sources:");
   console.log('   1. ASP (Agence de Services et de Paiement)');
-  console.log('   2. CNEI (Comité National des Entreprises d\'Insertion)');
+  console.log("   2. CNEI (Comité National des Entreprises d'Insertion)");
   console.log('   3. Data.gouv.fr datasets');
-  
+
   return 0;
 }
 
@@ -234,12 +244,12 @@ async function importEntreprisesInsertion(): Promise<number> {
 async function importZeroWaste(): Promise<number> {
   console.log('\n♻️  Importing Zero Waste initiatives...');
   console.log('─'.repeat(50));
-  
+
   console.log('ℹ️  Zero Waste France:');
   console.log('   1. Contact Zero Waste France for data');
   console.log('   2. Website: https://www.zerowastefrance.org/');
   console.log('   3. May have local group mapping data');
-  
+
   return 0;
 }
 
@@ -254,13 +264,13 @@ async function importZeroWaste(): Promise<number> {
 async function importSinoe(): Promise<number> {
   console.log('\n🗑️  Importing from SINOE (ADEME)...');
   console.log('─'.repeat(50));
-  
+
   console.log('ℹ️  SINOE database:');
   console.log('   1. ADEME official database for waste management');
   console.log('   2. Includes: déchèteries, ressourceries, points de collecte');
   console.log('   3. Requires API access: https://www.sinoe.org/');
   console.log('   4. May require ADEME partnership');
-  
+
   return 0;
 }
 
@@ -269,46 +279,52 @@ async function importSinoe(): Promise<number> {
 // ================================
 
 async function main() {
-  console.log('╔═══════════════════════════════════════════════════════════════╗');
-  console.log('║      IMPORT DE VRAIES DONNÉES ESS (MULTI-SOURCES)           ║');
-  console.log('╚═══════════════════════════════════════════════════════════════╝');
+  console.log(
+    '╔═══════════════════════════════════════════════════════════════╗'
+  );
+  console.log(
+    '║      IMPORT DE VRAIES DONNÉES ESS (MULTI-SOURCES)           ║'
+  );
+  console.log(
+    '╚═══════════════════════════════════════════════════════════════╝'
+  );
   console.log();
   console.log('✅ Environment variables loaded from .env.local');
 
   const source = process.argv[2] || 'all';
-  
+
   let totalInserted = 0;
-  
+
   if (source === 'repair-cafe' || source === 'all') {
     const count = await importRepairCafes();
     totalInserted += count;
   }
-  
+
   if (source === 'cocagne' || source === 'all') {
     const count = await importReseauCocagne();
     totalInserted += count;
   }
-  
+
   if (source === 'amap' || source === 'all') {
     const count = await importAMAP();
     totalInserted += count;
   }
-  
+
   if (source === 'insertion' || source === 'all') {
     const count = await importEntreprisesInsertion();
     totalInserted += count;
   }
-  
+
   if (source === 'zerowaste' || source === 'all') {
     const count = await importZeroWaste();
     totalInserted += count;
   }
-  
+
   if (source === 'sinoe' || source === 'all') {
     const count = await importSinoe();
     totalInserted += count;
   }
-  
+
   console.log();
   console.log('═'.repeat(50));
   console.log(`📊 TOTAL: ${totalInserted} nouvelles initiatives importées`);
@@ -317,7 +333,7 @@ async function main() {
   console.log('💡 PROCHAINES ÉTAPES:');
   console.log();
   console.log('1. 🔧 Repair Café:');
-  console.log('   - Vérifier l\'API officielle sur repaircafe.org');
+  console.log("   - Vérifier l'API officielle sur repaircafe.org");
   console.log('   - Ou télécharger les données manuellement');
   console.log();
   console.log('2. 📋 Données gouvernementales:');
@@ -325,13 +341,13 @@ async function main() {
   console.log('   - Contacter ADEME pour accès SINOE');
   console.log();
   console.log('3. 🤝 Partenariats:');
-  console.log('   - Réseau Cocagne (jardins d\'insertion)');
+  console.log("   - Réseau Cocagne (jardins d'insertion)");
   console.log('   - MIRAMAP (AMAP)');
   console.log('   - Zero Waste France');
-  console.log('   - CNEI (entreprises d\'insertion)');
+  console.log("   - CNEI (entreprises d'insertion)");
   console.log();
   console.log('4. 🗺️  OpenStreetMap:');
-  console.log('   - Continue d\'être la meilleure source pour friperies');
+  console.log("   - Continue d'être la meilleure source pour friperies");
   console.log('   - Contribuer en retour (ajouter données manquantes)');
   console.log();
 }

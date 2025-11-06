@@ -249,11 +249,11 @@ function TypeBadge({
       };
 
   return (
-    <div className={badgeClasses} style={badgeStyle}>
-      <Sparkles className="h-3 w-3" />
-      <span>{type}</span>
-      <TooltipProvider delayDuration={300}>
-        <Tooltip>
+    <TooltipProvider delayDuration={300}>
+      <div className={badgeClasses} style={badgeStyle}>
+        <Sparkles className="h-3 w-3" />
+        <span>{type}</span>
+        <Tooltip defaultOpen={false}>
           <TooltipTrigger asChild>
             <button
               type="button"
@@ -278,8 +278,8 @@ function TypeBadge({
             <p className="text-xs leading-relaxed">{description}</p>
           </TooltipContent>
         </Tooltip>
-      </TooltipProvider>
-    </div>
+      </div>
+    </TooltipProvider>
   );
 }
 

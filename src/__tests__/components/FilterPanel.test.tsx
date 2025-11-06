@@ -215,7 +215,9 @@ describe('FilterPanel', () => {
     expect(ressourcerieCheckbox).toBeChecked();
 
     // Verify the parent container has the selected background (bg-white/20)
-    const ressourcerieContainer = ressourcerieCheckbox.closest('div[class*="bg-white/20"]');
+    const ressourcerieContainer = ressourcerieCheckbox.closest(
+      'div[class*="bg-white/20"]'
+    );
     expect(ressourcerieContainer).toBeInTheDocument();
   });
 

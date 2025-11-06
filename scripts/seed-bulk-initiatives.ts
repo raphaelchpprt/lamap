@@ -19,7 +19,7 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-  console.error('❌ Variables d\'environnement manquantes:');
+  console.error("❌ Variables d'environnement manquantes:");
   console.error('   - NEXT_PUBLIC_SUPABASE_URL');
   console.error('   - SUPABASE_SERVICE_ROLE_KEY');
   process.exit(1);
@@ -63,7 +63,7 @@ const PARIS_DISTRICTS = [
   { num: 7, name: '7ème', center: [2.3123, 48.8556] as [number, number] },
   { num: 8, name: '8ème', center: [2.3136, 48.8742] as [number, number] },
   { num: 9, name: '9ème', center: [2.3418, 48.8766] as [number, number] },
-  { num: 10, name: '10ème', center: [2.3632, 48.8760] as [number, number] },
+  { num: 10, name: '10ème', center: [2.3632, 48.876] as [number, number] },
   { num: 11, name: '11ème', center: [2.3788, 48.8594] as [number, number] },
   { num: 12, name: '12ème', center: [2.3889, 48.8412] as [number, number] },
   { num: 13, name: '13ème', center: [2.3599, 48.8322] as [number, number] },
@@ -159,13 +159,7 @@ const NAME_TEMPLATES: Record<InitiativeType, string[]> = {
     'Composteur Collectif',
     'Compost de Quartier',
   ],
-  AMAP: [
-    'AMAP de',
-    'AMAP du',
-    'AMAP',
-    'Association AMAP',
-    'AMAP Bio',
-  ],
+  AMAP: ['AMAP de', 'AMAP du', 'AMAP', 'Association AMAP', 'AMAP Bio'],
   'Jardin partagé': [
     'Jardin Partagé',
     'Jardin Collectif',
@@ -210,18 +204,12 @@ const NAME_TEMPLATES: Record<InitiativeType, string[]> = {
   ],
   "Bibliothèque d'objets": [
     'Bricothèque',
-    'Bibliothèque d\'Objets',
-    'Prêt d\'Outils',
-    'Outil\'thèque',
+    "Bibliothèque d'Objets",
+    "Prêt d'Outils",
+    "Outil'thèque",
     'La Bricothèque',
   ],
-  SEL: [
-    'SEL de',
-    'SEL du',
-    'Système d\'Échange Local',
-    'SEL',
-    'Échange Local',
-  ],
+  SEL: ['SEL de', 'SEL du', "Système d'Échange Local", 'SEL', 'Échange Local'],
   Accorderie: [
     'Accorderie de',
     'Accorderie du',
@@ -250,36 +238,30 @@ const NAME_TEMPLATES: Record<InitiativeType, string[]> = {
     'Espace Collaboratif',
     'Hub',
   ],
-  Autre: [
-    'Initiative de',
-    'Projet',
-    'Association',
-    'Collectif',
-    'Espace',
-  ],
+  Autre: ['Initiative de', 'Projet', 'Association', 'Collectif', 'Espace'],
 };
 
 // Descriptions templates
 const DESCRIPTION_TEMPLATES: Record<InitiativeType, string[]> = {
   Ressourcerie: [
-    'Collecte, tri et revente d\'objets de seconde main. Donnez une seconde vie aux objets !',
-    'Ressourcerie associative proposant des ateliers de réparation et sensibilisation à l\'économie circulaire.',
-    'Lieu de collecte et valorisation d\'objets. Ateliers créatifs et vente solidaire.',
+    "Collecte, tri et revente d'objets de seconde main. Donnez une seconde vie aux objets !",
+    "Ressourcerie associative proposant des ateliers de réparation et sensibilisation à l'économie circulaire.",
+    "Lieu de collecte et valorisation d'objets. Ateliers créatifs et vente solidaire.",
   ],
   Recyclerie: [
-    'Centre de recyclage et valorisation des déchets. Contribution à l\'économie circulaire.',
+    "Centre de recyclage et valorisation des déchets. Contribution à l'économie circulaire.",
     'Recyclerie engagée dans la transformation des déchets en ressources.',
     'Point de collecte et recyclage pour un environnement plus propre.',
   ],
   'Repair Café': [
-    'Atelier participatif de réparation d\'objets. Lutte contre l\'obsolescence programmée.',
-    'Café de réparation où l\'on apprend à réparer ensemble. Convivialité et partage de savoir-faire.',
-    'Réparez vos objets avec l\'aide de bénévoles. Gratuit et ouvert à tous.',
+    "Atelier participatif de réparation d'objets. Lutte contre l'obsolescence programmée.",
+    "Café de réparation où l'on apprend à réparer ensemble. Convivialité et partage de savoir-faire.",
+    "Réparez vos objets avec l'aide de bénévoles. Gratuit et ouvert à tous.",
   ],
   'Atelier vélo': [
     'Atelier vélo participatif. Auto-réparation accompagnée et vente de pièces détachées.',
     'Apprenez à réparer et entretenir votre vélo. Outils et conseils gratuits.',
-    'Cyclofficine associative pour promouvoir la mobilité douce et l\'autonomie vélo.',
+    "Cyclofficine associative pour promouvoir la mobilité douce et l'autonomie vélo.",
   ],
   'Point de collecte': [
     'Point de collecte pour textiles, piles et déchets spéciaux. Recyclage responsable.',
@@ -292,7 +274,7 @@ const DESCRIPTION_TEMPLATES: Record<InitiativeType, string[]> = {
     'Compostage collectif pour un quartier zéro déchet. Récupération de compost au printemps.',
   ],
   AMAP: [
-    'Association pour le Maintien d\'une Agriculture Paysanne. Paniers bio hebdomadaires.',
+    "Association pour le Maintien d'une Agriculture Paysanne. Paniers bio hebdomadaires.",
     'Circuit court et produits locaux de saison. Engagement solidaire avec les producteurs.',
     'AMAP proposant légumes, fruits, pain et produits fermiers. Distribution hebdomadaire.',
   ],
@@ -312,7 +294,7 @@ const DESCRIPTION_TEMPLATES: Record<InitiativeType, string[]> = {
     'Friperie solidaire avec des milliers de pièces uniques. Alternative à la fast-fashion.',
   ],
   Donnerie: [
-    'Marché gratuit mensuel. Donnez ce que vous n\'utilisez plus, prenez ce dont vous avez besoin.',
+    "Marché gratuit mensuel. Donnez ce que vous n'utilisez plus, prenez ce dont vous avez besoin.",
     'Espace de don et récupération gratuit. Principe du gratuit et du partage.',
     'Donnerie permanente. Apportez, prenez, tout est gratuit !',
   ],
@@ -327,19 +309,19 @@ const DESCRIPTION_TEMPLATES: Record<InitiativeType, string[]> = {
     'Épicerie sans emballage. Réduisez vos déchets plastiques tout en faisant vos courses.',
   ],
   "Bibliothèque d'objets": [
-    'Prêt gratuit d\'outils et objets du quotidien. Usage plutôt que propriété !',
-    'Bibliothèque d\'objets entre voisins. Perceuse, échelle, appareil à raclette...',
+    "Prêt gratuit d'outils et objets du quotidien. Usage plutôt que propriété !",
+    "Bibliothèque d'objets entre voisins. Perceuse, échelle, appareil à raclette...",
     'Bricothèque de quartier. Empruntez gratuitement les outils dont vous avez besoin.',
   ],
   SEL: [
-    'Système d\'Échange Local sans argent. Services, savoirs et biens s\'échangent librement.',
-    'Réseau d\'entraide et d\'échange basé sur le temps. Monnaie locale virtuelle.',
+    "Système d'Échange Local sans argent. Services, savoirs et biens s'échangent librement.",
+    "Réseau d'entraide et d'échange basé sur le temps. Monnaie locale virtuelle.",
     'SEL pour créer du lien social et de la solidarité de quartier.',
   ],
   Accorderie: [
-    'Réseau d\'échange de services et de temps. 1h donnée = 1h reçue, quel que soit le service.',
-    'Accorderie basée sur l\'égalité. Plomberie, garde d\'enfants, cours... tout se vaut !',
-    'Échange de temps et de services entre membres. Principe d\'égalité et de solidarité.',
+    "Réseau d'échange de services et de temps. 1h donnée = 1h reçue, quel que soit le service.",
+    "Accorderie basée sur l'égalité. Plomberie, garde d'enfants, cours... tout se vaut !",
+    "Échange de temps et de services entre membres. Principe d'égalité et de solidarité.",
   ],
   'Fab Lab': [
     'Laboratoire de fabrication numérique ouvert à tous. Imprimante 3D, découpe laser...',
@@ -353,11 +335,11 @@ const DESCRIPTION_TEMPLATES: Record<InitiativeType, string[]> = {
   ],
   'Tiers-lieu': [
     'Espace hybride de coworking et de création. Innovation sociale et convivialité.',
-    'Tiers-lieu d\'innovation sociale. Café, ateliers, résidences d\'artistes et événements.',
+    "Tiers-lieu d'innovation sociale. Café, ateliers, résidences d'artistes et événements.",
     'Hub collaboratif et culturel. Coworking, fablab et café associatif.',
   ],
   Autre: [
-    'Initiative d\'économie sociale et solidaire. Engagement pour une société plus durable.',
+    "Initiative d'économie sociale et solidaire. Engagement pour une société plus durable.",
     'Projet citoyen et participatif. Créer du lien et de la solidarité.',
     'Association engagée dans la transition écologique et sociale.',
   ],
@@ -439,7 +421,9 @@ function generateInitiative(type: InitiativeType, index: number) {
   const phone = Math.random() < 0.5 ? generatePhone() : undefined;
   const email = Math.random() < 0.4 ? generateEmail(name) : undefined;
   const website =
-    Math.random() < 0.3 ? `https://www.${name.toLowerCase().replace(/\s+/g, '')}.fr` : undefined;
+    Math.random() < 0.3
+      ? `https://www.${name.toLowerCase().replace(/\s+/g, '')}.fr`
+      : undefined;
 
   return {
     name,
@@ -461,10 +445,16 @@ async function seedBulkInitiatives() {
   console.log('🌱 Début du seed BULK (100 initiatives par type)...\n');
 
   // Vérifier la connexion Supabase
-  const { error: connectionError } = await supabase.from('initiatives').select('count').limit(1);
+  const { error: connectionError } = await supabase
+    .from('initiatives')
+    .select('count')
+    .limit(1);
 
   if (connectionError) {
-    console.error('❌ Erreur de connexion à Supabase:', connectionError.message);
+    console.error(
+      '❌ Erreur de connexion à Supabase:',
+      connectionError.message
+    );
     process.exit(1);
   }
 
@@ -477,7 +467,9 @@ async function seedBulkInitiatives() {
 
   console.log(`📊 Initiatives existantes: ${existingCount}\n`);
 
-  console.log('⚠️  Ce script va générer et insérer 2000 initiatives (100 par type).');
+  console.log(
+    '⚠️  Ce script va générer et insérer 2000 initiatives (100 par type).'
+  );
   console.log('   Cela peut prendre quelques minutes...\n');
 
   let totalInserted = 0;

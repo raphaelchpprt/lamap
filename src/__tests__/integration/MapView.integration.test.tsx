@@ -109,9 +109,7 @@ describe('MapView Integration Tests', () => {
       await waitFor(
         () => {
           // 🎓 Check that initiative counter text appears (= loading complete)
-          expect(
-            screen.getByText(/initiative.*affichée/i)
-          ).toBeInTheDocument();
+          expect(screen.getByText(/initiative.*affichée/i)).toBeInTheDocument();
         },
         { timeout: 3000 }
       );

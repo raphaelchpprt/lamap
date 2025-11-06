@@ -30,7 +30,9 @@ async function testFilterFriperies() {
   const north = 51.5;
 
   console.log('🗺️  Testing France-wide bounds:');
-  console.log(`   West: ${west}, South: ${south}, East: ${east}, North: ${north}\n`);
+  console.log(
+    `   West: ${west}, South: ${south}, East: ${east}, North: ${north}\n`
+  );
 
   // Test 1: Get ALL initiatives (no type filter)
   console.log('═══════════════════════════════════════════════════════');
@@ -54,7 +56,7 @@ async function testFilterFriperies() {
     console.error('❌ Error:', allError.message);
   } else {
     console.log(`✅ Total initiatives: ${allData.length}`);
-    
+
     // Count by type
     const typeCounts: Record<string, number> = {};
     allData.forEach((item: any) => {
@@ -65,8 +67,12 @@ async function testFilterFriperies() {
     Object.entries(typeCounts)
       .sort(([, a], [, b]) => (b as number) - (a as number))
       .forEach(([type, count]) => {
-        const bar = '█'.repeat(Math.min(50, Math.floor((count as number) / 100)));
-        console.log(`   ${type.padEnd(25)} ${String(count).padStart(5)} ${bar}`);
+        const bar = '█'.repeat(
+          Math.min(50, Math.floor((count as number) / 100))
+        );
+        console.log(
+          `   ${type.padEnd(25)} ${String(count).padStart(5)} ${bar}`
+        );
       });
 
     const friperieCount = typeCounts['Friperie'] || 0;
@@ -79,7 +85,7 @@ async function testFilterFriperies() {
 
   // Test 2: Filter ONLY Friperies
   console.log('\n═══════════════════════════════════════════════════════');
-  console.log('TEST 2: Filter by type = [\'Friperie\']');
+  console.log("TEST 2: Filter by type = ['Friperie']");
   console.log('═══════════════════════════════════════════════════════');
 
   const { data: friperiesData, error: friperiesError } = await supabase.rpc(
@@ -103,11 +109,15 @@ async function testFilterFriperies() {
     if (friperiesData.length > 0) {
       console.log('\n📋 Sample friperies (first 10):');
       friperiesData.slice(0, 10).forEach((friperie: any, index: number) => {
-        console.log(`   ${index + 1}. ${friperie.name} (${friperie.address || 'No address'})`);
+        console.log(
+          `   ${index + 1}. ${friperie.name} (${friperie.address || 'No address'})`
+        );
       });
     } else {
       console.log('\n❌ NO FRIPERIES RETURNED BY FILTERED QUERY!');
-      console.log('   This means the SQL function filter is not working correctly.');
+      console.log(
+        '   This means the SQL function filter is not working correctly.'
+      );
     }
   }
 
@@ -131,16 +141,26 @@ async function testFilterFriperies() {
   console.log('║                    SUMMARY                             ║');
   console.log('╚════════════════════════════════════════════════════════╝');
   console.log(`Database has: ${directCount} Friperies`);
-  console.log(`No filter returned: ${(allData || []).filter((i: any) => i.type === 'Friperie').length} Friperies`);
-  console.log(`With filter returned: ${(friperiesData || []).length} Friperies`);
+  console.log(
+    `No filter returned: ${(allData || []).filter((i: any) => i.type === 'Friperie').length} Friperies`
+  );
+  console.log(
+    `With filter returned: ${(friperiesData || []).length} Friperies`
+  );
 
   if (directCount && directCount > 0) {
     if ((friperiesData || []).length === 0) {
-      console.log('\n🚨 PROBLEM: Database has Friperies but filtered query returns NONE!');
+      console.log(
+        '\n🚨 PROBLEM: Database has Friperies but filtered query returns NONE!'
+      );
       console.log('   → The SQL function filter is broken or RLS is blocking');
     } else if ((friperiesData || []).length < directCount) {
-      console.log('\n⚠️  WARNING: Filtered query returns fewer Friperies than database has');
-      console.log(`   → Possible limit issue or spatial bounds too restrictive`);
+      console.log(
+        '\n⚠️  WARNING: Filtered query returns fewer Friperies than database has'
+      );
+      console.log(
+        `   → Possible limit issue or spatial bounds too restrictive`
+      );
     } else {
       console.log('\n✅ SUCCESS: Filter works correctly!');
     }
