@@ -1002,28 +1002,9 @@ export default function Map({
                 }</span>
                 <button 
                   class="info-btn-popup"
+                  data-initiative-id="${initiative.id}"
+                  data-description="${typeDescription.replace(/"/g, '&quot;')}"
                   style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; min-width: 26px; min-height: 26px; padding: 4px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: none; cursor: pointer; transition: background 0.2s; color: white; flex-shrink: 0;"
-                  onmouseenter="
-                    this.style.background='rgba(255, 255, 255, 0.35)';
-                    setTimeout(() => {
-                      var tt = document.getElementById('tooltip-${initiative.id}');
-                      if(tt) {
-                        var rect = this.getBoundingClientRect();
-                        tt.style.left = (rect.left + rect.width/2) + 'px';
-                        tt.style.top = (rect.top - 100) + 'px';
-                        tt.style.opacity = '1';
-                        tt.style.visibility = 'visible';
-                      }
-                    }, 10);
-                  "
-                  onmouseleave="
-                    this.style.background='rgba(255, 255, 255, 0.2)';
-                    var tt = document.getElementById('tooltip-${initiative.id}');
-                    if(tt) {
-                      tt.style.opacity = '0';
-                      tt.style.visibility = 'hidden';
-                    }
-                  "
                   aria-label="Information sur ${initiative.type}"
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display: block;">
@@ -1034,13 +1015,6 @@ export default function Map({
                 </button>
               </div>
               ${verifiedBadge}
-            </div>
-            <div 
-              id="tooltip-${initiative.id}"
-              style="position: fixed; width: 240px; padding: 10px 14px; background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98)); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); color: white; border-radius: 8px; font-size: 12px; line-height: 1.5; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); z-index: 999999; pointer-events: none; opacity: 0; visibility: hidden; transition: opacity 0.2s, visibility 0.2s; transform: translateX(-50%);"
-            >
-              ${typeDescription}
-              <div style="position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid rgba(15, 23, 42, 0.98);"></div>
             </div>
             
             <h2 class="font-bold text-lg mb-2" style="color: #0f2419; line-height: 1.3; word-wrap: break-word; overflow-wrap: break-word; hyphens: auto;">${
@@ -1114,6 +1088,63 @@ export default function Map({
                 if (currentInitiative && onInitiativeClick) {
                   onInitiativeClick(currentInitiative);
                   hoverPopup.remove();
+                }
+              });
+            }
+
+            // Add tooltip handler for info button
+            const infoBtn = popupElement.querySelector('.info-btn-popup') as HTMLButtonElement;
+            if (infoBtn) {
+              let tooltipDiv: HTMLDivElement | null = null;
+              
+              infoBtn.addEventListener('mouseenter', () => {
+                infoBtn.style.background = 'rgba(255, 255, 255, 0.35)';
+                
+                // Create tooltip in body
+                const description = infoBtn.getAttribute('data-description') || '';
+                const initiativeId = infoBtn.getAttribute('data-initiative-id') || '';
+                
+                tooltipDiv = document.createElement('div');
+                tooltipDiv.id = `tooltip-popup-${initiativeId}`;
+                tooltipDiv.style.cssText = `
+                  position: fixed;
+                  width: 240px;
+                  padding: 10px 14px;
+                  background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98));
+                  backdrop-filter: blur(12px);
+                  border: 1px solid rgba(255, 255, 255, 0.2);
+                  color: white;
+                  border-radius: 8px;
+                  font-size: 12px;
+                  line-height: 1.5;
+                  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+                  z-index: 999999;
+                  pointer-events: none;
+                  opacity: 1;
+                  visibility: visible;
+                  transition: opacity 0.2s, visibility 0.2s;
+                `;
+                
+                tooltipDiv.innerHTML = `
+                  ${description}
+                  <div style="position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid rgba(15, 23, 42, 0.98);"></div>
+                `;
+                
+                document.body.appendChild(tooltipDiv);
+                
+                // Position tooltip
+                const rect = infoBtn.getBoundingClientRect();
+                tooltipDiv.style.left = `${rect.left + rect.width / 2}px`;
+                tooltipDiv.style.top = `${rect.top - tooltipDiv.offsetHeight - 10}px`;
+                tooltipDiv.style.transform = 'translateX(-50%)';
+              });
+              
+              infoBtn.addEventListener('mouseleave', () => {
+                infoBtn.style.background = 'rgba(255, 255, 255, 0.2)';
+                
+                if (tooltipDiv) {
+                  tooltipDiv.remove();
+                  tooltipDiv = null;
                 }
               });
             }
