@@ -248,10 +248,10 @@ function TypeBadge({
     <div className={badgeClasses} style={badgeStyle}>
       <Sparkles className="h-4 w-4" />
       <span>{type}</span>
-      <div className="relative inline-flex">
+      <div className="group relative inline-flex">
         <button
           type="button"
-          className="group p-1.5 rounded-full hover:bg-white/20 transition-colors"
+          className="p-1.5 rounded-full hover:bg-white/20 transition-colors cursor-pointer"
           onClick={(e) => e.stopPropagation()}
           aria-label={`Information sur ${type}`}
           style={onDarkBackground ? { color: 'white' } : { color }}
