@@ -46,6 +46,9 @@ export interface Initiative {
   /** Adresse email de contact */
   email?: string;
 
+  /** Réseaux sociaux */
+  social_media?: SocialMedia;
+
   /** Horaires d'ouverture par jour de la semaine */
   opening_hours?: OpeningHours;
 
@@ -119,6 +122,24 @@ export interface TimeSlot {
     start: string;
     end: string;
   };
+}
+
+/**
+ * Liens vers les réseaux sociaux
+ */
+export interface SocialMedia {
+  /** Page ou profil Facebook */
+  facebook?: string;
+  /** Profil Instagram */
+  instagram?: string;
+  /** Profil Twitter/X */
+  twitter?: string;
+  /** Profil ou page LinkedIn */
+  linkedin?: string;
+  /** Chaîne YouTube */
+  youtube?: string;
+  /** Profil TikTok */
+  tiktok?: string;
 }
 
 // ================================

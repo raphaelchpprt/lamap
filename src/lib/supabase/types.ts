@@ -121,6 +121,24 @@ export interface DatabaseInitiative {
   /** Email */
   email: string | null;
 
+  /** Réseaux sociaux (Facebook) */
+  facebook: string | null;
+
+  /** Réseaux sociaux (Instagram) */
+  instagram: string | null;
+
+  /** Réseaux sociaux (Twitter/X) */
+  twitter: string | null;
+
+  /** Réseaux sociaux (LinkedIn) */
+  linkedin: string | null;
+
+  /** Réseaux sociaux (YouTube) */
+  youtube: string | null;
+
+  /** Réseaux sociaux (TikTok) */
+  tiktok: string | null;
+
   /** Horaires (JSONB) */
   opening_hours: OpeningHours | null;
 
@@ -149,6 +167,12 @@ export interface DatabaseInitiativeInsert {
   website?: string | null;
   phone?: string | null;
   email?: string | null;
+  facebook?: string | null;
+  instagram?: string | null;
+  twitter?: string | null;
+  linkedin?: string | null;
+  youtube?: string | null;
+  tiktok?: string | null;
   opening_hours?: OpeningHours | null;
   user_id?: string | null;
   created_at?: string;
@@ -170,6 +194,12 @@ export interface DatabaseInitiativeUpdate {
   website?: string | null;
   phone?: string | null;
   email?: string | null;
+  facebook?: string | null;
+  instagram?: string | null;
+  twitter?: string | null;
+  linkedin?: string | null;
+  youtube?: string | null;
+  tiktok?: string | null;
   opening_hours?: OpeningHours | null;
   user_id?: string | null;
   updated_at?: string;
@@ -339,6 +369,14 @@ export function databaseInitiativeToInitiative(
     website: dbInitiative.website || undefined,
     phone: dbInitiative.phone || undefined,
     email: dbInitiative.email || undefined,
+    social_media: {
+      facebook: dbInitiative.facebook || undefined,
+      instagram: dbInitiative.instagram || undefined,
+      twitter: dbInitiative.twitter || undefined,
+      linkedin: dbInitiative.linkedin || undefined,
+      youtube: dbInitiative.youtube || undefined,
+      tiktok: dbInitiative.tiktok || undefined,
+    },
     opening_hours: dbInitiative.opening_hours || undefined,
     user_id: dbInitiative.user_id || undefined,
     created_at: dbInitiative.created_at,
@@ -368,6 +406,12 @@ export function initiativeToDatabaseInitiative(
     website: initiative.website || null,
     phone: initiative.phone || null,
     email: initiative.email || null,
+    facebook: initiative.social_media?.facebook || null,
+    instagram: initiative.social_media?.instagram || null,
+    twitter: initiative.social_media?.twitter || null,
+    linkedin: initiative.social_media?.linkedin || null,
+    youtube: initiative.social_media?.youtube || null,
+    tiktok: initiative.social_media?.tiktok || null,
     opening_hours: initiative.opening_hours || null,
     user_id: initiative.user_id || null,
   };
