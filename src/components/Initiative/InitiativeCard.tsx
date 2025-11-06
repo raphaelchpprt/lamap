@@ -248,23 +248,47 @@ function TypeBadge({
     <div className={badgeClasses} style={badgeStyle}>
       <Sparkles className="h-4 w-4" />
       <span>{type}</span>
-      <div className="group relative inline-flex">
+      <div className="relative inline-flex">
         <button
           type="button"
           className="p-1.5 rounded-full hover:bg-white/20 transition-colors cursor-pointer"
           onClick={(e) => e.stopPropagation()}
+          onMouseEnter={(e) => {
+            const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
+            if (tooltip) {
+              const rect = e.currentTarget.getBoundingClientRect();
+              tooltip.style.position = 'fixed';
+              tooltip.style.left = `${rect.left + rect.width / 2}px`;
+              tooltip.style.top = `${rect.top - 10}px`;
+              tooltip.style.transform = 'translate(-50%, -100%)';
+              tooltip.style.opacity = '1';
+              tooltip.style.visibility = 'visible';
+            }
+          }}
+          onMouseLeave={(e) => {
+            const tooltip = e.currentTarget.nextElementSibling as HTMLElement;
+            if (tooltip) {
+              tooltip.style.opacity = '0';
+              tooltip.style.visibility = 'hidden';
+            }
+          }}
           aria-label={`Information sur ${type}`}
           style={onDarkBackground ? { color: 'white' } : { color }}
         >
           <Info className="h-4 w-4" />
         </button>
         <div 
-          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 rounded-lg text-xs leading-relaxed text-white bg-gradient-to-br from-slate-900 to-slate-800 border border-white/20 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none whitespace-normal w-64 z-[100000]"
-          style={{ maxWidth: '16rem' }}
+          className="px-3 py-2 rounded-lg text-xs leading-relaxed text-white bg-gradient-to-br from-slate-900 to-slate-800 border border-white/20 shadow-2xl opacity-0 invisible transition-all duration-200 pointer-events-none whitespace-normal w-64"
+          style={{ 
+            position: 'fixed',
+            maxWidth: '16rem',
+            zIndex: 100000
+          }}
         >
           {description}
           <div 
-            className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-slate-900"
+            className="absolute left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"
+            style={{ bottom: '-8px' }}
           />
         </div>
       </div>
