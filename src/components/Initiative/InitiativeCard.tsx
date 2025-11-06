@@ -516,8 +516,8 @@ export default function InitiativeCard({
 
   // CSS classes based on variant with modern glassmorphism (white background)
   const variantClasses = {
-    card: 'rounded-2xl border border-white/50 overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl cursor-pointer',
-    popup: 'rounded-2xl border border-white/60 overflow-hidden max-w-sm',
+    card: 'rounded-2xl border border-white/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl cursor-pointer',
+    popup: 'rounded-2xl border border-white/60 max-w-sm',
     list: 'rounded-xl border border-white/50 hover:border-white/70 transition-all duration-300 hover:scale-[1.01] cursor-pointer',
     detailed: 'rounded-2xl border border-white/60',
   };
