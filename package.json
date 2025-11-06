@@ -12,6 +12,7 @@
     "test:coverage": "jest --coverage",
     "import:osm": "tsx scripts/import-from-osm.ts",
     "import:real": "tsx scripts/import-real-data.ts",
+    "import:social": "tsx scripts/import-social-media.ts",
     "analyze": "tsx scripts/analyze-data.ts",
     "fix:friperies": "tsx scripts/fix-friperies-type.ts",
     "test:filter": "tsx scripts/test-filter-friperies.ts",

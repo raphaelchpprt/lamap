@@ -42,6 +42,7 @@ import {
   Twitter,
   Linkedin,
   Youtube,
+  Info,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -212,7 +213,7 @@ function ImagePlaceholder({ type }: { type: Initiative['type'] }) {
 
 /**
  * Initiative type badge with gradient matching FilterPanel
- * Now includes tooltip with initiative description
+ * Includes tooltip with info icon like in FilterPanel
  */
 function TypeBadge({ type, onDarkBackground = false }: { type: Initiative['type'], onDarkBackground?: boolean }) {
   const color = TYPE_MARKER_COLORS[type];
@@ -221,18 +222,42 @@ function TypeBadge({ type, onDarkBackground = false }: { type: Initiative['type'
   const badgeContent = onDarkBackground ? (
     // Badge sur image sombre : texte blanc avec fond semi-transparent
     <div
-      className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold text-white shadow-lg backdrop-blur-sm border border-white/20"
+      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold text-white shadow-lg backdrop-blur-sm border border-white/20"
       style={{
         background: 'rgba(0, 0, 0, 0.4)',
       }}
     >
       <Sparkles className="h-3 w-3" />
       <span>{type}</span>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              className="p-0.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors ml-0.5"
+              onClick={(e) => e.stopPropagation()}
+              aria-label={`Information sur ${type}`}
+            >
+              <Info className="h-3 w-3" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent
+            side="top"
+            align="center"
+            sideOffset={8}
+            className="max-w-xs bg-gradient-to-br from-slate-900/98 to-slate-800/98 backdrop-blur-xl border border-white/20 text-white shadow-2xl"
+          >
+            <p className="text-xs leading-relaxed">
+              {description}
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   ) : (
     // Badge sur fond clair : texte coloré avec fond transparent
     <div
-      className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold shadow-lg backdrop-blur-sm border"
+      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold shadow-lg backdrop-blur-sm border"
       style={{
         background: `${color}20`, // 20 = 12.5% opacity en hex
         borderColor: `${color}40`, // 40 = 25% opacity en hex
@@ -241,31 +266,35 @@ function TypeBadge({ type, onDarkBackground = false }: { type: Initiative['type'
     >
       <Sparkles className="h-3 w-3" />
       <span>{type}</span>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              className="p-0.5 rounded-full hover:bg-black/10 transition-colors ml-0.5"
+              onClick={(e) => e.stopPropagation()}
+              aria-label={`Information sur ${type}`}
+              style={{ color }}
+            >
+              <Info className="h-3 w-3" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent
+            side="top"
+            align="center"
+            sideOffset={8}
+            className="max-w-xs bg-gradient-to-br from-slate-900/98 to-slate-800/98 backdrop-blur-xl border border-white/20 text-white shadow-2xl"
+          >
+            <p className="text-xs leading-relaxed">
+              {description}
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 
-  // Wrap in tooltip
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div className="cursor-help">
-            {badgeContent}
-          </div>
-        </TooltipTrigger>
-        <TooltipContent
-          side="top"
-          align="center"
-          sideOffset={8}
-          className="max-w-xs bg-gradient-to-br from-slate-900/98 to-slate-800/98 backdrop-blur-xl border border-white/20 text-white shadow-2xl"
-        >
-          <p className="text-xs leading-relaxed">
-            {description}
-          </p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
+  return badgeContent;
 }
 
 /**
