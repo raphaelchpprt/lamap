@@ -1093,17 +1093,21 @@ export default function Map({
             }
 
             // Add tooltip handler for info button
-            const infoBtn = popupElement.querySelector('.info-btn-popup') as HTMLButtonElement;
+            const infoBtn = popupElement.querySelector(
+              '.info-btn-popup'
+            ) as HTMLButtonElement;
             if (infoBtn) {
               let tooltipDiv: HTMLDivElement | null = null;
-              
+
               infoBtn.addEventListener('mouseenter', () => {
                 infoBtn.style.background = 'rgba(255, 255, 255, 0.35)';
-                
+
                 // Create tooltip in body
-                const description = infoBtn.getAttribute('data-description') || '';
-                const initiativeId = infoBtn.getAttribute('data-initiative-id') || '';
-                
+                const description =
+                  infoBtn.getAttribute('data-description') || '';
+                const initiativeId =
+                  infoBtn.getAttribute('data-initiative-id') || '';
+
                 tooltipDiv = document.createElement('div');
                 tooltipDiv.id = `tooltip-popup-${initiativeId}`;
                 tooltipDiv.style.cssText = `
@@ -1124,24 +1128,24 @@ export default function Map({
                   visibility: visible;
                   transition: opacity 0.2s, visibility 0.2s;
                 `;
-                
+
                 tooltipDiv.innerHTML = `
                   ${description}
                   <div style="position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid rgba(15, 23, 42, 0.98);"></div>
                 `;
-                
+
                 document.body.appendChild(tooltipDiv);
-                
+
                 // Position tooltip
                 const rect = infoBtn.getBoundingClientRect();
                 tooltipDiv.style.left = `${rect.left + rect.width / 2}px`;
                 tooltipDiv.style.top = `${rect.top - tooltipDiv.offsetHeight - 10}px`;
                 tooltipDiv.style.transform = 'translateX(-50%)';
               });
-              
+
               infoBtn.addEventListener('mouseleave', () => {
                 infoBtn.style.background = 'rgba(255, 255, 255, 0.2)';
-                
+
                 if (tooltipDiv) {
                   tooltipDiv.remove();
                   tooltipDiv = null;
