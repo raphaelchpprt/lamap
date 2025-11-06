@@ -502,7 +502,7 @@ function ShareButton({ initiative }: { initiative: Initiative }) {
   return (
     <button
       onClick={handleShare}
-      className="inline-flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 text-sm font-medium hover:scale-105"
+      className="inline-flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 text-sm font-medium hover:scale-105 cursor-pointer"
       style={{
         background: 'rgba(148, 163, 184, 0.12)',
         border: '1px solid rgba(148, 163, 184, 0.2)',
@@ -539,7 +539,7 @@ function DirectionsButton({ initiative }: { initiative: Initiative }) {
   return (
     <button
       onClick={handleDirections}
-      className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300"
+      className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300 cursor-pointer"
       style={{
         background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
         boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
@@ -840,7 +840,7 @@ export default function InitiativeCard({
                   e.stopPropagation();
                   setShowFullDescription(!showFullDescription);
                 }}
-                className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors inline-flex items-center gap-1"
+                className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors inline-flex items-center gap-1 cursor-pointer"
               >
                 {showFullDescription ? '− Voir moins' : '+ Voir plus'}
               </button>
