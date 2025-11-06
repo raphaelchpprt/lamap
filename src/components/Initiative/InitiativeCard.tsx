@@ -15,7 +15,6 @@ import {
   Mail,
   ExternalLink,
   Check,
-  Sparkles,
   Navigation,
   Share2,
   Recycle,
@@ -217,7 +216,7 @@ function ImagePlaceholder({ type }: { type: Initiative['type'] }) {
 }
 
 /**
- * Initiative type badge with gradient matching FilterPanel
+ * Initiative type badge with subtle styling
  * Includes tooltip with info icon that appears only on hover (pure CSS)
  */
 function TypeBadge({
@@ -230,19 +229,20 @@ function TypeBadge({
   const color = TYPE_MARKER_COLORS[type];
   const description = INITIATIVE_DESCRIPTIONS[type];
 
-  // Style uniforme pour tous les badges (même style que popup)
-  const badgeClasses = 'inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm border';
+  // Clean minimal badge
+  const badgeClasses =
+    'inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium transition-all';
 
   const badgeStyle = onDarkBackground
     ? {
-        background: 'rgba(0, 0, 0, 0.4)',
-        color: 'white',
-        borderColor: 'rgba(255, 255, 255, 0.2)',
+        background: 'rgba(15, 23, 42, 0.85)',
+        color: 'rgba(255, 255, 255, 0.95)',
+        border: '1px solid rgba(255, 255, 255, 0.2)',
       }
     : {
-        background: `${color}20`,
-        borderColor: `${color}40`,
-        color,
+        background: 'rgb(248, 250, 252)',
+        border: '1px solid rgb(226, 232, 240)',
+        color: 'rgb(51, 65, 85)',
       };
 
   const [showTooltip, setShowTooltip] = useState(false);
@@ -258,10 +258,11 @@ function TypeBadge({
     const tooltipHeight = 100; // Approximate height
     const spaceAbove = rect.top;
     const spaceBelow = window.innerHeight - rect.bottom;
-    
+
     // Position below if not enough space above
-    const shouldPositionBelow = spaceAbove < tooltipHeight && spaceBelow > spaceAbove;
-    
+    const shouldPositionBelow =
+      spaceAbove < tooltipHeight && spaceBelow > spaceAbove;
+
     setTooltipPosition({
       x: rect.left + rect.width / 2,
       y: shouldPositionBelow ? rect.bottom + 10 : rect.top - 10,
@@ -273,53 +274,66 @@ function TypeBadge({
     setShowTooltip(false);
   };
 
-  const tooltipContent = mounted && showTooltip ? createPortal(
-    <div 
-      className="px-3 py-2 rounded-lg text-xs leading-relaxed text-white bg-gradient-to-br from-slate-900 to-slate-800 border border-white/20 shadow-2xl transition-all duration-200 pointer-events-none whitespace-normal"
-      style={{ 
-        position: 'fixed',
-        left: `${tooltipPosition.x}px`,
-        top: `${tooltipPosition.y}px`,
-        transform: tooltipPosition.y < 150 ? 'translate(-50%, 0%)' : 'translate(-50%, -100%)',
-        width: '16rem',
-        maxWidth: '16rem',
-        zIndex: 100000,
-        opacity: 1,
-        visibility: 'visible'
-      }}
-    >
-      {description}
-      <div 
-        className="absolute left-1/2 -translate-x-1/2 border-4 border-transparent"
-        style={tooltipPosition.y < 150 ? { 
-          top: '-8px',
-          borderBottom: '4px solid rgb(15, 23, 42)',
-          borderTop: 'none'
-        } : { 
-          bottom: '-8px',
-          borderTop: '4px solid rgb(15, 23, 42)',
-          borderBottom: 'none'
-        }}
-      />
-    </div>,
-    document.body
-  ) : null;
+  const tooltipContent =
+    mounted && showTooltip
+      ? createPortal(
+          <div
+            className="px-3 py-2 rounded-lg text-xs leading-relaxed text-white bg-gradient-to-br from-slate-900 to-slate-800 border border-white/20 shadow-2xl transition-all duration-200 pointer-events-none whitespace-normal"
+            style={{
+              position: 'fixed',
+              left: `${tooltipPosition.x}px`,
+              top: `${tooltipPosition.y}px`,
+              transform:
+                tooltipPosition.y < 150
+                  ? 'translate(-50%, 0%)'
+                  : 'translate(-50%, -100%)',
+              width: '16rem',
+              maxWidth: '16rem',
+              zIndex: 100000,
+              opacity: 1,
+              visibility: 'visible',
+            }}
+          >
+            {description}
+            <div
+              className="absolute left-1/2 -translate-x-1/2 border-4 border-transparent"
+              style={
+                tooltipPosition.y < 150
+                  ? {
+                      top: '-8px',
+                      borderBottom: '4px solid rgb(15, 23, 42)',
+                      borderTop: 'none',
+                    }
+                  : {
+                      bottom: '-8px',
+                      borderTop: '4px solid rgb(15, 23, 42)',
+                      borderBottom: 'none',
+                    }
+              }
+            />
+          </div>,
+          document.body
+        )
+      : null;
 
   return (
     <>
       <div className={badgeClasses} style={badgeStyle}>
-        <Sparkles className="h-4 w-4" />
-        <span>{type}</span>
+        <div
+          className="w-1.5 h-1.5 rounded-full"
+          style={{ background: color, boxShadow: `0 0 4px ${color}` }}
+        />
+        <span className="font-normal">{type}</span>
         <button
           type="button"
-          className="p-1.5 rounded-full hover:bg-white/20 transition-colors cursor-pointer"
+          className="p-0.5 rounded-full hover:bg-white/30 transition-all cursor-pointer"
           onClick={(e) => e.stopPropagation()}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           aria-label={`Information sur ${type}`}
-          style={onDarkBackground ? { color: 'white' } : { color }}
+          style={{ color: 'rgba(100, 116, 139, 0.7)' }}
         >
-          <Info className="h-4 w-4" />
+          <Info className="h-3 w-3" />
         </button>
       </div>
       {tooltipContent}
@@ -328,7 +342,7 @@ function TypeBadge({
 }
 
 /**
- * Verification badge with glassmorphism and pulse animation
+ * Verification badge with subtle styling
  */
 function VerifiedBadge({
   verified,
@@ -340,34 +354,36 @@ function VerifiedBadge({
   if (!verified) return null;
 
   if (onDarkBackground) {
-    // Badge sur image sombre : texte blanc avec fond semi-transparent
+    // Badge on dark background
     return (
       <div
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white shadow-lg animate-pulse-subtle border border-white/20 backdrop-blur-sm"
+        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
         style={{
-          background: 'rgba(16, 185, 129, 0.6)',
+          background: 'rgba(34, 197, 94, 0.2)',
+          color: 'rgb(34, 197, 94)',
+          border: '1px solid rgba(34, 197, 94, 0.3)',
         }}
         title="Initiative vérifiée par l'équipe LaMap"
       >
-        <Check className="h-3.5 w-3.5" />
-        <span>Vérifiée</span>
+        <Check className="h-3 w-3" />
+        <span className="font-normal">Vérifiée</span>
       </div>
     );
   }
 
-  // Badge sur fond clair : texte coloré avec fond transparent
+  // Badge on light background
   return (
     <div
-      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg animate-pulse-subtle border backdrop-blur-sm"
+      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
       style={{
-        background: 'rgba(16, 185, 129, 0.15)',
-        borderColor: 'rgba(16, 185, 129, 0.3)',
-        color: '#059669',
+        background: 'rgb(240, 253, 244)',
+        border: '1px solid rgb(187, 247, 208)',
+        color: 'rgb(22, 101, 52)',
       }}
       title="Initiative vérifiée par l'équipe LaMap"
     >
-      <Check className="h-3.5 w-3.5" />
-      <span>Vérifiée</span>
+      <Check className="h-3 w-3" />
+      <span className="font-normal">Vérifiée</span>
     </div>
   );
 }
@@ -502,22 +518,22 @@ function ShareButton({ initiative }: { initiative: Initiative }) {
   return (
     <button
       onClick={handleShare}
-      className="inline-flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 text-sm font-medium hover:scale-105 cursor-pointer"
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer"
       style={{
-        background: 'rgba(148, 163, 184, 0.12)',
-        border: '1px solid rgba(148, 163, 184, 0.2)',
-        color: copied ? '#10b981' : '#64748b',
+        background: copied ? 'rgb(240, 253, 244)' : 'rgb(248, 250, 252)',
+        border: `1px solid ${copied ? 'rgb(187, 247, 208)' : 'rgb(226, 232, 240)'}`,
+        color: copied ? 'rgb(22, 101, 52)' : 'rgb(71, 85, 105)',
       }}
       title={copied ? 'Lien copié !' : 'Partager cette initiative'}
     >
       <Share2 size={16} />
-      <span>{copied ? 'Copié !' : 'Partager'}</span>
+      <span>{copied ? 'Copié' : 'Partager'}</span>
     </button>
   );
 }
 
 /**
- * Directions button to open in Google Maps
+ * Directions button - clean black button
  */
 function DirectionsButton({ initiative }: { initiative: Initiative }) {
   const handleDirections = (e: React.MouseEvent) => {
@@ -539,10 +555,11 @@ function DirectionsButton({ initiative }: { initiative: Initiative }) {
   return (
     <button
       onClick={handleDirections}
-      className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300 cursor-pointer"
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer"
       style={{
-        background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-        boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+        background: 'rgb(15, 23, 42)',
+        border: '1px solid rgb(51, 65, 85)',
+        color: 'white',
       }}
       title="Obtenir l'itinéraire dans Google Maps"
     >
@@ -569,39 +586,28 @@ export default function InitiativeCard({
   const [imageError, setImageError] = useState(false);
   const [showFullDescription, setShowFullDescription] = useState(false);
 
-  // CSS classes based on variant with modern glassmorphism (white background)
+  // Neo-minimalist design - clean white with subtle shadows
   const variantClasses = {
-    card: 'rounded-2xl border border-white/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl cursor-pointer',
-    popup: 'rounded-2xl border border-white/60 max-w-sm',
-    list: 'rounded-xl border border-white/50 hover:border-white/70 transition-all duration-300 hover:scale-[1.01] cursor-pointer',
-    detailed: 'rounded-2xl border border-white/60',
+    card: 'rounded-xl border border-slate-200 transition-all duration-300 hover:shadow-lg cursor-pointer overflow-hidden bg-white',
+    popup:
+      'rounded-xl border border-slate-200 max-w-sm overflow-hidden bg-white',
+    list: 'rounded-lg border border-slate-100 transition-all duration-300 hover:shadow-md cursor-pointer overflow-hidden bg-white',
+    detailed: 'rounded-xl border border-slate-200 overflow-hidden bg-white',
   };
 
-  // Shadow styles with green glow
+  // Clean shadows - subtle and readable
   const shadowStyles = {
     card: {
-      boxShadow:
-        '0 8px 32px rgba(16, 185, 129, 0.2), 0 4px 16px rgba(16, 185, 129, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.6) inset',
-      background: 'rgba(255, 255, 255, 0.92)',
-      backdropFilter: 'blur(24px) saturate(180%)',
+      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
     },
     popup: {
-      boxShadow:
-        '0 12px 40px rgba(16, 185, 129, 0.25), 0 6px 20px rgba(16, 185, 129, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.7) inset',
-      background: 'rgba(255, 255, 255, 0.95)',
-      backdropFilter: 'blur(28px) saturate(180%)',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
     },
     list: {
-      boxShadow:
-        '0 4px 16px rgba(16, 185, 129, 0.15), 0 2px 8px rgba(16, 185, 129, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.5) inset',
-      background: 'rgba(255, 255, 255, 0.88)',
-      backdropFilter: 'blur(20px) saturate(180%)',
+      boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
     },
     detailed: {
-      boxShadow:
-        '0 12px 40px rgba(16, 185, 129, 0.25), 0 6px 20px rgba(16, 185, 129, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.7) inset',
-      background: 'rgba(255, 255, 255, 0.95)',
-      backdropFilter: 'blur(28px) saturate(180%)',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
     },
   };
 
@@ -798,40 +804,33 @@ export default function InitiativeCard({
         </div>
       )}
 
-      {/* Main content with glassmorphism background */}
-      <div className="p-6 space-y-5">
-        {/* Main title - modern dark text */}
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 leading-tight">
-            {initiative.name}
-          </h2>
-        </div>
+      {/* Main content - clean and readable */}
+      <div className="p-5 space-y-4">
+        {/* Title - clear hierarchy */}
+        <h2 className="text-2xl font-bold text-slate-900 leading-tight">
+          {initiative.name}
+        </h2>
 
-        {/* Address with icons */}
+        {/* Address - clean container */}
         {initiative.address && (
           <div
-            className="flex items-start gap-3 p-3.5 rounded-xl"
+            className="flex items-start gap-2.5 p-3 rounded-lg"
             style={{
-              background: 'rgba(16, 185, 129, 0.08)',
-              border: '1px solid rgba(16, 185, 129, 0.2)',
+              background: 'rgb(248, 250, 252)',
+              border: '1px solid rgb(226, 232, 240)',
             }}
           >
-            <MapPin
-              size={18}
-              className="flex-shrink-0 mt-0.5 text-emerald-600"
-            />
-            <div className="flex-1">
-              <p className="text-sm leading-relaxed text-gray-800 font-medium">
-                {initiative.address}
-              </p>
-            </div>
+            <MapPin size={16} className="flex-shrink-0 mt-0.5 text-slate-500" />
+            <p className="text-sm leading-relaxed text-slate-700">
+              {initiative.address}
+            </p>
           </div>
         )}
 
-        {/* Description */}
+        {/* Description - readable sizing */}
         {description && (
           <div className="space-y-2">
-            <p className="text-sm text-gray-700 leading-relaxed">
+            <p className="text-sm text-slate-600 leading-relaxed">
               {truncatedDescription}
             </p>
             {description.length > 120 && (
@@ -840,9 +839,9 @@ export default function InitiativeCard({
                   e.stopPropagation();
                   setShowFullDescription(!showFullDescription);
                 }}
-                className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors inline-flex items-center gap-1 cursor-pointer"
+                className="text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors cursor-pointer"
               >
-                {showFullDescription ? '− Voir moins' : '+ Voir plus'}
+                {showFullDescription ? 'Voir moins' : 'Voir plus'}
               </button>
             )}
           </div>
@@ -959,30 +958,27 @@ export default function InitiativeCard({
           </div>
         )}
 
-        {/* Social Media Links */}
+        {/* Social Media - clean with official colors */}
         {initiative.social_media &&
           Object.values(initiative.social_media).some(Boolean) && (
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Share2 size={18} className="text-emerald-600" />
-                <span className="text-sm font-semibold text-gray-900">
-                  Réseaux sociaux
-                </span>
-              </div>
+            <div className="space-y-3 pt-4 border-t border-slate-200">
+              <h3 className="text-sm font-medium text-slate-900">
+                Réseaux sociaux
+              </h3>
               <div className="flex flex-wrap items-center gap-2">
                 {initiative.social_media.facebook && (
                   <a
                     href={initiative.social_media.facebook}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white transition-opacity hover:opacity-90"
                     style={{
                       background: '#1877F2',
                     }}
                     onClick={(e) => e.stopPropagation()}
                     title="Facebook"
                   >
-                    <Facebook size={16} />
+                    <Facebook size={14} />
                     <span>Facebook</span>
                   </a>
                 )}
@@ -992,7 +988,7 @@ export default function InitiativeCard({
                     href={initiative.social_media.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white transition-opacity hover:opacity-90"
                     style={{
                       background:
                         'linear-gradient(135deg, #833AB4 0%, #E4405F 50%, #F77737 100%)',
@@ -1000,7 +996,7 @@ export default function InitiativeCard({
                     onClick={(e) => e.stopPropagation()}
                     title="Instagram"
                   >
-                    <Instagram size={16} />
+                    <Instagram size={14} />
                     <span>Instagram</span>
                   </a>
                 )}
@@ -1010,15 +1006,15 @@ export default function InitiativeCard({
                     href={initiative.social_media.twitter}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white transition-opacity hover:opacity-90"
                     style={{
                       background: '#000000',
                     }}
                     onClick={(e) => e.stopPropagation()}
-                    title="Twitter/X"
+                    title="X (Twitter)"
                   >
-                    <Twitter size={16} />
-                    <span>Twitter/X</span>
+                    <Twitter size={14} />
+                    <span>X</span>
                   </a>
                 )}
 
@@ -1027,14 +1023,14 @@ export default function InitiativeCard({
                     href={initiative.social_media.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white transition-opacity hover:opacity-90"
                     style={{
                       background: '#0A66C2',
                     }}
                     onClick={(e) => e.stopPropagation()}
                     title="LinkedIn"
                   >
-                    <Linkedin size={16} />
+                    <Linkedin size={14} />
                     <span>LinkedIn</span>
                   </a>
                 )}
@@ -1044,14 +1040,14 @@ export default function InitiativeCard({
                     href={initiative.social_media.youtube}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white transition-opacity hover:opacity-90"
                     style={{
                       background: '#FF0000',
                     }}
                     onClick={(e) => e.stopPropagation()}
                     title="YouTube"
                   >
-                    <Youtube size={16} />
+                    <Youtube size={14} />
                     <span>YouTube</span>
                   </a>
                 )}
