@@ -41,7 +41,7 @@ import {
 import Image from 'next/image';
 import { useState } from 'react';
 
-import { TYPE_GRADIENTS, INITIATIVE_ICONS } from '@/types/initiative';
+import { TYPE_GRADIENTS, INITIATIVE_ICONS, TYPE_MARKER_COLORS } from '@/types/initiative';
 
 import type { Initiative, OpeningHours } from '@/types/initiative';
 
@@ -207,15 +207,36 @@ function ImagePlaceholder({ type }: { type: Initiative['type'] }) {
 /**
  * Initiative type badge with gradient matching FilterPanel
  */
-function TypeBadge({ type }: { type: Initiative['type'] }) {
-  const gradient = TYPE_GRADIENTS[type];
+function TypeBadge({ type, onDarkBackground = false }: { type: Initiative['type'], onDarkBackground?: boolean }) {
+  const color = TYPE_MARKER_COLORS[type];
 
+  if (onDarkBackground) {
+    // Badge sur image sombre : texte blanc avec fond semi-transparent
+    return (
+      <div
+        className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold text-white shadow-lg backdrop-blur-sm border border-white/20"
+        style={{
+          background: 'rgba(0, 0, 0, 0.4)',
+        }}
+      >
+        <Sparkles className="h-3 w-3" />
+        <span>{type}</span>
+      </div>
+    );
+  }
+
+  // Badge sur fond clair : texte coloré avec fond transparent
   return (
     <div
-      className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold text-white shadow-lg backdrop-blur-sm bg-gradient-to-r ${gradient}`}
+      className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold shadow-lg backdrop-blur-sm border"
+      style={{
+        background: `${color}20`, // 20 = 12.5% opacity en hex
+        borderColor: `${color}40`, // 40 = 25% opacity en hex
+        color,
+      }}
     >
       <Sparkles className="h-3 w-3" />
-      {type}
+      <span>{type}</span>
     </div>
   );
 }
@@ -223,57 +244,38 @@ function TypeBadge({ type }: { type: Initiative['type'] }) {
 /**
  * Verification badge with glassmorphism and pulse animation
  */
-function VerifiedBadge({ verified }: { verified: boolean }) {
+function VerifiedBadge({ verified, onDarkBackground = false }: { verified: boolean, onDarkBackground?: boolean }) {
   if (!verified) return null;
 
+  if (onDarkBackground) {
+    // Badge sur image sombre : texte blanc avec fond semi-transparent
+    return (
+      <div
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white shadow-lg animate-pulse-subtle border border-white/20 backdrop-blur-sm"
+        style={{
+          background: 'rgba(16, 185, 129, 0.6)',
+        }}
+        title="Initiative vérifiée par l'équipe LaMap"
+      >
+        <Check className="h-3.5 w-3.5" />
+        <span>Vérifiée</span>
+      </div>
+    );
+  }
+
+  // Badge sur fond clair : texte coloré avec fond transparent
   return (
     <div
-      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white shadow-lg animate-pulse-subtle"
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg animate-pulse-subtle border backdrop-blur-sm"
       style={{
-        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-        boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)',
+        background: 'rgba(16, 185, 129, 0.15)',
+        borderColor: 'rgba(16, 185, 129, 0.3)',
+        color: '#059669',
       }}
       title="Initiative vérifiée par l'équipe LaMap"
     >
       <Check className="h-3.5 w-3.5" />
       <span>Vérifiée</span>
-    </div>
-  );
-}
-
-/**
- * Open/Closed status badge with animation
- */
-function OpenStatusBadge({
-  openingHours,
-}: {
-  openingHours: OpeningHours | undefined;
-}) {
-  const isOpen = isOpenNow(openingHours);
-
-  if (!openingHours) return null;
-
-  return (
-    <div
-      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white shadow-lg ${
-        isOpen ? 'animate-pulse-subtle' : ''
-      }`}
-      style={{
-        background: isOpen
-          ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
-          : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-        boxShadow: isOpen
-          ? '0 4px 12px rgba(16, 185, 129, 0.4)'
-          : '0 4px 12px rgba(239, 68, 68, 0.4)',
-      }}
-      title={
-        isOpen
-          ? "Actuellement ouvert selon les horaires d'ouverture"
-          : "Actuellement fermé selon les horaires d'ouverture"
-      }
-    >
-      <Clock className="h-3.5 w-3.5" />
-      <span>{isOpen ? 'Ouvert' : 'Fermé'}</span>
     </div>
   );
 }
@@ -330,13 +332,31 @@ function QuickContact({ initiative }: { initiative: Initiative }) {
 /**
  * Distance badge with prominent display
  */
-function DistanceBadge({ distance }: { distance: number }) {
+function DistanceBadge({ distance, onDarkBackground = false }: { distance: number, onDarkBackground?: boolean }) {
+  if (onDarkBackground) {
+    // Badge sur image sombre : texte blanc avec fond semi-transparent
+    return (
+      <div
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white shadow-lg border border-white/20 backdrop-blur-sm"
+        style={{
+          background: 'rgba(59, 130, 246, 0.6)',
+        }}
+        title={`À ${formatDistance(distance)} de votre position`}
+      >
+        <Navigation size={14} className="rotate-45" />
+        <span>{formatDistance(distance)}</span>
+      </div>
+    );
+  }
+
+  // Badge sur fond clair : texte coloré avec fond transparent
   return (
     <div
-      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white shadow-lg"
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg border backdrop-blur-sm"
       style={{
-        background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-        boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)',
+        background: 'rgba(59, 130, 246, 0.15)',
+        borderColor: 'rgba(59, 130, 246, 0.3)',
+        color: '#2563eb',
       }}
       title={`À ${formatDistance(distance)} de votre position`}
     >
@@ -525,7 +545,6 @@ export default function InitiativeCard({
               <div className="flex items-center gap-2 mb-3 flex-wrap">
                 <TypeBadge type={initiative.type} />
                 <VerifiedBadge verified={initiative.verified} />
-                <OpenStatusBadge openingHours={initiative.opening_hours} />
                 {distance && <DistanceBadge distance={distance} />}
               </div>
 
@@ -576,20 +595,18 @@ export default function InitiativeCard({
 
             {/* Badges positioned on image */}
             <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-              <TypeBadge type={initiative.type} />
-              <VerifiedBadge verified={initiative.verified} />
-              <OpenStatusBadge openingHours={initiative.opening_hours} />
-              {distance && <DistanceBadge distance={distance} />}
+              <TypeBadge type={initiative.type} onDarkBackground />
+              <VerifiedBadge verified={initiative.verified} onDarkBackground />
+              {distance && <DistanceBadge distance={distance} onDarkBackground />}
             </div>
           </div>
         ) : (
           <div className="relative">
             <ImagePlaceholder type={initiative.type} />
             {/* Badges positioned on placeholder */}
-            <div className="absolute top-3 left-3 flex flex-wrap gap-2">
+            <div className="absolute top-4 left-4 flex flex-wrap gap-2">
               <TypeBadge type={initiative.type} />
               <VerifiedBadge verified={initiative.verified} />
-              <OpenStatusBadge openingHours={initiative.opening_hours} />
               {distance && <DistanceBadge distance={distance} />}
             </div>
           </div>
@@ -597,11 +614,10 @@ export default function InitiativeCard({
 
         <div className="p-5">
           {/* Badges if no image */}
-          {(!initiative.image_url || imageError) && (
+          {!initiative.image_url && (
             <div className="flex items-center gap-2 mb-3 flex-wrap">
               <TypeBadge type={initiative.type} />
               <VerifiedBadge verified={initiative.verified} />
-              <OpenStatusBadge openingHours={initiative.opening_hours} />
               {distance && <DistanceBadge distance={distance} />}
             </div>
           )}
@@ -665,10 +681,9 @@ export default function InitiativeCard({
 
           {/* Badges positioned on image with glassmorphism */}
           <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-            <TypeBadge type={initiative.type} />
-            <VerifiedBadge verified={initiative.verified} />
-            <OpenStatusBadge openingHours={initiative.opening_hours} />
-            {distance && <DistanceBadge distance={distance} />}
+            <TypeBadge type={initiative.type} onDarkBackground />
+            <VerifiedBadge verified={initiative.verified} onDarkBackground />
+            {distance && <DistanceBadge distance={distance} onDarkBackground />}
           </div>
         </div>
       ) : (
@@ -676,26 +691,15 @@ export default function InitiativeCard({
           <ImagePlaceholder type={initiative.type} />
           {/* Badges positioned on placeholder */}
           <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-            <TypeBadge type={initiative.type} />
-            <VerifiedBadge verified={initiative.verified} />
-            <OpenStatusBadge openingHours={initiative.opening_hours} />
-            {distance && <DistanceBadge distance={distance} />}
+            <TypeBadge type={initiative.type} onDarkBackground />
+            <VerifiedBadge verified={initiative.verified} onDarkBackground />
+            {distance && <DistanceBadge distance={distance} onDarkBackground />}
           </div>
         </div>
       )}
 
       {/* Main content with glassmorphism background */}
       <div className="p-6 space-y-5">
-        {/* Header: Type badge + Verified (if no image) */}
-        {(!initiative.image_url || imageError) && (
-          <div className="flex items-center gap-2 flex-wrap">
-            <TypeBadge type={initiative.type} />
-            <VerifiedBadge verified={initiative.verified} />
-            <OpenStatusBadge openingHours={initiative.opening_hours} />
-            {distance && <DistanceBadge distance={distance} />}
-          </div>
-        )}
-
         {/* Main title - modern dark text */}
         <div>
           <h2 className="text-2xl font-bold text-gray-900 leading-tight">
@@ -766,22 +770,22 @@ export default function InitiativeCard({
               </span>
               {isOpen ? (
                 <span
-                  className="text-xs px-2.5 py-1 rounded-full font-bold text-white animate-pulse-subtle"
+                  className="text-xs px-2.5 py-1 rounded-full font-bold animate-pulse-subtle border backdrop-blur-sm"
                   style={{
-                    background:
-                      'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                    boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)',
+                    background: 'rgba(16, 185, 129, 0.15)',
+                    borderColor: 'rgba(16, 185, 129, 0.3)',
+                    color: '#059669',
                   }}
                 >
                   • Ouvert maintenant
                 </span>
               ) : (
                 <span
-                  className="text-xs px-2.5 py-1 rounded-full font-bold text-white"
+                  className="text-xs px-2.5 py-1 rounded-full font-bold border backdrop-blur-sm"
                   style={{
-                    background:
-                      'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                    boxShadow: '0 4px 12px rgba(239, 68, 68, 0.4)',
+                    background: 'rgba(239, 68, 68, 0.15)',
+                    borderColor: 'rgba(239, 68, 68, 0.3)',
+                    color: '#dc2626',
                   }}
                 >
                   • Fermé

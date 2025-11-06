@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { INITIATIVE_DESCRIPTIONS } from '@/types/initiative';
@@ -75,11 +74,11 @@ export default function FilterPanel({
   const [isExpanded, setIsExpanded] = useState(true);
 
   const handleTypeToggle = (type: InitiativeType) => {
-    if (selectedTypes.includes(type)) {
-      onFilterChange(selectedTypes.filter((t) => t !== type));
-    } else {
-      onFilterChange([...selectedTypes, type]);
-    }
+    const newSelection = selectedTypes.includes(type)
+      ? selectedTypes.filter((t) => t !== type)
+      : [...selectedTypes, type];
+    
+    onFilterChange(newSelection);
   };
 
   const handleSelectAll = () => {
@@ -168,12 +167,13 @@ export default function FilterPanel({
                   return (
                     <div
                       key={type}
+                      onClick={() => handleTypeToggle(type)}
                       className={`
-                        relative group flex items-center justify-between p-3 rounded-xl
+                        w-full relative group flex items-center justify-between p-3 rounded-xl
                         cursor-pointer transition-all duration-300
                         ${
                           isSelected
-                            ? 'bg-white/20 backdrop-blur-md shadow-lg scale-[1.02]'
+                            ? 'bg-white/20 backdrop-blur-md shadow-lg'
                             : 'bg-white/5 hover:bg-white/10'
                         }
                       `}
@@ -185,30 +185,25 @@ export default function FilterPanel({
                         />
                       )}
 
-                      <div
-                        onClick={() => handleTypeToggle(type)}
-                        className="relative flex items-center gap-3 flex-1"
-                      >
+                      <div className="relative flex items-center gap-3 flex-1 min-w-0">
                         <Checkbox
                           id={`filter-${type}`}
                           checked={isSelected}
                           onCheckedChange={() => handleTypeToggle(type)}
-                          className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-emerald-500 data-[state=checked]:to-green-500 border-white/30"
+                          onClick={(e) => e.stopPropagation()}
+                          className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-emerald-500 data-[state=checked]:to-green-500 border-white/30 flex-shrink-0"
                         />
-                        <Label
-                          htmlFor={`filter-${type}`}
-                          className="flex items-center gap-2 cursor-pointer"
-                        >
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
                           <span
-                            className={`w-3 h-3 rounded-full bg-gradient-to-r ${TYPE_GRADIENTS[type]} shadow-lg`}
+                            className={`w-3 h-3 rounded-full bg-gradient-to-r ${TYPE_GRADIENTS[type]} shadow-lg flex-shrink-0`}
                           />
-                          <span className="text-sm font-medium text-white">
+                          <span className="text-sm font-medium text-white truncate">
                             {type}
                           </span>
-                        </Label>
+                        </div>
                       </div>
 
-                      <div className="relative z-10 flex items-center gap-2">
+                      <div className="relative z-10 flex items-center gap-2 flex-shrink-0">
                         {/* Info tooltip */}
                         <Tooltip delayDuration={200}>
                           <TooltipTrigger asChild>
