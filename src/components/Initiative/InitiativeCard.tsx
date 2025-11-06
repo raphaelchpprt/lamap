@@ -45,7 +45,8 @@ import {
   Info,
 } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 import {
   TYPE_GRADIENTS,
@@ -244,54 +245,70 @@ function TypeBadge({
         color,
       };
 
-  return (
-    <div className={badgeClasses} style={badgeStyle}>
-      <Sparkles className="h-4 w-4" />
-      <span>{type}</span>
-      <button
-        type="button"
-        className="p-1.5 rounded-full hover:bg-white/20 transition-colors cursor-pointer relative"
-        onClick={(e) => e.stopPropagation()}
-        onMouseEnter={(e) => {
-          const tooltip = document.getElementById(`tooltip-badge-${type.replace(/\s+/g, '-')}`);
-          if (tooltip) {
-            const rect = e.currentTarget.getBoundingClientRect();
-            tooltip.style.left = `${rect.left + rect.width / 2}px`;
-            tooltip.style.top = `${rect.top - 10}px`;
-            tooltip.style.transform = 'translate(-50%, -100%)';
-            tooltip.style.opacity = '1';
-            tooltip.style.visibility = 'visible';
-          }
-        }}
-        onMouseLeave={() => {
-          const tooltip = document.getElementById(`tooltip-badge-${type.replace(/\s+/g, '-')}`);
-          if (tooltip) {
-            tooltip.style.opacity = '0';
-            tooltip.style.visibility = 'hidden';
-          }
-        }}
-        aria-label={`Information sur ${type}`}
-        style={onDarkBackground ? { color: 'white' } : { color }}
-      >
-        <Info className="h-4 w-4" />
-      </button>
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setTooltipPosition({
+      x: rect.left + rect.width / 2,
+      y: rect.top - 10,
+    });
+    setShowTooltip(true);
+  };
+
+  const handleMouseLeave = () => {
+    setShowTooltip(false);
+  };
+
+  const tooltipContent = mounted && showTooltip ? createPortal(
+    <div 
+      className="px-3 py-2 rounded-lg text-xs leading-relaxed text-white bg-gradient-to-br from-slate-900 to-slate-800 border border-white/20 shadow-2xl transition-all duration-200 pointer-events-none whitespace-normal"
+      style={{ 
+        position: 'fixed',
+        left: `${tooltipPosition.x}px`,
+        top: `${tooltipPosition.y}px`,
+        transform: 'translate(-50%, -100%)',
+        width: '16rem',
+        maxWidth: '16rem',
+        zIndex: 100000,
+        opacity: 1,
+        visibility: 'visible'
+      }}
+    >
+      {description}
       <div 
-        id={`tooltip-badge-${type.replace(/\s+/g, '-')}`}
-        className="px-3 py-2 rounded-lg text-xs leading-relaxed text-white bg-gradient-to-br from-slate-900 to-slate-800 border border-white/20 shadow-2xl opacity-0 invisible transition-all duration-200 pointer-events-none whitespace-normal"
-        style={{ 
-          position: 'fixed',
-          width: '16rem',
-          maxWidth: '16rem',
-          zIndex: 100000
-        }}
-      >
-        {description}
-        <div 
-          className="absolute left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"
-          style={{ bottom: '-8px' }}
-        />
+        className="absolute left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"
+        style={{ bottom: '-8px' }}
+      />
+    </div>,
+    document.body
+  ) : null;
+
+  return (
+    <>
+      <div className={badgeClasses} style={badgeStyle}>
+        <Sparkles className="h-4 w-4" />
+        <span>{type}</span>
+        <button
+          type="button"
+          className="p-1.5 rounded-full hover:bg-white/20 transition-colors cursor-pointer"
+          onClick={(e) => e.stopPropagation()}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          aria-label={`Information sur ${type}`}
+          style={onDarkBackground ? { color: 'white' } : { color }}
+        >
+          <Info className="h-4 w-4" />
+        </button>
       </div>
-    </div>
+      {tooltipContent}
+    </>
   );
 }
 
