@@ -47,8 +47,18 @@ import {
 import Image from 'next/image';
 import { useState } from 'react';
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { TYPE_GRADIENTS, INITIATIVE_ICONS, TYPE_MARKER_COLORS, INITIATIVE_DESCRIPTIONS } from '@/types/initiative';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import {
+  TYPE_GRADIENTS,
+  INITIATIVE_ICONS,
+  TYPE_MARKER_COLORS,
+  INITIATIVE_DESCRIPTIONS,
+} from '@/types/initiative';
 
 import type { Initiative, OpeningHours } from '@/types/initiative';
 
@@ -213,68 +223,48 @@ function ImagePlaceholder({ type }: { type: Initiative['type'] }) {
 
 /**
  * Initiative type badge with gradient matching FilterPanel
- * Includes tooltip with info icon like in FilterPanel
+ * Includes tooltip with info icon that appears only on hover
  */
-function TypeBadge({ type, onDarkBackground = false }: { type: Initiative['type'], onDarkBackground?: boolean }) {
+function TypeBadge({
+  type,
+  onDarkBackground = false,
+}: {
+  type: Initiative['type'];
+  onDarkBackground?: boolean;
+}) {
   const color = TYPE_MARKER_COLORS[type];
   const description = INITIATIVE_DESCRIPTIONS[type];
 
-  const badgeContent = onDarkBackground ? (
-    // Badge sur image sombre : texte blanc avec fond semi-transparent
-    <div
-      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold text-white shadow-lg backdrop-blur-sm border border-white/20"
-      style={{
-        background: 'rgba(0, 0, 0, 0.4)',
-      }}
-    >
-      <Sparkles className="h-3 w-3" />
-      <span>{type}</span>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              type="button"
-              className="p-0.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors ml-0.5"
-              onClick={(e) => e.stopPropagation()}
-              aria-label={`Information sur ${type}`}
-            >
-              <Info className="h-3 w-3" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent
-            side="top"
-            align="center"
-            sideOffset={8}
-            className="max-w-xs bg-gradient-to-br from-slate-900/98 to-slate-800/98 backdrop-blur-xl border border-white/20 text-white shadow-2xl"
-          >
-            <p className="text-xs leading-relaxed">
-              {description}
-            </p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    </div>
-  ) : (
-    // Badge sur fond clair : texte coloré avec fond transparent
-    <div
-      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold shadow-lg backdrop-blur-sm border"
-      style={{
-        background: `${color}20`, // 20 = 12.5% opacity en hex
-        borderColor: `${color}40`, // 40 = 25% opacity en hex
+  // Style uniforme pour tous les badges (comme dans le popup map)
+  const badgeClasses = onDarkBackground
+    ? 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold text-white shadow-lg backdrop-blur-sm border border-white/20'
+    : 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold shadow-lg backdrop-blur-sm border';
+
+  const badgeStyle = onDarkBackground
+    ? { background: 'rgba(0, 0, 0, 0.4)' }
+    : {
+        background: `${color}20`,
+        borderColor: `${color}40`,
         color,
-      }}
-    >
+      };
+
+  return (
+    <div className={badgeClasses} style={badgeStyle}>
       <Sparkles className="h-3 w-3" />
       <span>{type}</span>
-      <TooltipProvider>
+      <TooltipProvider delayDuration={300}>
         <Tooltip>
           <TooltipTrigger asChild>
             <button
               type="button"
-              className="p-0.5 rounded-full hover:bg-black/10 transition-colors ml-0.5"
+              className={
+                onDarkBackground
+                  ? 'p-0.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors ml-0.5'
+                  : 'p-0.5 rounded-full hover:bg-black/10 transition-colors ml-0.5'
+              }
               onClick={(e) => e.stopPropagation()}
               aria-label={`Information sur ${type}`}
-              style={{ color }}
+              style={onDarkBackground ? {} : { color }}
             >
               <Info className="h-3 w-3" />
             </button>
@@ -285,22 +275,24 @@ function TypeBadge({ type, onDarkBackground = false }: { type: Initiative['type'
             sideOffset={8}
             className="max-w-xs bg-gradient-to-br from-slate-900/98 to-slate-800/98 backdrop-blur-xl border border-white/20 text-white shadow-2xl"
           >
-            <p className="text-xs leading-relaxed">
-              {description}
-            </p>
+            <p className="text-xs leading-relaxed">{description}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
     </div>
   );
-
-  return badgeContent;
 }
 
 /**
  * Verification badge with glassmorphism and pulse animation
  */
-function VerifiedBadge({ verified, onDarkBackground = false }: { verified: boolean, onDarkBackground?: boolean }) {
+function VerifiedBadge({
+  verified,
+  onDarkBackground = false,
+}: {
+  verified: boolean;
+  onDarkBackground?: boolean;
+}) {
   if (!verified) return null;
 
   if (onDarkBackground) {
@@ -388,7 +380,13 @@ function QuickContact({ initiative }: { initiative: Initiative }) {
 /**
  * Distance badge with prominent display
  */
-function DistanceBadge({ distance, onDarkBackground = false }: { distance: number, onDarkBackground?: boolean }) {
+function DistanceBadge({
+  distance,
+  onDarkBackground = false,
+}: {
+  distance: number;
+  onDarkBackground?: boolean;
+}) {
   if (onDarkBackground) {
     // Badge sur image sombre : texte blanc avec fond semi-transparent
     return (
@@ -653,7 +651,9 @@ export default function InitiativeCard({
             <div className="absolute top-3 left-3 flex flex-wrap gap-2">
               <TypeBadge type={initiative.type} onDarkBackground />
               <VerifiedBadge verified={initiative.verified} onDarkBackground />
-              {distance && <DistanceBadge distance={distance} onDarkBackground />}
+              {distance && (
+                <DistanceBadge distance={distance} onDarkBackground />
+              )}
             </div>
           </div>
         ) : (
@@ -916,102 +916,104 @@ export default function InitiativeCard({
         )}
 
         {/* Social Media Links */}
-        {initiative.social_media && Object.values(initiative.social_media).some(Boolean) && (
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <Share2 size={18} className="text-emerald-600" />
-              <span className="text-sm font-semibold text-gray-900">
-                Réseaux sociaux
-              </span>
+        {initiative.social_media &&
+          Object.values(initiative.social_media).some(Boolean) && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Share2 size={18} className="text-emerald-600" />
+                <span className="text-sm font-semibold text-gray-900">
+                  Réseaux sociaux
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                {initiative.social_media.facebook && (
+                  <a
+                    href={initiative.social_media.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300"
+                    style={{
+                      background: '#1877F2',
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                    title="Facebook"
+                  >
+                    <Facebook size={16} />
+                    <span>Facebook</span>
+                  </a>
+                )}
+
+                {initiative.social_media.instagram && (
+                  <a
+                    href={initiative.social_media.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300"
+                    style={{
+                      background:
+                        'linear-gradient(135deg, #833AB4 0%, #E4405F 50%, #F77737 100%)',
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                    title="Instagram"
+                  >
+                    <Instagram size={16} />
+                    <span>Instagram</span>
+                  </a>
+                )}
+
+                {initiative.social_media.twitter && (
+                  <a
+                    href={initiative.social_media.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300"
+                    style={{
+                      background: '#000000',
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                    title="Twitter/X"
+                  >
+                    <Twitter size={16} />
+                    <span>Twitter/X</span>
+                  </a>
+                )}
+
+                {initiative.social_media.linkedin && (
+                  <a
+                    href={initiative.social_media.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300"
+                    style={{
+                      background: '#0A66C2',
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                    title="LinkedIn"
+                  >
+                    <Linkedin size={16} />
+                    <span>LinkedIn</span>
+                  </a>
+                )}
+
+                {initiative.social_media.youtube && (
+                  <a
+                    href={initiative.social_media.youtube}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300"
+                    style={{
+                      background: '#FF0000',
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                    title="YouTube"
+                  >
+                    <Youtube size={16} />
+                    <span>YouTube</span>
+                  </a>
+                )}
+              </div>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              {initiative.social_media.facebook && (
-                <a
-                  href={initiative.social_media.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300"
-                  style={{
-                    background: '#1877F2',
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                  title="Facebook"
-                >
-                  <Facebook size={16} />
-                  <span>Facebook</span>
-                </a>
-              )}
-
-              {initiative.social_media.instagram && (
-                <a
-                  href={initiative.social_media.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300"
-                  style={{
-                    background: 'linear-gradient(135deg, #833AB4 0%, #E4405F 50%, #F77737 100%)',
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                  title="Instagram"
-                >
-                  <Instagram size={16} />
-                  <span>Instagram</span>
-                </a>
-              )}
-
-              {initiative.social_media.twitter && (
-                <a
-                  href={initiative.social_media.twitter}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300"
-                  style={{
-                    background: '#000000',
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                  title="Twitter/X"
-                >
-                  <Twitter size={16} />
-                  <span>Twitter/X</span>
-                </a>
-              )}
-
-              {initiative.social_media.linkedin && (
-                <a
-                  href={initiative.social_media.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300"
-                  style={{
-                    background: '#0A66C2',
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                  title="LinkedIn"
-                >
-                  <Linkedin size={16} />
-                  <span>LinkedIn</span>
-                </a>
-              )}
-
-              {initiative.social_media.youtube && (
-                <a
-                  href={initiative.social_media.youtube}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white hover:scale-105 transition-all duration-300"
-                  style={{
-                    background: '#FF0000',
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                  title="YouTube"
-                >
-                  <Youtube size={16} />
-                  <span>YouTube</span>
-                </a>
-              )}
-            </div>
-          </div>
-        )}
+          )}
 
         {/* Admin actions with modern styling */}
         {showActions && (onEdit || onDelete) && (
