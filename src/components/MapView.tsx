@@ -1,6 +1,6 @@
 'use client';
 import { MapPlus } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 import AddInitiativeForm from '@/components/AddInitiativeForm';
 import FilterPanel from '@/components/FilterPanel';
@@ -39,6 +39,18 @@ export default function MapView() {
   const handleInitiativesLoaded = (loadedInitiatives: Initiative[]) => {
     setInitiatives(loadedInitiatives);
   };
+
+  // Calculate initiative counts by type for FilterPanel badges
+  const initiativeCounts = initiatives.reduce((acc, initiative) => {
+    acc[initiative.type] = (acc[initiative.type] || 0) + 1;
+    return acc;
+  }, {} as Partial<Record<InitiativeType, number>>);
+
+  // Memoize filters object to prevent unnecessary re-renders
+  const mapFilters = useMemo(() => ({
+    types: selectedTypes,
+    verified_only: false,
+  }), [selectedTypes]);
 
   return (
     <div className="flex h-full w-full rounded-tl-[2rem] rounded-bl-[2rem]">
@@ -95,16 +107,14 @@ export default function MapView() {
         <FilterPanel
           selectedTypes={selectedTypes}
           onFilterChange={setSelectedTypes}
+          initiativeCounts={initiativeCounts}
         />
       </aside>
 
       {/* Main - Map extended to overlap behind sidebar */}
       <main className="relative flex-1 -ml-24">
         <Map
-          filters={{
-            types: selectedTypes,
-            verified_only: false,
-          }}
+          filters={mapFilters}
           onInitiativeClick={handleInitiativeClick}
           onInitiativesLoaded={handleInitiativesLoaded}
           enableClustering

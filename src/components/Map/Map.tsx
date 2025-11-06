@@ -14,7 +14,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import {
   databaseInitiativeToInitiative,
-  type DatabaseInitiative,
+  type DatabaseInitiativeWithTextLocation,
 } from '@/lib/supabase/types';
 import { TYPE_GRADIENTS_CSS } from '@/types/initiative';
 
@@ -97,6 +97,8 @@ export default function Map({
   const [error, setError] = useState<string | null>(null);
   const loadTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastBoundsRef = useRef<mapboxgl.LngLatBounds | null>(null);
+  const lastFiltersRef = useRef<InitiativeFilters | undefined>(filters);
+  const setupMapLayersRef = useRef<(() => void) | null>(null);
 
   // ================================
   // MAP INITIALIZATION
@@ -188,7 +190,9 @@ export default function Map({
     }
 
     // Wait for map to be ready
-    if (!map.current || !isLoaded) return;
+    if (!map.current || !isLoaded) {
+      return;
+    }
 
     // Clear any pending load timeout (debounce)
     if (loadTimeoutRef.current) {
@@ -196,8 +200,13 @@ export default function Map({
     }
 
     // Check if bounds changed significantly (avoid reload on tiny movements)
+    // BUT always reload if filters changed
+    const filtersChanged = 
+      JSON.stringify(lastFiltersRef.current?.types) !== JSON.stringify(filters?.types) ||
+      lastFiltersRef.current?.verified_only !== filters?.verified_only;
+    
     const currentBounds = map.current.getBounds();
-    if (lastBoundsRef.current && currentBounds) {
+    if (lastBoundsRef.current && currentBounds && !filtersChanged) {
       const lastCenter = lastBoundsRef.current.getCenter();
       const currentCenter = currentBounds.getCenter();
       const distance = lastCenter.distanceTo(currentCenter);
@@ -212,6 +221,9 @@ export default function Map({
         return;
       }
     }
+    
+    // Update last filters
+    lastFiltersRef.current = filters;
 
     // Debounce: wait 500ms before loading
     loadTimeoutRef.current = setTimeout(async () => {
@@ -259,7 +271,7 @@ export default function Map({
             p_limit: limit,
           } as never
         )) as {
-          data: DatabaseInitiative[] | null;
+          data: DatabaseInitiativeWithTextLocation[] | null;
           error: { message: string } | null;
         };
 
@@ -267,9 +279,10 @@ export default function Map({
           throw new Error(`Erreur Supabase: ${dbError.message}`);
         }
 
-        const formattedInitiatives = ((data as DatabaseInitiative[]) || []).map(
+        const formattedInitiatives = ((data as DatabaseInitiativeWithTextLocation[]) || []).map(
           databaseInitiativeToInitiative
         );
+        
         setInitiatives(formattedInitiatives);
 
         // Notify parent component of loaded initiatives
@@ -379,7 +392,7 @@ export default function Map({
           features: [],
         },
         cluster: enableClustering,
-        clusterMaxZoom: 14, // Stop clustering at zoom 14
+        clusterMaxZoom: 11, // Stop clustering at zoom 11 (was 14)
         clusterRadius: 60, // Cluster radius in pixels (increased for better performance)
         clusterProperties: {
           // Calculate sum of points in each cluster
@@ -394,7 +407,10 @@ export default function Map({
     // ✨ Load gradient marker images for each initiative type
     // Check if already loaded
     if (map.current.hasImage('marker-Ressourcerie')) {
-      return; // Already loaded
+      if (setupMapLayersRef.current) {
+        setupMapLayersRef.current(); // Images already loaded, setup layers
+      }
+      return;
     }
 
     // ✨ Load cluster gradient images (3 sizes: small, medium, large)
@@ -404,13 +420,14 @@ export default function Map({
       { name: 'large', from: '#6366f1', to: '#4f46e5', size: 92, radius: 38 }, // indigo-500 to indigo-600
     ];
 
-    clusterGradients.forEach((cluster) => {
-      const safeClusterName = `cluster-${cluster.name}`;
+    const clusterImagePromises = clusterGradients.map((cluster) => {
+      return new Promise<void>((resolve) => {
+        const safeClusterName = `cluster-${cluster.name}`;
 
-      const svg = `
+        const svg = `
         <svg width="${cluster.size}" height="${cluster.size}" viewBox="0 0 ${
-        cluster.size
-      } ${cluster.size}" xmlns="http://www.w3.org/2000/svg">
+          cluster.size
+        } ${cluster.size}" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="grad-${safeClusterName}" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" style="stop-color:${
@@ -425,18 +442,23 @@ export default function Map({
             </filter>
           </defs>
           <circle cx="${cluster.size / 2}" cy="${cluster.size / 2}" r="${
-        cluster.radius
-      }" fill="url(#grad-${safeClusterName})" filter="url(#blur-${safeClusterName})" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+          cluster.radius
+        }" fill="url(#grad-${safeClusterName})" filter="url(#blur-${safeClusterName})" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
         </svg>
       `;
 
-      const img = new Image(cluster.size, cluster.size);
-      img.onload = () => {
-        if (map.current && !map.current.hasImage(safeClusterName)) {
-          map.current.addImage(safeClusterName, img, { sdf: false });
-        }
-      };
-      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+        const img = new Image(cluster.size, cluster.size);
+        img.onload = () => {
+          if (map.current && !map.current.hasImage(safeClusterName)) {
+            map.current.addImage(safeClusterName, img, { sdf: false });
+          }
+          resolve();
+        };
+        img.onerror = () => {
+          resolve(); // Resolve anyway to not block
+        };
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      });
     });
 
     // Define gradient colors for each type EXACTLY matching FilterPanel badges
@@ -454,56 +476,55 @@ export default function Map({
       'Monnaie locale': { from: '#facc15', to: '#f59e0b' }, // yellow-400 to amber-600
       'Tiers-lieu': { from: '#e879f9', to: '#db2777' }, // fuchsia-400 to pink-600
       Autre: { from: '#9ca3af', to: '#64748b' }, // gray-400 to slate-600
+      Friperie: { from: '#f472b6', to: '#e11d48' }, // pink-400 to rose-600 🆕 ADDED
     };
 
-    // Create TWO versions: normal (no shadow) and hover (with shadow)
-    Object.entries(typeGradients).forEach(([type, gradient]) => {
-      const size = 32; // Further reduced size
-      const radius = 12; // Further reduced radius
-      const safeType = type.replace(/[^a-zA-Z0-9]/g, '-');
+    // Create TWO versions for each type: normal (no shadow) and hover (with shadow)
+    const markerImagePromises = Object.entries(typeGradients).flatMap(
+      ([type, gradient]) => {
+        const size = 32;
+        const radius = 12;
+        const safeType = type.replace(/[^a-zA-Z0-9]/g, '-');
 
-      // NORMAL marker - Glassmorphism: transparent, blur, border
-      const normalSvg = `
+        // Promise for NORMAL marker
+        const normalPromise = new Promise<void>((resolve) => {
+          const normalSvg = `
         <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="grad-${safeType}" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" style="stop-color:${
-                gradient.from
-              };stop-opacity:0.85" />
-              <stop offset="100%" style="stop-color:${
-                gradient.to
-              };stop-opacity:0.85" />
+              <stop offset="0%" style="stop-color:${gradient.from};stop-opacity:0.85" />
+              <stop offset="100%" style="stop-color:${gradient.to};stop-opacity:0.85" />
             </linearGradient>
             <filter id="blur-${safeType}">
               <feGaussianBlur in="SourceGraphic" stdDeviation="0.5"/>
             </filter>
           </defs>
-          <circle cx="${size / 2}" cy="${
-        size / 2
-      }" r="${radius}" fill="url(#grad-${safeType})" filter="url(#blur-${safeType})" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+          <circle cx="${size / 2}" cy="${size / 2}" r="${radius}" fill="url(#grad-${safeType})" filter="url(#blur-${safeType})" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
         </svg>
       `;
 
-      const normalImg = new Image(size, size);
-      normalImg.onload = () => {
-        if (map.current && !map.current.hasImage(`marker-${type}`)) {
-          map.current.addImage(`marker-${type}`, normalImg, { sdf: false });
-        }
-      };
-      normalImg.src =
-        'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(normalSvg);
+          const normalImg = new Image(size, size);
+          normalImg.onload = () => {
+            if (map.current && !map.current.hasImage(`marker-${type}`)) {
+              map.current.addImage(`marker-${type}`, normalImg, { sdf: false });
+            }
+            resolve();
+          };
+          normalImg.onerror = () => {
+            resolve(); // Resolve anyway to not block
+          };
+          normalImg.src =
+            'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(normalSvg);
+        });
 
-      // HOVER marker - Glassmorphism WITH shadow
-      const hoverSvg = `
+        // Promise for HOVER marker
+        const hoverPromise = new Promise<void>((resolve) => {
+          const hoverSvg = `
         <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="grad-${safeType}-hover" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" style="stop-color:${
-                gradient.from
-              };stop-opacity:0.85" />
-              <stop offset="100%" style="stop-color:${
-                gradient.to
-              };stop-opacity:0.85" />
+              <stop offset="0%" style="stop-color:${gradient.from};stop-opacity:0.85" />
+              <stop offset="100%" style="stop-color:${gradient.to};stop-opacity:0.85" />
             </linearGradient>
             <filter id="blur-${safeType}-hover">
               <feGaussianBlur in="SourceGraphic" stdDeviation="0.5"/>
@@ -520,27 +541,49 @@ export default function Map({
               </feMerge>
             </filter>
           </defs>
-          <circle cx="${size / 2}" cy="${
-        size / 2
-      }" r="${radius}" fill="url(#grad-${safeType}-hover)" filter="url(#blur-${safeType}-hover) url(#shadow-${safeType})" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+          <circle cx="${size / 2}" cy="${size / 2}" r="${radius}" fill="url(#grad-${safeType}-hover)" filter="url(#blur-${safeType}-hover) url(#shadow-${safeType})" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
         </svg>
       `;
 
-      const hoverImg = new Image(size, size);
-      hoverImg.onload = () => {
-        if (map.current && !map.current.hasImage(`marker-${type}-hover`)) {
-          map.current.addImage(`marker-${type}-hover`, hoverImg, {
-            sdf: false,
-          });
+          const hoverImg = new Image(size, size);
+          hoverImg.onload = () => {
+            if (map.current && !map.current.hasImage(`marker-${type}-hover`)) {
+              map.current.addImage(`marker-${type}-hover`, hoverImg, {
+                sdf: false,
+              });
+            }
+            resolve();
+          };
+          hoverImg.onerror = () => {
+            resolve(); // Resolve anyway to not block
+          };
+          hoverImg.src =
+            'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(hoverSvg);
+        });
+
+        return [normalPromise, hoverPromise];
+      }
+    );
+
+    // Wait for ALL images to load before setting up layers
+    Promise.all([...clusterImagePromises, ...markerImagePromises])
+      .then(() => {
+        // Setup layers after images are loaded
+        if (map.current && setupMapLayersRef.current) {
+          setupMapLayersRef.current();
         }
-      };
-      hoverImg.src =
-        'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(hoverSvg);
-    });
+      })
+      .catch((err) => {
+        console.error('Error loading marker images:', err);
+        // Setup layers anyway
+        if (map.current && setupMapLayersRef.current) {
+          setupMapLayersRef.current();
+        }
+      });
   }, [enableClustering]);
 
   // ================================
-  // LAYERS CONFIGURATION
+  // LAYERS CONFIGURATION  
   // ================================
 
   const setupMapLayers = useCallback(() => {
@@ -775,6 +818,8 @@ export default function Map({
             '#facc15',
             'Tiers-lieu',
             '#e879f9',
+            'Friperie',
+            '#f472b6',
             '#9ca3af',
           ],
           'circle-opacity': [
@@ -847,6 +892,9 @@ export default function Map({
       });
     }
   }, [enableClustering]);
+
+  // Store setupMapLayers function in ref for use in setupMapSources
+  setupMapLayersRef.current = setupMapLayers;
 
   // ================================
   // MAP INTERACTIONS
