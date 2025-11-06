@@ -992,42 +992,40 @@ export default function Map({
         // Create modern glassmorphism popup HTML with blurred background
         const html = `
           <div style="width: 280px; padding: 20px; box-sizing: border-box;">
-            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; overflow: visible;">
-              <div class="popup-badge" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 9999px; font-size: 12px; font-weight: 700; color: white; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.1); background: ${gradient}; overflow: visible;">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px;">
+              <div class="popup-badge" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 9999px; font-size: 12px; font-weight: 700; color: white; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.1); background: ${gradient};">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                 </svg>
                 <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px;">${
                   initiative.type
                 }</span>
-                <div style="position: relative; display: inline-flex;">
-                  <button 
-                    class="info-btn-popup"
-                    style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; padding: 0; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: none; cursor: pointer; transition: background 0.2s; color: white; flex-shrink: 0;"
-                    onmouseenter="this.style.background='rgba(255, 255, 255, 0.35)'; var tt = document.getElementById('tooltip-${
-                      initiative.id
-                    }'); if(tt) { var rect = this.getBoundingClientRect(); tt.style.left = (rect.left + rect.width/2) + 'px'; tt.style.top = (rect.top - 100) + 'px'; tt.style.opacity='1'; tt.style.visibility='visible'; }"
-                    onmouseleave="this.style.background='rgba(255, 255, 255, 0.2)'; var tt = document.getElementById('tooltip-${
-                      initiative.id
-                    }'); if(tt) { tt.style.opacity='0'; tt.style.visibility='hidden'; }"
-                    aria-label="Information sur ${initiative.type}"
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <path d="M12 16v-4"></path>
-                      <path d="M12 8h.01"></path>
-                    </svg>
-                  </button>
-                  <div 
-                    id="tooltip-${initiative.id}"
-                    style="position: fixed; width: 240px; padding: 10px 14px; background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98)); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); color: white; border-radius: 8px; font-size: 12px; line-height: 1.5; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); z-index: 999999; pointer-events: none; opacity: 0; visibility: hidden; transition: opacity 0.2s, visibility 0.2s; transform: translateX(-50%);"
-                  >
-                    ${typeDescription}
-                    <div style="position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid rgba(15, 23, 42, 0.98);"></div>
-                  </div>
-                </div>
+                <button 
+                  class="info-btn-popup"
+                  style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: none; cursor: pointer; transition: background 0.2s; color: white; flex-shrink: 0;"
+                  onmouseenter="this.style.background='rgba(255, 255, 255, 0.35)'; var tt = document.getElementById('tooltip-${
+                    initiative.id
+                  }'); if(tt) { var rect = this.getBoundingClientRect(); tt.style.left = (rect.left + rect.width/2) + 'px'; tt.style.top = (rect.top - 100) + 'px'; tt.style.opacity='1'; tt.style.visibility='visible'; }"
+                  onmouseleave="this.style.background='rgba(255, 255, 255, 0.2)'; var tt = document.getElementById('tooltip-${
+                    initiative.id
+                  }'); if(tt) { tt.style.opacity='0'; tt.style.visibility='hidden'; }"
+                  aria-label="Information sur ${initiative.type}"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 16v-4"></path>
+                    <path d="M12 8h.01"></path>
+                  </svg>
+                </button>
               </div>
               ${verifiedBadge}
+            </div>
+            <div 
+              id="tooltip-${initiative.id}"
+              style="position: fixed; width: 240px; padding: 10px 14px; background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98)); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); color: white; border-radius: 8px; font-size: 12px; line-height: 1.5; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); z-index: 999999; pointer-events: none; opacity: 0; visibility: hidden; transition: opacity 0.2s, visibility 0.2s; transform: translateX(-50%);"
+            >
+              ${typeDescription}
+              <div style="position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid rgba(15, 23, 42, 0.98);"></div>
             </div>
             
             <h2 class="font-bold text-lg mb-2" style="color: #0f2419; line-height: 1.3; word-wrap: break-word; overflow-wrap: break-word; hyphens: auto;">${
