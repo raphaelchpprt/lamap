@@ -1,6 +1,9 @@
 -- Function to get all initiatives with location in text format
 -- This solves the WKB binary format issue
 
+-- Drop existing function first (required when changing return type)
+DROP FUNCTION IF EXISTS get_all_initiatives_with_text_location();
+
 CREATE OR REPLACE FUNCTION get_all_initiatives_with_text_location()
 RETURNS TABLE (
   id UUID,

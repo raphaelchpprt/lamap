@@ -5,6 +5,9 @@
 -- Performance: Uses spatial index for fast queries
 -- Returns: Initiatives with their location as text (POINT(lon lat))
 
+-- Drop existing function first (required when changing return type)
+DROP FUNCTION IF EXISTS get_initiatives_in_bounds(FLOAT, FLOAT, FLOAT, FLOAT, TEXT[], BOOLEAN, INTEGER);
+
 CREATE OR REPLACE FUNCTION get_initiatives_in_bounds(
   p_west FLOAT,
   p_south FLOAT,
