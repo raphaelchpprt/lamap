@@ -11,7 +11,12 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "import:osm": "tsx scripts/import-from-osm.ts",
-    "import:datagouv": "tsx scripts/import-from-datagouv.ts"
+    "import:real": "tsx scripts/import-real-data.ts",
+    "analyze": "tsx scripts/analyze-data.ts",
+    "fix:friperies": "tsx scripts/fix-friperies-type.ts",
+    "test:filter": "tsx scripts/test-filter-friperies.ts",
+    "seed": "tsx scripts/seed-initiatives.ts",
+    "seed:bulk": "tsx scripts/seed-bulk-initiatives.ts"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.3.3",
@@ -45,6 +50,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.2.3",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "jest": "^30.2.0",
