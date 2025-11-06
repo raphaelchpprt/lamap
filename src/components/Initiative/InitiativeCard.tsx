@@ -255,9 +255,16 @@ function TypeBadge({
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
+    const tooltipHeight = 100; // Approximate height
+    const spaceAbove = rect.top;
+    const spaceBelow = window.innerHeight - rect.bottom;
+    
+    // Position below if not enough space above
+    const shouldPositionBelow = spaceAbove < tooltipHeight && spaceBelow > spaceAbove;
+    
     setTooltipPosition({
       x: rect.left + rect.width / 2,
-      y: rect.top - 10,
+      y: shouldPositionBelow ? rect.bottom + 10 : rect.top - 10,
     });
     setShowTooltip(true);
   };
@@ -273,7 +280,7 @@ function TypeBadge({
         position: 'fixed',
         left: `${tooltipPosition.x}px`,
         top: `${tooltipPosition.y}px`,
-        transform: 'translate(-50%, -100%)',
+        transform: tooltipPosition.y < 150 ? 'translate(-50%, 0%)' : 'translate(-50%, -100%)',
         width: '16rem',
         maxWidth: '16rem',
         zIndex: 100000,
@@ -283,8 +290,16 @@ function TypeBadge({
     >
       {description}
       <div 
-        className="absolute left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"
-        style={{ bottom: '-8px' }}
+        className="absolute left-1/2 -translate-x-1/2 border-4 border-transparent"
+        style={tooltipPosition.y < 150 ? { 
+          top: '-8px',
+          borderBottom: '4px solid rgb(15, 23, 42)',
+          borderTop: 'none'
+        } : { 
+          bottom: '-8px',
+          borderTop: '4px solid rgb(15, 23, 42)',
+          borderBottom: 'none'
+        }}
       />
     </div>,
     document.body

@@ -1002,16 +1002,31 @@ export default function Map({
                 }</span>
                 <button 
                   class="info-btn-popup"
-                  style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: none; cursor: pointer; transition: background 0.2s; color: white; flex-shrink: 0;"
-                  onmouseenter="this.style.background='rgba(255, 255, 255, 0.35)'; var tt = document.getElementById('tooltip-${
-                    initiative.id
-                  }'); if(tt) { var rect = this.getBoundingClientRect(); tt.style.left = (rect.left + rect.width/2) + 'px'; tt.style.top = (rect.top - 100) + 'px'; tt.style.opacity='1'; tt.style.visibility='visible'; }"
-                  onmouseleave="this.style.background='rgba(255, 255, 255, 0.2)'; var tt = document.getElementById('tooltip-${
-                    initiative.id
-                  }'); if(tt) { tt.style.opacity='0'; tt.style.visibility='hidden'; }"
+                  style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; min-width: 26px; min-height: 26px; padding: 4px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: none; cursor: pointer; transition: background 0.2s; color: white; flex-shrink: 0;"
+                  onmouseenter="
+                    this.style.background='rgba(255, 255, 255, 0.35)';
+                    setTimeout(() => {
+                      var tt = document.getElementById('tooltip-${initiative.id}');
+                      if(tt) {
+                        var rect = this.getBoundingClientRect();
+                        tt.style.left = (rect.left + rect.width/2) + 'px';
+                        tt.style.top = (rect.top - 100) + 'px';
+                        tt.style.opacity = '1';
+                        tt.style.visibility = 'visible';
+                      }
+                    }, 10);
+                  "
+                  onmouseleave="
+                    this.style.background='rgba(255, 255, 255, 0.2)';
+                    var tt = document.getElementById('tooltip-${initiative.id}');
+                    if(tt) {
+                      tt.style.opacity = '0';
+                      tt.style.visibility = 'hidden';
+                    }
+                  "
                   aria-label="Information sur ${initiative.type}"
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display: block;">
                     <circle cx="12" cy="12" r="10"></circle>
                     <path d="M12 16v-4"></path>
                     <path d="M12 8h.01"></path>
