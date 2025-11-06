@@ -4,6 +4,59 @@ Collection de scripts utilitaires pour le projet LaMap.
 
 ## 📥 Import de données
 
+### `npm run seed` - Seed des données de test 🌱
+
+Insère des initiatives de test couvrant tous les types d'initiatives.
+
+**Données insérées:**
+- 25+ initiatives réelles à Paris
+- Tous les 20 types d'initiatives couverts
+- Adresses et coordonnées GPS réelles
+- Mix d'initiatives vérifiées et non vérifiées
+
+**Usage:**
+```bash
+npm run seed
+```
+
+**Prérequis:**
+- Variables d'environnement dans `.env.local`:
+  - `NEXT_PUBLIC_SUPABASE_URL`
+  - `SUPABASE_SERVICE_ROLE_KEY` (⚠️ pas l'anon key!)
+
+**Note:** Le script ajoute des initiatives sans supprimer les existantes.
+
+---
+
+### `npm run seed:bulk` - Seed MASSIF (100 initiatives par type) 🚀
+
+**⚠️ ATTENTION:** Génère et insère **2000 initiatives** (100 par type) !
+
+**Données générées:**
+- **2000 initiatives** au total
+- **100 par type** (20 types × 100)
+- Noms et adresses variés et réalistes
+- Répartition sur les 20 arrondissements de Paris
+- Coordonnées GPS randomisées
+- Mix de statuts vérifiés/non vérifiés
+- Contact aléatoire (phone/email/website)
+
+**Usage:**
+```bash
+npm run seed:bulk
+```
+
+**Durée:** ~5-10 minutes (dépend de la connexion)
+
+**Prérequis:**
+- Variables d'environnement dans `.env.local`:
+  - `NEXT_PUBLIC_SUPABASE_URL`
+  - `SUPABASE_SERVICE_ROLE_KEY`
+
+**Note:** Parfait pour tester les performances avec beaucoup de données !
+
+---
+
 ### `import-from-osm.ts`
 
 Importe des initiatives depuis OpenStreetMap.
