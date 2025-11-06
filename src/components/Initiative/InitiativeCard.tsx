@@ -48,12 +48,6 @@ import Image from 'next/image';
 import { useState } from 'react';
 
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import {
   TYPE_GRADIENTS,
   INITIATIVE_ICONS,
   TYPE_MARKER_COLORS,
@@ -223,7 +217,7 @@ function ImagePlaceholder({ type }: { type: Initiative['type'] }) {
 
 /**
  * Initiative type badge with gradient matching FilterPanel
- * Includes tooltip with info icon that appears only on hover
+ * Includes tooltip with info icon that appears only on hover (pure CSS)
  */
 function TypeBadge({
   type,
@@ -236,7 +230,7 @@ function TypeBadge({
   const description = INITIATIVE_DESCRIPTIONS[type];
 
   // Style uniforme pour tous les badges (même style que popup)
-  const badgeClasses = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm border';
+  const badgeClasses = 'inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm border';
 
   const badgeStyle = onDarkBackground
     ? {
@@ -252,35 +246,28 @@ function TypeBadge({
 
   return (
     <div className={badgeClasses} style={badgeStyle}>
-      <Sparkles className="h-3.5 w-3.5" />
+      <Sparkles className="h-4 w-4" />
       <span>{type}</span>
-      <TooltipProvider delayDuration={300} skipDelayDuration={0}>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              type="button"
-              className={
-                onDarkBackground
-                  ? 'p-1 rounded-full bg-white/20 hover:bg-white/30 transition-colors ml-1'
-                  : 'p-1 rounded-full hover:bg-black/10 transition-colors ml-1'
-              }
-              onClick={(e) => e.stopPropagation()}
-              aria-label={`Information sur ${type}`}
-              style={onDarkBackground ? {} : { color }}
-            >
-              <Info className="h-3.5 w-3.5" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent
-            side="top"
-            align="center"
-            sideOffset={8}
-            className="max-w-xs bg-gradient-to-br from-slate-900/98 to-slate-800/98 backdrop-blur-xl border border-white/20 text-white shadow-2xl z-[100000]"
-          >
-            <p className="text-xs leading-relaxed">{description}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <div className="relative inline-flex">
+        <button
+          type="button"
+          className="group p-1.5 rounded-full hover:bg-white/20 transition-colors"
+          onClick={(e) => e.stopPropagation()}
+          aria-label={`Information sur ${type}`}
+          style={onDarkBackground ? { color: 'white' } : { color }}
+        >
+          <Info className="h-4 w-4" />
+        </button>
+        <div 
+          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 rounded-lg text-xs leading-relaxed text-white bg-gradient-to-br from-slate-900 to-slate-800 border border-white/20 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none whitespace-normal w-64 z-[100000]"
+          style={{ maxWidth: '16rem' }}
+        >
+          {description}
+          <div 
+            className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-slate-900"
+          />
+        </div>
+      </div>
     </div>
   );
 }
